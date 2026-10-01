@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "STACKUP ENDURANCE",
+    "slug": "stackup-endurance",
+    "scheme": "stackupendurance",
+    "version": "0.5.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "android": {
+      "package": "com.stackupholdem.endurance"
+    },
+    "ios": {
+      "bundleIdentifier": "com.stackupholdem.endurance"
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
