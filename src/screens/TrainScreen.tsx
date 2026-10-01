@@ -1,0 +1,13 @@
+import React from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { C, PHOTO } from '../theme';
+import { Backdrop, Header, Label, Serif } from '../ui';
+import { s } from '../styles';
+import { Module, moduleMeta } from '../types';
+
+export function TrainScreen({ openModule }: { openModule:(m:Module)=>void }) {
+  const keys:Module[]=['war','behavior','gym','lifestyle','audio'];
+  return <Backdrop uri={PHOTO.focus} blur={12} overlay={0.84}><SafeAreaView style={s.flex}><Header title="TRAIN" subtitle="PERFORMANCE LAB"/><ScrollView contentContainerStyle={s.scroll}><View style={s.lead}><Label>TRAINING ARCHITECTURE</Label><Serif style={s.leadTitle}>Treine o sistema que sustenta suas decisões.</Serif></View>{keys.map((key,i)=>{const m=moduleMeta[key];return <TouchableOpacity key={key} style={s.moduleRow} onPress={()=>openModule(key)}><Text style={s.moduleN}>0{i+1}</Text><View style={s.moduleIcon}><Ionicons name={m.icon} size={20} color={C.goldLight}/></View><View style={s.flex}><Serif style={s.moduleTitle}>{m.title}</Serif><Text style={s.moduleSub}>{m.subtitle}</Text></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></TouchableOpacity>})}<View style={s.panel}><Label>MENTAL RESERVE</Label><Serif style={s.reserve}>74%</Serif><View style={s.track}><View style={[s.fill,{width:'74%'}]}/></View><Text style={s.body}>Boa capacidade de sustentação. Sua maior perda de qualidade aparece em sessões prolongadas sem pausa antecipada.</Text></View></ScrollView></SafeAreaView></Backdrop>;
+}
