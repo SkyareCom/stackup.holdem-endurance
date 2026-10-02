@@ -8,6 +8,7 @@ import { decisionCues, processGoals, warRoomTriggers, type ProcessGoalId, type W
 import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { FlowProgress } from '../components/FlowProgress';
 import { GuidedSection } from '../components/GuidedSection';
+import { getReadinessGuidance } from '../guidance';
 import { s } from '../styles';
 import { GameState, Module, Phase } from '../types';
 import { useI18n } from '../i18n';
@@ -16,11 +17,12 @@ function Scale({ label, value, setValue }: { label:string; value:number; setValu
   return <View style={s.scaleBlock}><View style={s.rowBetween}><Label>{label}</Label><AppText style={s.metricValue}>{value}/5</AppText></View><View style={s.scaleRow}>{[1,2,3,4,5].map(n=><TouchableOpacity key={n} onPress={()=>setValue(n)} style={[s.scaleDot,value===n&&s.scaleDotActive]}><AppText style={[s.scaleText,value===n&&s.scaleTextActive]}>{n}</AppText></TouchableOpacity>)}</View></View>;
 }
 
-function Ready({ onStart }: { onStart:()=>void }) {
+function Ready({ onStart, openBreak }: { onStart:()=>void; openBreak:()=>void }) {
   const { t } = useI18n();
-  const [energy,setEnergy]=useState(4), [focus,setFocus]=useState(3), [stress,setStress]=useState(2);
+  const [energy,setEnergy]=useState(4), [focus,setFocus]=useState(3), [tension,setTension]=useState(2);
   const [goal,setGoal]=useState<ProcessGoalId>('process');
   const selectedGoal=processGoals.find((x)=>x.id===goal) ?? processGoals[0];
+  const readiness=getReadinessGuidance({energy,focus,tension});
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={1} total={3} label={t('session.preparation')}/>
@@ -28,8 +30,14 @@ function Ready({ onStart }: { onStart:()=>void }) {
     <View style={s.guidedBlock}><Label>{t('common.whatItIs')}</Label><AppText style={s.body}>{t('session.readyWhat')}</AppText></View>
     <View style={s.guidedBlock}><Label>{t('session.whyItMatters')}</Label><AppText style={s.body}>{t('session.readyWhy')}</AppText></View>
     <View style={s.guidedBlock}><Label>{t('common.howToUse')}</Label><AppText style={s.body}>{t('session.readyHow')}</AppText></View>
-    <View style={s.panel}><Scale label={t('home.energy')} value={energy} setValue={setEnergy}/><Scale label={t('home.focus')} value={focus} setValue={setFocus}/><Scale label={t('session.stress')} value={stress} setValue={setStress}/></View>
-    <View style={s.guidedBlock}><Label>{t('common.yourReading')}</Label><AppText style={s.body}>{t('session.readyReading')}</AppText><AppText style={s.goldText}>{energy}/5 · {focus}/5 · {stress}/5</AppText></View>
+    <View style={s.panel}><Scale label={t('home.energy')} value={energy} setValue={setEnergy}/><Scale label={t('home.focus')} value={focus} setValue={setFocus}/><Scale label={t('home.tension')} value={tension} setValue={setTension}/></View>
+    <View style={s.guidedBlock}>
+      <Label>{t('common.yourReading')}</Label>
+      <Serif style={s.actionTitle}>{t(readiness.titleKey).toUpperCase()}</Serif>
+      <AppText style={s.body}>{t(readiness.bodyKey)}</AppText>
+      <AppText style={s.body}>{t(readiness.reasonKey)}</AppText>
+      <AppText style={s.goldText}>{energy}/5 · {focus}/5 · {tension}/5</AppText>
+    </View>
     <View style={s.panel}>
       <Label>{t('session.processGoal')}</Label>
       <View style={s.chips}>{processGoals.map(x=><TouchableOpacity key={x.id} onPress={()=>setGoal(x.id)} style={[s.chip,goal===x.id&&s.chipActive]}><AppText style={[s.chipText,goal===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View>
@@ -37,7 +45,10 @@ function Ready({ onStart }: { onStart:()=>void }) {
       <AppText style={s.body}>{t(selectedGoal.descriptionKey)}</AppText>
       <AppText style={s.body}>{t('session.currentIntention')} <AppText style={s.goldText}>{t(selectedGoal.labelKey)}</AppText>. {t('session.intentionHelp')}</AppText>
     </View>
-    <PremiumButton label={t('session.start')} onPress={onStart}/>
+    {readiness.actionId==='reset'
+      ?<PremiumButton label={t('session.resetBeforeStart')} onPress={openBreak} icon="pause-outline"/>
+      :<PremiumButton label={t('session.start')} onPress={onStart}/>
+    }
   </ScrollView>;
 }
 
@@ -82,5 +93,5 @@ function Debrief({ save, openDiary }: { save:()=>void; openDiary:()=>void }) {
 export function SessionScreen({ phase,setPhase,openModule,openBreak,openCheckin }: { phase:Phase; setPhase:(p:Phase)=>void; openModule:(m:Module)=>void; openBreak:()=>void; openCheckin:()=>void }) {
   const { t } = useI18n();
   const subtitle=phase==='ready'?t('session.preparation'):phase==='active'?t('session.livePerformance'):t('session.postSession');
-  return <Backdrop uri={PHOTO.session} blur={7} overlay={0.8}><SafeAreaView style={s.flex}><Header title={t('session.title')} subtitle={subtitle}/>{phase==='ready'?<Ready onStart={()=>setPhase('active')}/>:phase==='active'?<Active endSession={()=>setPhase('debrief')} openAudio={()=>openModule('audio')} openBreak={openBreak} openCheckin={openCheckin}/>:<Debrief save={()=>setPhase('ready')} openDiary={()=>openModule('diary')}/>}</SafeAreaView></Backdrop>;
+  return <Backdrop uri={PHOTO.session} blur={7} overlay={0.8}><SafeAreaView style={s.flex}><Header title={t('session.title')} subtitle={subtitle}/>{phase==='ready'?<Ready onStart={()=>setPhase('active')} openBreak={openBreak}/>:phase==='active'?<Active endSession={()=>setPhase('debrief')} openAudio={()=>openModule('audio')} openBreak={openBreak} openCheckin={openCheckin}/>:<Debrief save={()=>setPhase('ready')} openDiary={()=>openModule('diary')}/>}</SafeAreaView></Backdrop>;
 }
