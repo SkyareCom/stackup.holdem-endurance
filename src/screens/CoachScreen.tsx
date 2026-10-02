@@ -6,17 +6,19 @@ import { C, PHOTO } from '../theme';
 import { AppText, AppTextInput, Backdrop, Header, Label, Serif } from '../ui';
 import { s } from '../styles';
 import { useI18n, type Locale, type TranslationKey } from '../i18n';
+import type { Phase } from '../types';
 
 type ChatMessage = { role:'you'|'ai'; text:string; locale?:Locale };
 
 const quickPromptKeys: TranslationKey[] = [
-  'coach.quick.tilted',
-  'coach.quick.tired',
+  'coach.quick.accelerated',
   'coach.quick.focus',
+  'coach.quick.tired',
   'coach.quick.reset',
+  'coach.quick.review',
 ];
 
-export function CoachScreen() {
+export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
   const { t, locale } = useI18n();
   const [input,setInput]=useState('');
   const [messages,setMessages]=useState<ChatMessage[]>([]);
@@ -32,6 +34,7 @@ export function CoachScreen() {
     {role:'you',text:t('coach.sampleUser')},
     {role:'ai',text:t('coach.sampleReply'),locale},
   ];
+  const phaseKey:TranslationKey=phase==='active'?'coach.phaseActive':phase==='debrief'?'coach.phaseDebrief':'coach.phaseReady';
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.87}>
@@ -42,6 +45,14 @@ export function CoachScreen() {
             <Label>{t('coach.activeContext')}</Label>
             <Serif style={s.contextTitle}>{t('coach.contextTitle')}</Serif>
             <AppText style={s.body}>{t('coach.contextBody')}</AppText>
+            <View style={s.contextList}>
+              <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{t('coach.contextReadinessValue')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextPhase')}</Label><AppText style={s.contextValue}>{t(phaseKey)}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextCheckins')}</Label><AppText style={s.contextValue}>{t('coach.contextCheckinsValue')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextTrigger')}</Label><AppText style={s.contextValue}>{t('coach.contextTriggerValue')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextTraining')}</Label><AppText style={s.contextValue}>{t('coach.contextTrainingValue')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextHomeRecommendation')}</Label><AppText style={s.contextValue}>{t('coach.contextHomeRecommendationValue')}</AppText></View>
+            </View>
           </View>
           <View style={s.chips}>
             {quickPromptKeys.map((key)=>
