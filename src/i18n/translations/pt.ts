@@ -726,6 +726,8 @@ export const pt = {
   'debrief.executionComponent': "EXECUTION EV",
   'debrief.disciplineComponent': "DISCIPLINE EV",
   'debrief.emotionalComponent': "EMOTIONAL CONTROL EV",
+  'profile.showAnalytics': "VER ANÁLISES",
+  'profile.hideAnalytics': "OCULTAR ANÁLISES",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
