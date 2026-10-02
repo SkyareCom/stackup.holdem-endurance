@@ -246,3 +246,24 @@ export function buildDevelopmentSnapshot(sessions:SessionRecord[]) {
     ))),
   };
 }
+
+
+export type HeatmapIntensity='low'|'moderate'|'high'|'critical';
+export type HeatmapWindowId='0-45'|'45-90'|'90-135'|'135-180'|'180-plus';
+
+export function buildHeatmap(sessions:SessionRecord[]) {
+  const windows:{id:HeatmapWindowId;from:number;to:number}[]=[
+    {id:'0-45',from:0,to:45},{id:'45-90',from:45,to:90},{id:'90-135',from:90,to:135},
+    {id:'135-180',from:135,to:180},{id:'180-plus',from:180,to:Number.POSITIVE_INFINITY},
+  ];
+  const checkins=sessions.flatMap(s=>s.checkins);
+  return windows.map(window=>{
+    const items=checkins.filter(x=>x.minute>=window.from&&x.minute<window.to);
+    const severity=items.length?items.reduce((sum,x)=>sum+((10-x.focus)+x.tension+x.impulse+x.fatigue)/4,0)/items.length:0;
+    const intensity:HeatmapIntensity=severity>=7.5?'critical':severity>=5.5?'high':severity>=3.5?'moderate':'low';
+    const counts=new Map<TiltTrigger,number>();
+    for(const item of items) if(item.trigger) counts.set(item.trigger,(counts.get(item.trigger)??0)+1);
+    const triggers=[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,2).map(([trigger])=>trigger);
+    return {id:window.id,count:items.length,intensity,triggers};
+  });
+}
