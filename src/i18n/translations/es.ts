@@ -409,7 +409,7 @@ export const es: TranslationCatalog = {
   'overlay.reactionDuration': 'aproximadamente 60 segundos',
   'overlay.reactionStart': 'INICIAR TEST',
   'overlay.reactionResult': 'TU RESULTADO',
-  'overlay.reactionInterpretation': '284 ms está dentro de tu línea base actual. el número aislado no define rendimiento; compara estabilidad y tendencia.',
+  'overlay.reactionInterpretation': 'un número aislado no define rendimiento; compara estabilidad entre intentos y tendencia a lo largo del tiempo.',
   'overlay.reactionConsistency': 'el objetivo es repetir una respuesta limpia sin sacrificar precisión por velocidad.',
   'overlay.reactionNext': 'VER PRÓXIMA ACCIÓN',
   'overlay.reactionNextTitle': 'HAZ 3 BLOQUES DE 60 SEGUNDOS',
