@@ -124,6 +124,8 @@ export const en: TranslationCatalog = {
   'coach.holdToTalk': 'HOLD TO TALK',
   'coach.placeholder': 'Talk to the Coach...',
 
+  'profile.stackupId': 'STACKUP ID',
+  'profile.planName': 'ENDURANCE EDGE',
   'profile.title': 'PROFILE',
   'profile.progression': 'PROGRESSION',
   'profile.level': 'LEVEL 12',
@@ -161,6 +163,8 @@ export const en: TranslationCatalog = {
   'overlay.question': 'QUESTION',
   'overlay.diaryPlaceholder': 'Write or record your answer...',
   'overlay.badBeatVaccine': 'BAD BEAT VACCINE / 01',
+  'overlay.vaccineScenario': 'AA vs KK · preflop all-in',
+  'overlay.vaccineRiver': 'RIVER: K',
   'overlay.vaccineBody': 'Your result was negative. The previous decision is still evaluated by the process, not by the river.',
   'overlay.vaccineAnswer1': 'I am always unlucky.',
   'overlay.vaccineAnswer2': 'I should not have gone all-in.',

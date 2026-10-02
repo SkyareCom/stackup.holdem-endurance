@@ -67,12 +67,7 @@ for (const [locale, catalog] of Object.entries(catalogs)) {
   }
 }
 
-const LEGACY_I18N_FILES = new Set([
-  'src/screens/TrainScreen.tsx',
-  'src/screens/CoachScreen.tsx',
-  'src/screens/ProfileScreen.tsx',
-  'src/overlays.tsx',
-]);
+const LEGACY_I18N_FILES = new Set([]);
 
 const invariantStrings = new Set([
   'ENDURANCE',

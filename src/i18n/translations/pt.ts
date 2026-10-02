@@ -122,6 +122,8 @@ export const pt = {
   'coach.holdToTalk': 'SEGURE PARA FALAR',
   'coach.placeholder': 'Fale com o Coach...',
 
+  'profile.stackupId': 'STACKUP ID',
+  'profile.planName': 'ENDURANCE EDGE',
   'profile.title': 'PERFIL',
   'profile.progression': 'PROGRESSÃO',
   'profile.level': 'NÍVEL 12',
@@ -159,6 +161,8 @@ export const pt = {
   'overlay.question': 'PERGUNTA',
   'overlay.diaryPlaceholder': 'Escreva ou grave sua resposta...',
   'overlay.badBeatVaccine': 'VACINA DE BAD BEAT / 01',
+  'overlay.vaccineScenario': 'AA vs KK · all-in pré-flop',
+  'overlay.vaccineRiver': 'RIVER: K',
   'overlay.vaccineBody': 'Seu resultado foi negativo. A decisão anterior continua sendo avaliada pelo processo, não pelo river.',
   'overlay.vaccineAnswer1': 'Tenho sempre azar.',
   'overlay.vaccineAnswer2': 'Não deveria ter ido all-in.',
