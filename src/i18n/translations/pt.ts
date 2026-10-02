@@ -117,6 +117,8 @@ export const pt = {
   'coach.quickActions': 'ATALHOS DO COACH',
   'coach.emptyPrompt': 'escolha um atalho acima ou descreva o que está acontecendo para iniciar a conversa.',
   'coach.contextUnavailable': 'ainda não disponível com os dados atuais.',
+  'coach.showContext': 'VER CONTEXTO DISPONÍVEL',
+  'coach.hideContext': 'OCULTAR CONTEXTO',
   'coach.quick.tilted': 'Estou tiltado',
   'coach.quick.tired': 'Estou cansado',
   'coach.quick.focus': 'Perdi o foco',

@@ -119,6 +119,8 @@ export const es: TranslationCatalog = {
   'coach.quickActions': 'ATAJOS DEL COACH',
   'coach.emptyPrompt': 'elige un atajo arriba o describe lo que está pasando para iniciar la conversación.',
   'coach.contextUnavailable': 'aún no disponible con los datos actuales.',
+  'coach.showContext': 'VER CONTEXTO DISPONIBLE',
+  'coach.hideContext': 'OCULTAR CONTEXTO',
   'coach.quick.tilted': 'Estoy tiltado',
   'coach.quick.tired': 'Estoy cansado',
   'coach.quick.focus': 'Perdí el enfoque',

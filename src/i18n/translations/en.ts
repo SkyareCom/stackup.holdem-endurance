@@ -119,6 +119,8 @@ export const en: TranslationCatalog = {
   'coach.quickActions': 'COACH SHORTCUTS',
   'coach.emptyPrompt': 'choose a shortcut above or describe what is happening to start the conversation.',
   'coach.contextUnavailable': 'not available with the current data.',
+  'coach.showContext': 'VIEW AVAILABLE CONTEXT',
+  'coach.hideContext': 'HIDE CONTEXT',
   'coach.quick.tilted': "I'm tilted",
   'coach.quick.tired': "I'm tired",
   'coach.quick.focus': 'I lost focus',
