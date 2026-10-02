@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { C, PHOTO } from '../theme';
 import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
@@ -10,6 +11,7 @@ import { useI18n } from '../i18n';
 
 export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const { t } = useI18n();
+  const router = useRouter();
   const hasPatternHistory=false;
 
   return (
@@ -73,11 +75,11 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               <AppText style={s.body}>{t('profile.languageBody')}</AppText>
               <LanguageSelector variant="profile"/>
             </View>
-            <View style={s.settingRow}>
+            <TouchableOpacity style={s.settingRow} onPress={()=>router.push('/privacy')}>
               <Ionicons name="shield-checkmark-outline" size={20} color={C.goldLight}/>
               <View style={s.flex}><AppText style={s.settingTitle}>{t('profile.privacy')}</AppText><AppText style={s.settingSub}>{t('profile.privacyBody')}</AppText></View>
               <Ionicons name="chevron-forward" size={18} color={C.dim}/>
-            </View>
+            </TouchableOpacity>
             <View style={s.panel}>
               <Label>{t('profile.plan')}</Label>
               <Serif style={s.plan}>{t('profile.planName')}</Serif>
