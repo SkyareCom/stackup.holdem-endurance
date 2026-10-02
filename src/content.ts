@@ -82,3 +82,64 @@ export const warRoomTriggers = [
 ] as const satisfies readonly { id: string; labelKey: TranslationKey }[];
 
 export type WarRoomTriggerId = (typeof warRoomTriggers)[number]['id'];
+
+export const trainingGroups = [
+  {
+    id: 'control',
+    titleKey: 'train.group.control.title',
+    descriptionKey: 'train.group.control.description',
+    moduleIds: ['war','vaccines','mindset'],
+    modules: [
+      { id:'war', whatKey:'module.war.what', whenKey:'module.war.when', durationKey:'module.war.duration' },
+      { id:'vaccines', whatKey:'module.vaccines.what', whenKey:'module.vaccines.when', durationKey:'module.vaccines.duration' },
+      { id:'mindset', whatKey:'module.mindset.what', whenKey:'module.mindset.when', durationKey:'module.mindset.duration' },
+    ],
+  },
+  {
+    id: 'reading',
+    titleKey: 'train.group.reading.title',
+    descriptionKey: 'train.group.reading.description',
+    moduleIds: ['behavior'],
+    modules: [
+      { id:'behavior', whatKey:'module.behavior.what', whenKey:'module.behavior.when', durationKey:'module.behavior.duration' },
+    ],
+  },
+  {
+    id: 'focus',
+    titleKey: 'train.group.focus.title',
+    descriptionKey: 'train.group.focus.description',
+    moduleIds: ['gym'],
+    modules: [
+      { id:'gym', whatKey:'module.gym.what', whenKey:'module.gym.when', durationKey:'module.gym.duration' },
+    ],
+  },
+  {
+    id: 'performance',
+    titleKey: 'train.group.performance.title',
+    descriptionKey: 'train.group.performance.description',
+    moduleIds: ['lifestyle'],
+    modules: [
+      { id:'lifestyle', whatKey:'module.lifestyle.what', whenKey:'module.lifestyle.when', durationKey:'module.lifestyle.duration' },
+    ],
+  },
+  {
+    id: 'audio',
+    titleKey: 'train.group.audio.title',
+    descriptionKey: 'train.group.audio.description',
+    moduleIds: ['audio'],
+    modules: [
+      { id:'audio', whatKey:'module.audio.what', whenKey:'module.audio.when', durationKey:'module.audio.duration' },
+    ],
+  },
+] as const satisfies readonly {
+  id: import('./types').TrainingGroupId;
+  titleKey: TranslationKey;
+  descriptionKey: TranslationKey;
+  moduleIds: readonly import('./types').Module[];
+  modules: readonly {
+    id: import('./types').Module;
+    whatKey: TranslationKey;
+    whenKey: TranslationKey;
+    durationKey: TranslationKey;
+  }[];
+}[];
