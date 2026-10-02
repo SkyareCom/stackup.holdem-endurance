@@ -12,6 +12,7 @@ import { useI18n } from '../i18n';
 export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const { t } = useI18n();
   const router = useRouter();
+  const hasEvolutionHistory=false;
   const hasPatternHistory=false;
 
   return (
@@ -21,22 +22,10 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
         <ScrollView contentContainerStyle={s.scroll}>
           <View style={s.profileSection}>
             <Label>{t('profile.evolution')}</Label>
-            <Serif style={s.profileLevel}>{t('profile.level')}</Serif>
-            <AppText style={s.body}>{t('profile.consistency')}</AppText>
-            <View style={s.track}><View style={[s.fill,{width:'68%'}]}/></View>
-            <View style={s.stats}>
-              <View style={s.stat}>
-                <Label>{t('profile.sessions')}</Label>
-                <Serif style={s.statValue}>125</Serif>
-                <AppText style={s.goldText}>{t('profile.thisMonth')}</AppText>
-              </View>
-              <View style={s.stat}>
-                <Label>{t('profile.discipline')}</Label>
-                <Serif style={s.statValue}>88</Serif>
-                <AppText style={s.goldText}>+6%</AppText>
-              </View>
-            </View>
-            <View style={s.guidedBlock}><Label>{t('profile.gameTrend')}</Label><AppText style={s.body}>{t('profile.gameTrendBody')}</AppText></View>
+            {hasEvolutionHistory?null:<>
+              <AppText style={s.body}>{t('profile.evolutionInsufficient')}</AppText>
+              <AppText style={s.body}>{t('profile.evolutionCollect')}</AppText>
+            </>}
           </View>
 
           <View style={s.profileSection}>
