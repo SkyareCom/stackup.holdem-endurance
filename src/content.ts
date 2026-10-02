@@ -81,6 +81,8 @@ export const warRoomTriggers = [
   { id: 'euphoria', labelKey: 'trigger.euphoria' },
   { id: 'fatigue', labelKey: 'trigger.fatigue' },
   { id: 'autopilot', labelKey: 'trigger.autopilot' },
+  { id: 'revenge', labelKey: 'trigger.revenge' },
+  { id: 'personal', labelKey: 'trigger.personal' },
 ] as const satisfies readonly { id: string; labelKey: TranslationKey }[];
 
 export type WarRoomTriggerId = (typeof warRoomTriggers)[number]['id'];
