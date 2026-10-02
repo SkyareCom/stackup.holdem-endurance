@@ -1,36 +1,29 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { trainingGroups } from '../../content';
+import { developmentGroups } from '../../content';
 
-const source = fs.readFileSync(path.join(process.cwd(), 'src/screens/TrainScreen.tsx'), 'utf8');
+const source=fs.readFileSync(path.join(process.cwd(),'src/screens/TrainScreen.tsx'),'utf8');
 
-describe('guided Train contract', () => {
-  it('groups training by performance objective', () => {
-    expect(trainingGroups.map((group) => group.id)).toEqual(['control','reading','focus','performance','audio']);
-    expect(trainingGroups.find((g)=>g.id==='control')?.moduleIds).toEqual(['war','vaccines','mindset']);
-    expect(trainingGroups.find((g)=>g.id==='reading')?.moduleIds).toEqual(['behavior']);
-    expect(trainingGroups.find((g)=>g.id==='focus')?.moduleIds).toEqual(['gym']);
-    expect(trainingGroups.find((g)=>g.id==='performance')?.moduleIds).toEqual(['lifestyle']);
-    expect(trainingGroups.find((g)=>g.id==='audio')?.moduleIds).toEqual(['audio']);
+describe('need-driven Train contract',()=>{
+  it('covers the holistic development map',()=>{
+    expect(developmentGroups).toHaveLength(11);
+    expect(developmentGroups.map(x=>x.id)).toContain('discipline');
+    expect(developmentGroups.map(x=>x.id)).toContain('logic');
+    expect(developmentGroups.map(x=>x.id)).toContain('lifestyle');
   });
-
-  it('gives every group and module explanatory metadata', () => {
-    for (const group of trainingGroups) {
-      expect(group.titleKey).toBeTruthy();
-      expect(group.descriptionKey).toBeTruthy();
-      for (const module of group.modules) {
-        expect(module.whatKey).toBeTruthy();
-        expect(module.whenKey).toBeTruthy();
-        expect(module.durationKey).toBeTruthy();
-      }
-    }
+  it('asks for the current need before exposing tools',()=>{
+    expect(source).toContain("t('train.need')");
+    expect(source).toContain('setNeed');
+    expect(source).toContain('selected.modules.map');
   });
-
-  it('renders grouped training instead of the old flat numbered list', () => {
-    expect(source).toContain('trainingGroups.map');
-    expect(source).toContain("t(group.descriptionKey)");
-    expect(source).toContain("t(module.whatKey)");
-    expect(source).not.toContain("const keys:Module[]");
+  it('shows one development area at a time',()=>{
+    expect(source).toContain('selectedDevelopmentGroup');
+    expect(source).toContain('developmentGroups[selectedDevelopmentGroup]');
+  });
+  it('does not fabricate mental reserve',()=>{
+    expect(source).toContain('baseline.averageMentalEv');
+    expect(source).not.toContain('title="74%"');
+    expect(source).not.toContain("width:'74%'");
   });
 });
