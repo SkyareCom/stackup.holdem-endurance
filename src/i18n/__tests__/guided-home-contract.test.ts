@@ -26,6 +26,17 @@ describe('guided Home contract', () => {
     expect((source.match(/<PremiumButton/g) ?? []).length).toBe(1);
   });
 
+  it('does not fabricate historical guidance before persistent history exists', () => {
+    expect(source).toContain('const hasHistory = false');
+    expect(source).toContain('getHistoryGuidance({ hasHistory, thirdBlockDrop: false })');
+    expect(source).toContain("t('common.insufficientData')");
+    expect(source).not.toContain('02:55 → 03:30');
+  });
+
+  it('only exposes BREAK 4 as a Home tool when history actually supports it', () => {
+    expect(source).toContain("focus.actionId==='break-4'");
+  });
+
   it('does not keep the old isolated quick-card grid', () => {
     expect(source).not.toContain('s.quickGrid');
     expect(source).not.toContain('s.quickCard');
