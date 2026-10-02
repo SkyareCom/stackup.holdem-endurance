@@ -28,7 +28,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const [vaccine,setVaccine]=useState('');
   const meta=moduleMeta[module];
   const intro=moduleIntroById[module];
-  const heatmapHasHistory=true;
+  const heatmapHasHistory=false;
 
   let body:React.ReactNode;
 
