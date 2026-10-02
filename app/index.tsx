@@ -12,9 +12,10 @@ import { TrainScreen } from '../src/screens/TrainScreen';
 import { CoachScreen } from '../src/screens/CoachScreen';
 import { ProfileScreen } from '../src/screens/ProfileScreen';
 import { BreakOverlay, CheckinOverlay, ModuleOverlay, SOSOverlay } from '../src/overlays';
+import { LanguageSelector } from '../src/components/LanguageSelector';
 
 function Landing({ enter }: { enter:()=>void }) {
-  return <Backdrop uri={PHOTO.welcome} blur={4} overlay={0.55}><SafeAreaView style={s.landing}><View style={s.landingTop}><AppText style={s.brandSmall}>STACKUP HOLD'EM / PERFORMANCE DIVISION</AppText><View style={s.goldDot}/></View><View style={s.landingCenter}><AppText style={s.eyebrow}>THE MENTAL PERFORMANCE SYSTEM</AppText><Serif style={s.endurance}>ENDURANCE</Serif><View style={s.shortRule}/><AppText style={s.quote}>Controle o processo.{`\n`}Aceite a variância.{`\n`}Proteja a próxima decisão.</AppText><View style={s.mantras}>{['FOCUS','DISCIPLINE','RESILIENCE','BETTER DECISIONS','A LONGER GAME'].map(x=><AppText key={x} style={s.mantra}>{x}</AppText>)}</View></View><View style={s.landingBottom}><PremiumButton label="ENTER ENDURANCE" onPress={enter}/><AppText style={s.landingFoot}>PERFORMANCE · MENTAL GAME · ENDURANCE</AppText></View></SafeAreaView></Backdrop>;
+  return <Backdrop uri={PHOTO.welcome} blur={4} overlay={0.55}><SafeAreaView style={s.landing}><View style={s.landingTop}><AppText style={s.brandSmall}>STACKUP HOLD'EM / PERFORMANCE DIVISION</AppText><View style={s.goldDot}/></View><View style={s.landingCenter}><AppText style={s.eyebrow}>THE MENTAL PERFORMANCE SYSTEM</AppText><Serif style={s.endurance}>ENDURANCE</Serif><View style={s.shortRule}/><AppText style={s.quote}>Controle o processo.{`\n`}Aceite a variância.{`\n`}Proteja a próxima decisão.</AppText><View style={s.mantras}>{['FOCUS','DISCIPLINE','RESILIENCE','BETTER DECISIONS','A LONGER GAME'].map(x=><AppText key={x} style={s.mantra}>{x}</AppText>)}</View></View><View style={s.landingBottom}><LanguageSelector variant="landing"/><PremiumButton label="ENTER ENDURANCE" onPress={enter}/><AppText style={s.landingFoot}>PERFORMANCE · MENTAL GAME · ENDURANCE</AppText></View></SafeAreaView></Backdrop>;
 }
 
 function BottomNav({ tab,setTab,openSOS }: { tab:Tab; setTab:(t:Tab)=>void; openSOS:()=>void }) {
