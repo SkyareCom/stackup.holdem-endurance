@@ -68,4 +68,27 @@ for (const file of sourceFiles) {
   }
 }
 
-console.log('Typography check passed: all app text is routed through Titillium Web italic components.');
+const allowedFontSizes = new Set([48, 26, 22, 12, 10]);
+const typographySourceFiles = [];
+for (const start of ['app', 'src']) {
+  const walkTypography = (dir) => {
+    for (const entry of fs.readdirSync(path.join(root, dir), { withFileTypes: true })) {
+      const rel = path.join(dir, entry.name);
+      if (entry.isDirectory()) walkTypography(rel);
+      else if (entry.isFile() && /\.(?:ts|tsx)$/.test(entry.name)) typographySourceFiles.push(rel);
+    }
+  };
+  walkTypography(start);
+}
+
+for (const file of typographySourceFiles) {
+  const source = fs.readFileSync(path.join(root, file), 'utf8');
+  for (const match of source.matchAll(/fontSize\s*:\s*(\d+(?:\.\d+)?)/g)) {
+    const size = Number(match[1]);
+    if (!allowedFontSizes.has(size)) {
+      fail(`${file} uses fontSize ${size}px. Allowed sizes: 48, 26, 22, 12, 10.`);
+    }
+  }
+}
+
+console.log('Typography check passed: Titillium Web italic is global and font sizes are restricted to 48/26/22/12/10px.');
