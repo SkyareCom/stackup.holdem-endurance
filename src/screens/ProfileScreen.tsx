@@ -7,13 +7,31 @@ import { C, PHOTO } from '../theme';
 import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
 import { LanguageSelector } from '../components/LanguageSelector';
-import { useI18n } from '../i18n';
+import { buildDevelopmentSnapshot, type Temperament, type TiltTrigger } from '../performanceEngine';
+import { usePerformance } from '../performanceStore';
+import { useI18n, type TranslationKey } from '../i18n';
+
+const temperaments:{id:Temperament;key:TranslationKey}[]=[
+  {id:'impulsive',key:'temperament.impulsive'},{id:'passive',key:'temperament.passive'},
+  {id:'perfectionist',key:'temperament.perfectionist'},{id:'analytical',key:'temperament.analytical'},
+];
+const triggerKeys:Record<TiltTrigger,TranslationKey>={
+  'bad-beat':'trigger.badBeat','own-error':'trigger.ownError',anger:'trigger.anger',rush:'trigger.rush',
+  fear:'trigger.fear',euphoria:'trigger.euphoria',fatigue:'trigger.fatigue',autopilot:'trigger.autopilot',
+  revenge:'trigger.revenge',personal:'trigger.personal',
+};
+
+function SmallScale({label,value,onChange}:{label:string;value:number;onChange:(v:number)=>void}) {
+  return <View style={s.scaleBlock}><View style={s.rowBetween}><Label>{label}</Label><AppText style={s.goldText}>{value}/10</AppText></View>
+    <View style={s.scoreGrid}>{[0,2,4,6,8,10].map(n=><TouchableOpacity key={n} onPress={()=>onChange(n)} style={[s.scoreCell,value===n&&s.chipActive]}><AppText style={[s.chipText,value===n&&s.chipTextActive]}>{n}</AppText></TouchableOpacity>)}</View>
+  </View>;
+}
 
 export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const { t } = useI18n();
   const router = useRouter();
-  const hasEvolutionHistory=false;
-  const hasPatternHistory=false;
+  const { profile,updateProfile,updateExtraGrind,updateStopRules,sessions,baseline,clearHistory }=usePerformance();
+  const developmentSnapshot=buildDevelopmentSnapshot(sessions);
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.88}>
@@ -21,16 +39,58 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
         <Header title={t('profile.title')} subtitle={t('profile.stackupId')}/>
         <ScrollView contentContainerStyle={s.scroll}>
           <View style={s.profileSection}>
+            <Label>{t('profile.base')}</Label>
+            <View style={s.panel}>
+              <Label>{t('profile.temperament')}</Label>
+              <View style={s.processGrid}>{temperaments.map(item=><TouchableOpacity key={item.id} onPress={()=>updateProfile({temperament:item.id})} style={[s.processChip,profile.temperament===item.id&&s.chipActive]}><AppText style={[s.chipText,profile.temperament===item.id&&s.chipTextActive]}>{t(item.key)}</AppText></TouchableOpacity>)}</View>
+            </View>
+            <View style={s.panel}>
+              <Label>{t('profile.extraGrind')}</Label>
+              <SmallScale label={t('profile.sleep')} value={profile.extraGrind.sleep} onChange={sleep=>updateExtraGrind({sleep})}/>
+              <SmallScale label={t('profile.personalStress')} value={profile.extraGrind.personalStress} onChange={personalStress=>updateExtraGrind({personalStress})}/>
+              <SmallScale label={t('profile.financialStress')} value={profile.extraGrind.financialStress} onChange={financialStress=>updateExtraGrind({financialStress})}/>
+            </View>
+            <View style={s.panel}>
+              <Label>{t('profile.stopRules')}</Label>
+              <View style={s.guidedBlock}><Label>{t('profile.maxDuration')}</Label><View style={s.processGrid}>{[120,180,240].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({maxDurationMinutes:v})} style={[s.processChip,profile.stopRules.maxDurationMinutes===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.maxDurationMinutes===v&&s.chipTextActive]}>{v}</AppText></TouchableOpacity>)}</View></View>
+              <View style={s.guidedBlock}><Label>{t('profile.maxReentries')}</Label><View style={s.processGrid}>{[0,1,2].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({maxReentries:v})} style={[s.processChip,profile.stopRules.maxReentries===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.maxReentries===v&&s.chipTextActive]}>{v}</AppText></TouchableOpacity>)}</View></View>
+              <View style={s.guidedBlock}><Label>{t('profile.minFocus')}</Label><View style={s.processGrid}>{[3,4,5].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({minFocus:v})} style={[s.processChip,profile.stopRules.minFocus===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.minFocus===v&&s.chipTextActive]}>{v}</AppText></TouchableOpacity>)}</View></View>
+              <View style={s.guidedBlock}><Label>{t('profile.maxTension')}</Label><View style={s.processGrid}>{[6,7,8].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({maxTension:v})} style={[s.processChip,profile.stopRules.maxTension===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.maxTension===v&&s.chipTextActive]}>{v}</AppText></TouchableOpacity>)}</View></View>
+              <TouchableOpacity onPress={()=>updateStopRules({noStakeIncrease:!profile.stopRules.noStakeIncrease})} style={[s.option,profile.stopRules.noStakeIncrease&&s.optionActive]}><AppText style={[s.optionText,profile.stopRules.noStakeIncrease&&s.optionTextActive]}>{t('profile.noStakeIncrease')}</AppText></TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={s.profileSection}>
             <Label>{t('profile.evolution')}</Label>
-            {hasEvolutionHistory?null:<>
+            {sessions.length?<View style={s.panel}>
+              <View style={s.rowBetween}><View><Label>{t('profile.avgReadiness')}</Label><Serif style={s.actionTitle}>{baseline.averageReadiness}</Serif></View><View><Label>{t('profile.avgMentalEv')}</Label><Serif style={s.actionTitle}>{baseline.averageMentalEv.toFixed(1)}</Serif></View></View>
+              <View style={s.rowBetween}><View><Label>{t('profile.avgDuration')}</Label><AppText style={s.body}>{baseline.averageDurationMinutes}</AppText></View><View><Label>{t('profile.confidence')}</Label><AppText style={s.goldText}>{t(({
+                none:'confidence.none',low:'confidence.low',moderate:'confidence.moderate',high:'confidence.high',
+              } as const)[baseline.confidence])}</AppText></View></View>
+            </View>:<>
               <AppText style={s.body}>{t('profile.evolutionInsufficient')}</AppText>
               <AppText style={s.body}>{t('profile.evolutionCollect')}</AppText>
             </>}
           </View>
 
           <View style={s.profileSection}>
+            <Label>{t('profile.development')}</Label>
+            <AppText style={s.body}>{t('profile.developmentBody')}</AppText>
+            {sessions.length?<View style={s.panel}>
+              <View style={s.rowBetween}><Label>{t('development.discipline.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.discipline}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('development.focus.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.focus}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('development.resilience.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.resilience}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('development.logic.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.logic}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('development.lifestyle.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.lifestyle}/10</AppText></View>
+            </View>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
+          </View>
+
+          <View style={s.profileSection}>
             <Label>{t('profile.patterns')}</Label>
-            {hasPatternHistory?<AppText style={s.body}>{t('profile.patternsBody')}</AppText>:<>
+            {baseline.topTrigger?<View style={s.panel}>
+              <Label>{t('profile.topTrigger')}</Label><Serif style={s.actionTitle}>{t(triggerKeys[baseline.topTrigger])}</Serif>
+              <View style={s.guidedBlock}><Label>{t('profile.resultCorrelation')}</Label>{baseline.resultCorrelation===null?<AppText style={s.body}>{t('profile.correlationInsufficient')}</AppText>:<AppText style={s.goldText}>{baseline.resultCorrelation.toFixed(2)}</AppText>}</View>
+            </View>:<>
               <AppText style={s.body}>{t('profile.patternsInsufficient')}</AppText>
               <AppText style={s.body}>{t('profile.patternsCollect')}</AppText>
             </>}
@@ -38,43 +98,16 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
 
           <View style={s.profileSection}>
             <Label>{t('profile.history')}</Label>
-            <View style={s.settingRow}>
-              <Ionicons name="timer-outline" size={20} color={C.goldLight}/>
-              <View style={s.flex}><AppText style={s.settingTitle}>{t('profile.historySessions')}</AppText><AppText style={s.settingSub}>{t('profile.historySessionsBody')}</AppText></View>
-            </View>
-            <View style={s.settingRow}>
-              <Ionicons name="pulse-outline" size={20} color={C.goldLight}/>
-              <View style={s.flex}><AppText style={s.settingTitle}>{t('profile.historyCheckins')}</AppText><AppText style={s.settingSub}>{t('profile.historyCheckinsBody')}</AppText></View>
-            </View>
-            <TouchableOpacity style={s.settingRow} onPress={openDiary}>
-              <Ionicons name="book-outline" size={20} color={C.goldLight}/>
-              <View style={s.flex}><AppText style={s.settingTitle}>{t('profile.diary')}</AppText><AppText style={s.settingSub}>{t('profile.diaryBody')}</AppText></View>
-              <Ionicons name="chevron-forward" size={18} color={C.dim}/>
-            </TouchableOpacity>
-            <View style={s.settingRow}>
-              <Ionicons name="flash-outline" size={20} color={C.goldLight}/>
-              <View style={s.flex}><AppText style={s.settingTitle}>{t('profile.historyTests')}</AppText><AppText style={s.settingSub}>{t('profile.historyTestsBody')}</AppText></View>
-            </View>
+            <View style={s.settingRow}><Ionicons name="timer-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.historySessions')}</AppText><AppText style={s.settingSub}>{sessions.length}</AppText></View></View>
+            <View style={s.settingRow}><Ionicons name="pulse-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.historyCheckins')}</AppText><AppText style={s.settingSub}>{sessions.reduce((n,x)=>n+x.checkins.length,0)}</AppText></View></View>
+            <TouchableOpacity style={s.settingRow} onPress={openDiary}><Ionicons name="book-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.diary')}</AppText><AppText style={s.settingSub}>{t('profile.diaryBody')}</AppText></View><Ionicons name="chevron-forward" size={18} color={C.dim}/></TouchableOpacity>
+            {sessions.length?<PremiumButton label={t('profile.clearHistory')} secondary danger onPress={clearHistory}/>:null}
           </View>
 
           <View style={s.profileSection}>
             <Label>{t('profile.settings')}</Label>
-            <View style={s.panel}>
-              <Label>{t('profile.language')}</Label>
-              <AppText style={s.body}>{t('profile.languageBody')}</AppText>
-              <LanguageSelector variant="profile"/>
-            </View>
-            <TouchableOpacity style={s.settingRow} onPress={()=>router.push('/privacy')}>
-              <Ionicons name="shield-checkmark-outline" size={20} color={C.goldLight}/>
-              <View style={s.flex}><AppText style={s.settingTitle}>{t('profile.privacy')}</AppText><AppText style={s.settingSub}>{t('profile.privacyBody')}</AppText></View>
-              <Ionicons name="chevron-forward" size={18} color={C.dim}/>
-            </TouchableOpacity>
-            <View style={s.panel}>
-              <Label>{t('profile.plan')}</Label>
-              <Serif style={s.plan}>{t('profile.planName')}</Serif>
-              <AppText style={s.body}>{t('profile.planBody')}</AppText>
-              <PremiumButton label={t('profile.viewFull')} secondary/>
-            </View>
+            <View style={s.panel}><Label>{t('profile.language')}</Label><AppText style={s.body}>{t('profile.languageBody')}</AppText><LanguageSelector variant="profile"/></View>
+            <TouchableOpacity style={s.settingRow} onPress={()=>router.push('/privacy')}><Ionicons name="shield-checkmark-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.privacy')}</AppText><AppText style={s.settingSub}>{t('profile.privacyBody')}</AppText></View><Ionicons name="chevron-forward" size={18} color={C.dim}/></TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
