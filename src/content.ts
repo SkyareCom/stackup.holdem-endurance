@@ -83,6 +83,26 @@ export const warRoomTriggers = [
 
 export type WarRoomTriggerId = (typeof warRoomTriggers)[number]['id'];
 
+export const heatmapIntensityLegend = [
+  { id:'low', labelKey:'heatmap.intensity.low' },
+  { id:'moderate', labelKey:'heatmap.intensity.moderate' },
+  { id:'high', labelKey:'heatmap.intensity.high' },
+  { id:'critical', labelKey:'heatmap.intensity.critical' },
+] as const satisfies readonly { id:'low'|'moderate'|'high'|'critical'; labelKey:TranslationKey }[];
+
+export const emotionalHeatmapBuckets = [
+  { id:'0-45', labelKey:'heatmap.window.0_45', intensityKey:'heatmap.intensity.low', triggerKeys:[] },
+  { id:'45-90', labelKey:'heatmap.window.45_90', intensityKey:'heatmap.intensity.moderate', triggerKeys:['trigger.rush'] },
+  { id:'90-135', labelKey:'heatmap.window.90_135', intensityKey:'heatmap.intensity.high', triggerKeys:['trigger.fatigue'] },
+  { id:'135-180', labelKey:'heatmap.window.135_180', intensityKey:'heatmap.intensity.critical', triggerKeys:['trigger.fatigue','trigger.rush'] },
+  { id:'180-plus', labelKey:'heatmap.window.180_plus', intensityKey:'heatmap.intensity.high', triggerKeys:['trigger.fatigue','trigger.autopilot'] },
+] as const satisfies readonly {
+  id:string;
+  labelKey:TranslationKey;
+  intensityKey:TranslationKey;
+  triggerKeys:readonly TranslationKey[];
+}[];
+
 export const trainingGroups = [
   {
     id: 'control',
