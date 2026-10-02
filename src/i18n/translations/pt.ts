@@ -24,6 +24,7 @@ export const pt = {
   'common.active': 'ATIVO',
   'common.next': 'PRÓXIMO',
   'common.close': 'FECHAR',
+  'common.milliseconds': 'ms',
 
   'home.subtitle': 'PERFORMANCE DIÁRIA',
   'home.readiness': 'PRONTIDÃO / HOJE',
