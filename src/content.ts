@@ -143,3 +143,19 @@ export const trainingGroups = [
     durationKey: TranslationKey;
   }[];
 }[];
+
+
+export const moduleIntroById = {
+  war: { whatKey:'module.war.what', whenKey:'module.war.when', durationKey:'module.war.duration' },
+  vaccines: { whatKey:'module.vaccines.what', whenKey:'module.vaccines.when', durationKey:'module.vaccines.duration' },
+  mindset: { whatKey:'module.mindset.what', whenKey:'module.mindset.when', durationKey:'module.mindset.duration' },
+  behavior: { whatKey:'module.behavior.what', whenKey:'module.behavior.when', durationKey:'module.behavior.duration' },
+  gym: { whatKey:'module.gym.what', whenKey:'module.gym.when', durationKey:'module.gym.duration' },
+  lifestyle: { whatKey:'module.lifestyle.what', whenKey:'module.lifestyle.when', durationKey:'module.lifestyle.duration' },
+  audio: { whatKey:'module.audio.what', whenKey:'module.audio.when', durationKey:'module.audio.duration' },
+  diary: { whatKey:'module.diary.what', whenKey:'module.diary.when', durationKey:'module.diary.duration' },
+} as const satisfies Record<import('./types').Module, {
+  whatKey: TranslationKey;
+  whenKey: TranslationKey;
+  durationKey: TranslationKey;
+}>;

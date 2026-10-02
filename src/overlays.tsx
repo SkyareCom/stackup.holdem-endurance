@@ -3,10 +3,11 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { C } from './theme';
-import { diaryQuestions, lifestyleSections, mentalPlaylists, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
+import { diaryQuestions, lifestyleSections, mentalPlaylists, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
 import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
+import { TestIntro } from './components/TestIntro';
 import { s } from './styles';
-import { GameState, Module, moduleMeta } from './types';
+import { ExercisePhase, GameState, Module, moduleMeta } from './types';
 import { useI18n, type TranslationKey } from './i18n';
 
 const vaccineAnswers = [
@@ -18,12 +19,15 @@ const vaccineAnswers = [
 
 export function ModuleOverlay({ module, close }: { module:Module; close:()=>void }) {
   const { t } = useI18n();
+  const [moduleStarted,setModuleStarted]=useState(false);
   const [playlist,setPlaylist]=useState('a-game');
-  const [reaction,setReaction]=useState<number|null>(null);
+  const [exercisePhase,setExercisePhase]=useState<ExercisePhase>('intro');
+  const [reactionResult,setReactionResult]=useState<number|null>(null);
   const [diaryIndex,setDiaryIndex]=useState(0);
   const [diaryText,setDiaryText]=useState('');
   const [vaccine,setVaccine]=useState('');
   const meta=moduleMeta[module];
+  const intro=moduleIntroById[module];
 
   let body:React.ReactNode;
 
@@ -45,11 +49,37 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     </View>;
   } else if(module==='gym') {
     body=<View style={s.moduleContent}>
-      <TouchableOpacity style={[s.reaction,reaction!==null&&s.reactionDone]} onPress={()=>setReaction(reaction===null?284:null)}>
+      {exercisePhase==='intro'?<TestIntro
+        title={t('overlay.reactionTest')}
+        measures={t('overlay.reactionMeasures')}
+        importance={t('overlay.reactionImportance')}
+        instructions={t('overlay.reactionInstructions')}
+        duration={t('overlay.reactionDuration')}
+        startLabel={t('overlay.reactionStart')}
+        onStart={()=>setExercisePhase('running')}
+      />:null}
+
+      {exercisePhase==='running'?<TouchableOpacity style={s.reaction} onPress={()=>{setReactionResult(284);setExercisePhase('result')}}>
         <Label>{t('overlay.reactionTest')}</Label>
-        <Serif style={s.reactionValue}>{reaction===null?t('overlay.ready'):reaction+' ms'}</Serif>
-        <AppText style={s.body}>{reaction===null?t('overlay.tapToStart'):t('overlay.reactionBaseline')}</AppText>
-      </TouchableOpacity>
+        <Serif style={s.reactionValue}>{t('overlay.ready')}</Serif>
+        <AppText style={s.body}>{t('overlay.tapToStart')}</AppText>
+      </TouchableOpacity>:null}
+
+      {exercisePhase==='result'?<View style={s.reactionResultPanel}>
+        <Label>{t('overlay.reactionResult')}</Label>
+        <Serif style={s.reactionValue}>{reactionResult} ms</Serif>
+        <AppText style={s.body}>{t('overlay.reactionInterpretation')}</AppText>
+        <AppText style={s.body}>{t('overlay.reactionConsistency')}</AppText>
+        <PremiumButton label={t('overlay.reactionNext')} onPress={()=>setExercisePhase('next')}/>
+      </View>:null}
+
+      {exercisePhase==='next'?<View style={s.panel}>
+        <Label>{t('common.nextAction')}</Label>
+        <Serif style={s.actionTitle}>{t('overlay.reactionNextTitle')}</Serif>
+        <AppText style={s.body}>{t('overlay.reactionNextBody')}</AppText>
+        <PremiumButton label={t('overlay.reactionRepeat')} secondary onPress={()=>{setReactionResult(null);setExercisePhase('intro')}}/>
+      </View>:null}
+
       <View style={s.moduleAction}><View><Label>{t('overlay.rangeMemory')}</Label><Serif style={s.actionTitle}>{t('overlay.rangeMemoryBody')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
       <View style={s.moduleAction}><View><Label>{t('overlay.attentionShift')}</Label><Serif style={s.actionTitle}>{t('overlay.attentionShiftBody')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
     </View>;
@@ -87,7 +117,20 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     body=<View style={s.moduleContent}>{stoicPrinciples.map(x=><View key={x.id} style={s.stoic}><Label>{t(x.titleKey)}</Label><Serif style={s.stoicText}>{t(x.bodyKey)}</Serif></View>)}</View>;
   }
 
-  return <View style={s.overlay}><SafeAreaView style={s.flex}><View style={s.overlayHeader}><View><Label>{t(meta.subtitleKey)}</Label><Serif style={s.overlayTitle}>{t(meta.titleKey)}</Serif></View><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View><ScrollView contentContainerStyle={s.overlayScroll}>{body}</ScrollView></SafeAreaView></View>;
+  const moduleIntro=<View style={s.moduleIntro}>
+    <Label>{t('moduleIntro.whatTrain')}</Label>
+    <AppText style={s.body}>{t(intro.whatKey)}</AppText>
+    <View style={s.moduleIntroMeta}>
+      <View style={s.flex}><Label>{t('moduleIntro.whenUse')}</Label><AppText style={s.body}>{t(intro.whenKey)}</AppText></View>
+      <View style={s.flex}><Label>{t('moduleIntro.estimatedTime')}</Label><AppText style={s.goldText}>{t(intro.durationKey)}</AppText></View>
+    </View>
+    <PremiumButton label={t('moduleIntro.start')} onPress={()=>setModuleStarted(true)}/>
+  </View>;
+
+  return <View style={s.overlay}><SafeAreaView style={s.flex}>
+    <View style={s.overlayHeader}><View><Label>{t(meta.subtitleKey).toUpperCase()}</Label><Serif style={s.overlayTitle}>{t(meta.titleKey).toUpperCase()}</Serif></View><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
+    <ScrollView contentContainerStyle={s.overlayScroll}>{moduleStarted?body:moduleIntro}</ScrollView>
+  </SafeAreaView></View>;
 }
 
 export function BreakOverlay({ close }: { close:()=>void }) {

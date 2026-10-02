@@ -5,6 +5,7 @@ export type Tab = 'home' | 'session' | 'train' | 'coach' | 'profile';
 export type Phase = 'ready' | 'active' | 'debrief';
 export type GameState = 'A' | 'B' | 'C';
 export type TrainingGroupId = 'control' | 'reading' | 'focus' | 'performance' | 'audio';
+export type ExercisePhase = 'intro' | 'running' | 'result' | 'next';
 export type Module = 'war' | 'behavior' | 'gym' | 'lifestyle' | 'audio' | 'diary' | 'vaccines' | 'mindset';
 
 export const moduleMeta: Record<Module, { titleKey: TranslationKey; subtitleKey: TranslationKey; icon: keyof typeof Ionicons.glyphMap }> = {
