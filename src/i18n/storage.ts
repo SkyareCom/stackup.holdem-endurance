@@ -4,6 +4,8 @@ import type { Locale } from './types';
 
 export const LOCALE_STORAGE_KEY = '@stackup/endurance/locale';
 
+let writeQueue: Promise<void> = Promise.resolve();
+
 export async function loadLocale(): Promise<Locale> {
   try {
     const value = await AsyncStorage.getItem(LOCALE_STORAGE_KEY);
@@ -13,6 +15,9 @@ export async function loadLocale(): Promise<Locale> {
   }
 }
 
-export async function saveLocale(locale: Locale): Promise<void> {
-  await AsyncStorage.setItem(LOCALE_STORAGE_KEY, locale);
+export function saveLocale(locale: Locale): Promise<void> {
+  writeQueue = writeQueue
+    .catch(() => undefined)
+    .then(() => AsyncStorage.setItem(LOCALE_STORAGE_KEY, locale));
+  return writeQueue;
 }
