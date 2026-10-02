@@ -67,7 +67,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
 
       {exercisePhase==='result'?<View style={s.reactionResultPanel}>
         <Label>{t('overlay.reactionResult')}</Label>
-        <Serif style={s.reactionValue}>{reactionResult} ms</Serif>
+        <Serif style={s.reactionValue}>{reactionResult} {t('common.milliseconds')}</Serif>
         <AppText style={s.body}>{t('overlay.reactionInterpretation')}</AppText>
         <AppText style={s.body}>{t('overlay.reactionConsistency')}</AppText>
         <PremiumButton label={t('overlay.reactionNext')} onPress={()=>setExercisePhase('next')}/>
