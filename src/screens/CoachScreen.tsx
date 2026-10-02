@@ -30,10 +30,6 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
     setInput('');
   };
 
-  const sampleMessages: ChatMessage[] = [
-    {role:'you',text:t('coach.sampleUser')},
-    {role:'ai',text:t('coach.sampleReply'),locale},
-  ];
   const phaseKey:TranslationKey=phase==='active'?'coach.phaseActive':phase==='debrief'?'coach.phaseDebrief':'coach.phaseReady';
 
   return (
@@ -46,12 +42,12 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
             <Serif style={s.contextTitle}>{t('coach.contextTitle')}</Serif>
             <AppText style={s.body}>{t('coach.contextNoHistory')}</AppText>
             <View style={s.contextList}>
-              <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{t('coach.contextReadinessValue')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
               <View style={s.contextRow}><Label>{t('coach.contextPhase')}</Label><AppText style={s.contextValue}>{t(phaseKey)}</AppText></View>
-              <View style={s.contextRow}><Label>{t('coach.contextCheckins')}</Label><AppText style={s.contextValue}>{t('coach.contextCheckinsValue')}</AppText></View>
-              <View style={s.contextRow}><Label>{t('coach.contextTrigger')}</Label><AppText style={s.contextValue}>{t('coach.contextTriggerValue')}</AppText></View>
-              <View style={s.contextRow}><Label>{t('coach.contextTraining')}</Label><AppText style={s.contextValue}>{t('coach.contextTrainingValue')}</AppText></View>
-              <View style={s.contextRow}><Label>{t('coach.contextHomeRecommendation')}</Label><AppText style={s.contextValue}>{t('coach.contextHomeRecommendationValue')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextCheckins')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextTrigger')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextTraining')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextHomeRecommendation')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
             </View>
           </View>
           <View style={s.chips}>
@@ -61,7 +57,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
               </TouchableOpacity>
             )}
           </View>
-          {[...sampleMessages,...messages].map((m,i)=>
+          {messages.map((m,i)=>
             <View key={i} style={[s.bubble,m.role==='you'?s.bubbleYou:s.bubbleAi]}>
               <AppText style={s.chatText}>{m.text}</AppText>
             </View>

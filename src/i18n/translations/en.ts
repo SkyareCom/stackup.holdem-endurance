@@ -116,6 +116,7 @@ export const en: TranslationCatalog = {
   'coach.contextTitle': 'Your state is part of the hand.',
   'coach.contextBody': 'B-Game detected. Energy is dropping. Irritation was logged 19 minutes ago. Reduce urgency before adjusting strategy.',
   'coach.contextNoHistory': 'the current session phase is available, but there is not enough persistent history yet to claim trends, triggers, or performance drops.',
+  'coach.contextUnavailable': 'not available with the current data.',
   'coach.quick.tilted': "I'm tilted",
   'coach.quick.tired': "I'm tired",
   'coach.quick.focus': 'I lost focus',
