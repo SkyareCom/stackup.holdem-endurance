@@ -42,15 +42,14 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
             <Serif style={s.contextTitle}>{t('coach.contextTitle')}</Serif>
             <AppText style={s.body}>{t('coach.contextNoHistory')}</AppText>
             <View style={s.coachPhaseRow}>
-              <Label>{t('coach.contextPhase')}</Label>
-              <AppText style={s.contextValue}>{t(phaseKey)}</AppText>
+              <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextPhase')}</Label><AppText style={s.contextValue}>{t(phaseKey)}</AppText></View>
             </View>
             <TouchableOpacity style={s.coachContextToggle} onPress={()=>setContextExpanded(v=>!v)}>
               <AppText style={s.coachContextToggleText}>{t(contextExpanded?'coach.hideContext':'coach.showContext')}</AppText>
               <Ionicons name={contextExpanded?'chevron-up':'chevron-down'} size={18} color={C.goldLight}/>
             </TouchableOpacity>
             {contextExpanded?<View style={s.contextList}>
-              <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
               <View style={s.contextRow}><Label>{t('coach.contextCheckins')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
               <View style={s.contextRow}><Label>{t('coach.contextTrigger')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
               <View style={s.contextRow}><Label>{t('coach.contextTraining')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
