@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { C, PHOTO } from '../src/theme';
-import { Backdrop, PremiumButton, Serif } from '../src/ui';
+import { AppText, Backdrop, PremiumButton, Serif } from '../src/ui';
 import { s } from '../src/styles';
 import { Module, Phase, Tab } from '../src/types';
 import { HomeScreen } from '../src/screens/HomeScreen';

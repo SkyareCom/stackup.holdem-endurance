@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { C } from './theme';
 import { diaryQuestions, lifestyleSections, mentalPlaylists, stoicPrinciples, tellLessons, warRoomTriggers } from './content';
-import { Label, PremiumButton, Serif } from './ui';
+import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
 import { s } from './styles';
 import { GameState, Module, moduleMeta } from './types';
 

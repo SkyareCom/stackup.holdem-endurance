@@ -3,7 +3,7 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { C, PHOTO } from '../theme';
-import { Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
+import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
 
 export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {

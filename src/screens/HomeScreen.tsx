@@ -3,7 +3,7 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { PHOTO, C } from '../theme';
-import { Backdrop, GoldRule, Header, Label, Serif } from '../ui';
+import { AppText, Backdrop, GoldRule, Header, Label, Serif } from '../ui';
 import { s } from '../styles';
 import { Module } from '../types';
 

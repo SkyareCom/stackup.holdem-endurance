@@ -73,7 +73,7 @@ export function Backdrop({ uri, children, blur = 10, overlay = 0.78 }: {
       <LinearGradient
         colors={[`rgba(8,7,5,${Math.min(overlay + 0.05, 0.96)})`, `rgba(25,18,11,${overlay})`, 'rgba(6,6,5,0.98)']}
         locations={[0, 0.5, 1]}
-        style={StyleSheet.absoluteFillObject}
+        style={StyleSheet.absoluteFill}
       />
       {children}
     </ImageBackground>

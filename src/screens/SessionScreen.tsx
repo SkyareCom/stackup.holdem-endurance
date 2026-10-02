@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { C, PHOTO } from '../theme';
 import { decisionCues, warRoomTriggers } from '../content';
-import { Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
+import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
 import { GameState, Module, Phase } from '../types';
 
@@ -21,7 +21,7 @@ function Ready({ onStart }: { onStart:()=>void }) {
 function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:()=>void; openAudio:()=>void; openBreak:()=>void; openCheckin:()=>void }) {
   const [state,setState]=useState<GameState>('B'); const [cue,setCue]=useState(0);
   return <ScrollView contentContainerStyle={s.scroll}>
-    <ImageBackground source={{uri:PHOTO.session}} blurRadius={3} style={s.sessionHero} imageStyle={s.sessionHeroImage}><LinearGradient colors={['rgba(8,6,4,.10)','rgba(14,10,6,.35)','rgba(7,6,5,.94)']} style={StyleSheet.absoluteFillObject}/><View style={s.sessionHeroContent}><View style={s.rowBetween}><Label>LIVE SESSION / MTT ONLINE</Label><AppText style={s.live}>● LIVE</AppText></View><Serif style={s.clock}>02:47:18</Serif><AppText style={s.body}>Presença primeiro. Estratégia depois.</AppText></View></ImageBackground>
+    <ImageBackground source={{uri:PHOTO.session}} blurRadius={3} style={s.sessionHero} imageStyle={s.sessionHeroImage}><LinearGradient colors={['rgba(8,6,4,.10)','rgba(14,10,6,.35)','rgba(7,6,5,.94)']} style={StyleSheet.absoluteFill}/><View style={s.sessionHeroContent}><View style={s.rowBetween}><Label>LIVE SESSION / MTT ONLINE</Label><AppText style={s.live}>● LIVE</AppText></View><Serif style={s.clock}>02:47:18</Serif><AppText style={s.body}>Presença primeiro. Estratégia depois.</AppText></View></ImageBackground>
     <View style={s.panel}><Label>CURRENT EXECUTION STATE</Label><Serif style={s.gameState}>{state}-GAME</Serif><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
     <TouchableOpacity style={s.cueBlock} onPress={()=>setCue((cue+1)%decisionCues.length)}><Label>DECISION CUE / TAP TO ROTATE</Label><Serif style={s.cueText}>“{decisionCues[cue]}”</Serif></TouchableOpacity>
     <TouchableOpacity style={s.audioBar} onPress={openAudio}><View style={s.play}><Ionicons name="play" size={18} color={C.ink}/></View><View style={s.flex}><Label>MENTAL PLAYLIST</Label><AppText style={s.audioTitle}>A-GAME · DEEP FOCUS</AppText><View style={s.track}><View style={[s.fill,{width:'43%'}]}/></View></View><AppText style={s.audioTime}>18:42 / 45:00</AppText></TouchableOpacity>
