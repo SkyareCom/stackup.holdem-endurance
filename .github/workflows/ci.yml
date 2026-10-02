@@ -29,6 +29,9 @@ jobs:
       - name: i18n validation
         run: node scripts/check-i18n.mjs
 
+      - name: Guided UX validation
+        run: node scripts/check-guided-ux.mjs
+
       - name: TypeScript validation
         run: npx tsc --noEmit
 
