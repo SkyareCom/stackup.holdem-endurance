@@ -32,7 +32,7 @@ const actionKey:Record<SessionAction,TranslationKey>={
 
 export function HomeScreen({ startSession, openModule: _openModule }: { startSession: () => void; openModule: (m: Module) => void }) {
   const { t } = useI18n();
-  const { latestCheckin,activeSession,sessions,baseline } = usePerformance();
+  const { latestCheckin,activeSession,sessions,baseline,profile } = usePerformance();
 
   if(!latestCheckin){
     return <Backdrop uri={PHOTO.focus}>
@@ -66,6 +66,10 @@ export function HomeScreen({ startSession, openModule: _openModule }: { startSes
     canLeave:activeSession?.plan.canLeave??true,
     tiltRisk,
     fatigue:lastRuntime?.fatigue??latestCheckin.fatigue,
+    focus:lastRuntime?.focus??latestCheckin.mentalDrive,
+    tension:lastRuntime?.tension??latestCheckin.tension,
+    minFocus:profile.stopRules.minFocus,
+    maxTension:profile.stopRules.maxTension,
   });
 
   return (
