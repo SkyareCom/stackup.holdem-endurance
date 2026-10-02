@@ -135,12 +135,24 @@ export function getRitualMinutes(readinessIndex:number,tiltRisk:TiltRisk):3|7|12
   return 3;
 }
 
-export function getSessionAction(input:{mode:GameMode;canLeave:boolean;tiltRisk:TiltRisk;fatigue:number}):SessionAction {
+export function getSessionAction(input:{
+  mode:GameMode;
+  canLeave:boolean;
+  tiltRisk:TiltRisk;
+  fatigue:number;
+  focus?:number;
+  tension?:number;
+  minFocus?:number;
+  maxTension?:number;
+}):SessionAction {
   if(input.tiltRisk==='critical'||input.fatigue>=9) {
     if(input.mode==='tournament'&&!input.canLeave) return 'contain';
     return 'stop-session';
   }
-  if(input.fatigue>=7) return 'break-4';
+  const lowFocus=input.focus!==undefined&&input.minFocus!==undefined&&input.focus<input.minFocus;
+  const highTension=input.tension!==undefined&&input.maxTension!==undefined&&input.tension>input.maxTension;
+  if(highTension&&input.mode==='tournament'&&!input.canLeave) return 'contain';
+  if(lowFocus||highTension||input.fatigue>=7) return 'break-4';
   if(input.tiltRisk==='medium') return 'check-in';
   return 'continue';
 }
