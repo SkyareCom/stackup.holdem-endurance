@@ -42,6 +42,7 @@ Official references:
 | Public privacy-policy URL | AFTER WEB DEPLOY | Expected web route after validated merge/deploy: `/privacy`. Verify public HTTP 200 before entering Play Console URL. |
 | Privacy contact | MANUAL | Policy points to official developer contact on Play listing. Ensure the Play developer/support contact is valid and verified. |
 | Data Safety | NOT FINAL | Current runtime still loads Pexels background images remotely. Review third-party request data or bundle licensed images locally before final declaration. |
+| Performance data | CURRENTLY LOCAL | Performance profile, pre-grind check-ins, runtime check-ins, stop rules, triggers, debrief scores and session history persist in local AsyncStorage. Optional financial result is stored only when the user chooses to record it. No backend transmission is implemented. |
 | Coach data | CURRENTLY LOCAL | No external AI integration; typed messages remain in local component state for this release. |
 | Microphone / voice | CURRENTLY INACTIVE | Mic control is visual only; no recording/upload and no mic permission requested by product code. |
 | Mental Audio | CURRENTLY UI-ONLY | No remote audio service integrated in current release. |
@@ -63,6 +64,9 @@ Do not submit this section unchanged while remote Pexels images remain.
 
 Current product behavior:
 - locale preference is stored locally with AsyncStorage;
+- performance profile, lifestyle context, check-ins, session plans, stop rules, triggers, debrief scores and session history are stored locally with AsyncStorage;
+- financial result is optional and remains local when recorded;
+- users can clear performance history from Profile;
 - Coach messages and Battle Diary input are not sent to a backend by current code;
 - no account creation is implemented;
 - no analytics or ads SDK is installed;
