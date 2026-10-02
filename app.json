@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "STACKUP ENDURANCE",
+    "slug": "stackup-endurance",
+    "scheme": "stackupendurance",
+    "version": "0.5.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "android": {
+      "package": "com.stackupholdem.endurance",
+      "backgroundColor": "#090806"
+    },
+    "ios": {
+      "bundleIdentifier": "com.stackupholdem.endurance"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-system-ui",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#090806"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36
+          }
+        }
+      ]
+    ],
+    "backgroundColor": "#090806"
+  }
+}
