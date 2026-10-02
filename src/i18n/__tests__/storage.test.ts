@@ -47,20 +47,15 @@ describe('locale storage', () => {
     const second = saveLocale('en');
     const third = saveLocale('es');
 
-    await Promise.resolve();
-    expect(mocks.setItem).toHaveBeenCalledTimes(1);
+    await vi.waitFor(() => expect(mocks.setItem).toHaveBeenCalledTimes(1));
     expect(mocks.setItem).toHaveBeenNthCalledWith(1, LOCALE_STORAGE_KEY, 'pt');
 
     resolvers.shift()?.();
-    await Promise.resolve();
-    await Promise.resolve();
-    expect(mocks.setItem).toHaveBeenCalledTimes(2);
+    await vi.waitFor(() => expect(mocks.setItem).toHaveBeenCalledTimes(2));
     expect(mocks.setItem).toHaveBeenNthCalledWith(2, LOCALE_STORAGE_KEY, 'en');
 
     resolvers.shift()?.();
-    await Promise.resolve();
-    await Promise.resolve();
-    expect(mocks.setItem).toHaveBeenCalledTimes(3);
+    await vi.waitFor(() => expect(mocks.setItem).toHaveBeenCalledTimes(3));
     expect(mocks.setItem).toHaveBeenNthCalledWith(3, LOCALE_STORAGE_KEY, 'es');
 
     resolvers.shift()?.();
