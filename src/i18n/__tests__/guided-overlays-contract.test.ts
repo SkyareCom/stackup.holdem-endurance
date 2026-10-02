@@ -67,4 +67,27 @@ describe('guided module and exercise contract', () => {
     expect(overlays).toContain("t('overlay.heatmapInsufficient')");
     expect(overlays).toContain("t('overlay.heatmapCollect')");
   });
+
+  it('explains the War Room before presenting its tools', () => {
+    expect(overlays).toContain("t('overlay.warRoomWhat')");
+    expect(overlays).toContain("t('overlay.warRoomWhen')");
+    expect(overlays).toContain("t('overlay.heatmap')");
+    expect(overlays).toContain("t('overlay.battleDiary')");
+    expect(overlays).toContain("t('overlay.psychVaccines')");
+    expect(overlays).toContain("t('overlay.sosTilt')");
+  });
+
+  it('gives every mental playlist objective, best moment, duration, effect and cue', () => {
+    expect(content).toContain('objectiveKey');
+    expect(content).toContain('bestMomentKey');
+    expect(overlays).toContain("t('overlay.audioObjective')");
+    expect(overlays).toContain("t('overlay.audioBestMoment')");
+    expect(overlays).toContain("t('overlay.audioDuration')");
+    expect(overlays).toContain("t('overlay.audioExpectedEffect')");
+    expect(overlays).toContain("t('overlay.audioCue')");
+    expect(overlays).toContain('t(p.objectiveKey)');
+    expect(overlays).toContain('t(p.bestMomentKey)');
+    expect(overlays).toContain('t(p.descriptionKey)');
+    expect(overlays).toContain('t(p.cueKey)');
+  });
 });
