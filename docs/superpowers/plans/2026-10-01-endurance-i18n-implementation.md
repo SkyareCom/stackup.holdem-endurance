@@ -180,10 +180,22 @@ Keep invariant product/poker terms from the spec unchanged where appropriate.
 The script must:
 - compare exact PT/EN/ES key parity;
 - reject empty values;
-- scan `app/index.tsx`, `src/ui.tsx`, `src/screens/**/*.tsx`, and `src/overlays.tsx` for new user-facing hard-coded JSX text/label/title/subtitle/placeholder strings;
-- allow only explicit invariant/technical literals (brand names, numeric displays, icon-independent symbols, stable IDs).
+- scan `app/index.tsx`, `src/ui.tsx`, `src/components/**/*.tsx`, `src/screens/**/*.tsx`, and `src/overlays.tsx` for new user-facing hard-coded JSX text/label/title/subtitle/placeholder strings;
+- allow only explicit invariant/technical literals (brand names, numeric displays, icon-independent symbols, stable IDs);
+- maintain a temporary `LEGACY_I18N_FILES` baseline containing only the currently unmigrated files so CI stays green during the staged migration;
+- fail if a file outside that baseline introduces hard-coded functional copy.
 
-Use the TypeScript AST rather than broad regex for TSX user-facing strings.
+Use the TypeScript AST rather than broad regex for TSX user-facing strings. The initial temporary baseline is exactly:
+- `app/index.tsx`
+- `src/ui.tsx`
+- `src/screens/HomeScreen.tsx`
+- `src/screens/SessionScreen.tsx`
+- `src/screens/TrainScreen.tsx`
+- `src/screens/CoachScreen.tsx`
+- `src/screens/ProfileScreen.tsx`
+- `src/overlays.tsx`
+
+Each migration task below must remove its completed files from this baseline. Task 7 must leave the baseline empty.
 
 - [ ] **Step 5: Put the i18n gate before TypeScript in CI**
 
@@ -202,7 +214,7 @@ Run:
 - `node scripts/check-i18n.mjs`
 - `npx tsc --noEmit`
 
-Expected: tests pass; the hard-coded scan may still fail only on screens not yet migrated. Record those files as the expected remaining RED for Tasks 4–7.
+Expected: PASS. Catalog parity is enforced immediately, while only the explicitly listed legacy files are temporarily exempt from the hard-coded-copy scan. No new file is exempt.
 
 - [ ] **Step 7: Commit**
 
@@ -312,7 +324,11 @@ Preserve `ENDURANCE` and `STACKUP HOLD'EM` as invariant brand names.
 
 Translate Home completely in all three locales. Convert module metadata and reusable content entries touched by Home to stable translation keys.
 
-- [ ] **Step 5: Verify GREEN for these files**
+- [ ] **Step 5: Remove migrated files from the temporary legacy baseline**
+
+Remove `app/index.tsx`, `src/ui.tsx`, and `src/screens/HomeScreen.tsx` from `LEGACY_I18N_FILES`.
+
+- [ ] **Step 6: Verify GREEN for these files**
 
 Run:
 - `npm test`
@@ -321,7 +337,7 @@ Run:
 
 Expected: no i18n audit findings for `app/index.tsx`, `src/ui.tsx`, or `HomeScreen.tsx`.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 `git commit -m "feat: localize landing navigation and home"`
 
@@ -355,7 +371,15 @@ Run the Session-focused test set and i18n audit.
 
 Replace every functional string with `t()`, including header subtitles, buttons, helper copy, labels, process goals, trigger labels, and Decision Cue instruction text.
 
-- [ ] **Step 4: Verify GREEN**
+- [ ] **Step 4: Remove Session from the temporary legacy baseline**
+
+Remove `src/screens/SessionScreen.tsx` from `LEGACY_I18N_FILES`.
+
+- [ ] **Step 5: Remove Coach and Profile from the temporary legacy baseline**
+
+Remove `src/screens/CoachScreen.tsx` and `src/screens/ProfileScreen.tsx` from `LEGACY_I18N_FILES`. Assert the baseline is now empty.
+
+- [ ] **Step 6: Verify GREEN**
 
 Run:
 - `npm test`
@@ -364,7 +388,7 @@ Run:
 
 Smoke-check changing language while Session is active does not reset phase, A/B/C state, selected goal, cue index, or trigger IDs.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 `git commit -m "feat: localize Endurance session flow"`
 
@@ -412,7 +436,11 @@ Cover:
 - Micro Check-in;
 - SOS.
 
-- [ ] **Step 4: Verify GREEN**
+- [ ] **Step 4: Remove Train and overlays from the temporary legacy baseline**
+
+Remove `src/screens/TrainScreen.tsx` and `src/overlays.tsx` from `LEGACY_I18N_FILES`.
+
+- [ ] **Step 5: Verify GREEN**
 
 Run:
 - `npm test`
@@ -421,7 +449,7 @@ Run:
 
 Smoke-check module, playlist, trigger, diary question index, reaction state, Break step, and SOS step survive locale changes.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 `git commit -m "feat: localize training content and overlays"`
 
@@ -468,7 +496,7 @@ Run:
 
 Expected: no remaining functional hard-coded copy outside the explicit invariant allowlist.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 `git commit -m "feat: localize coach and profile"`
 
