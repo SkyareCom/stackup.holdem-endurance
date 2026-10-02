@@ -16,7 +16,7 @@ describe('Session localization and stable-state contract', () => {
 
   it('stores goal and trigger ids instead of translated labels', () => {
     const source = read('src/screens/SessionScreen.tsx');
-    expect(source).toContain("useState('process')");
+    expect(source).toMatch(/useState(?:<ProcessGoalId>)?\('process'\)/);
     expect(source).toContain('setGoal(x.id)');
     expect(source).toContain('t(x.labelKey)');
     expect(source).toContain('toggle(x.id)');
