@@ -486,6 +486,28 @@ export const pt = {
   'profile.language': 'IDIOMA',
 
   'session.resetBeforeStart': 'FAZER RESET ANTES DE INICIAR',
+  'privacy.subtitle': 'PRIVACIDADE E DADOS',
+  'privacy.title': 'POLÍTICA DE PRIVACIDADE',
+  'privacy.updated': 'Atualizada em 2 de outubro de 2026.',
+  'privacy.scope': 'ESCOPO',
+  'privacy.scopeBody': 'esta política descreve o comportamento da versão atual do STACKUP HOLD’EM ENDURANCE e como ela trata dados no dispositivo e recursos externos.',
+  'privacy.dataOnDevice': 'DADOS NO DISPOSITIVO',
+  'privacy.localOnlyBody': 'a preferência de idioma é armazenada localmente no dispositivo. textos digitados no Coach e no Diário permanecem apenas na memória da sessão nesta versão e não são enviados para um servidor pelo aplicativo.',
+  'privacy.networkResources': 'RECURSOS DE REDE',
+  'privacy.pexelsBody': 'as fotografias de fundo são carregadas por HTTPS a partir da Pexels. esse provedor pode receber dados técnicos normais de uma requisição de internet, conforme as próprias políticas dele.',
+  'privacy.coachAndVoice': 'COACH E VOZ',
+  'privacy.noRemoteAiBody': 'o Coach atual usa respostas e contexto locais do aplicativo. esta versão não envia suas mensagens para um serviço externo de inteligência artificial.',
+  'privacy.noMicBody': 'o controle visual de microfone não grava, não envia áudio e não solicita permissão de microfone nesta versão.',
+  'privacy.security': 'SEGURANÇA',
+  'privacy.securityBody': 'esta versão não mantém um backend de dados pessoais. a preferência de idioma fica no armazenamento local do aplicativo e os recursos externos são solicitados por HTTPS.',
+  'privacy.retention': 'RETENÇÃO E EXCLUSÃO',
+  'privacy.retentionBody': 'a preferência de idioma permanece até ser substituída, até os dados do aplicativo serem limpos ou até a desinstalação. conteúdo mantido somente em memória é descartado quando o estado da sessão é encerrado.',
+  'privacy.deletionBody': 'você pode remover os dados locais limpando os dados do aplicativo ou desinstalando-o. esta versão não oferece criação de conta e, portanto, não mantém uma conta remota para excluir.',
+  'privacy.future': 'ALTERAÇÕES FUTURAS',
+  'privacy.futureBody': 'se futuras versões adicionarem conta, IA remota, voz, analytics, pagamentos ou outros serviços que tratem dados, esta política e a declaração de Segurança dos dados serão atualizadas antes da ativação desses recursos.',
+  'privacy.contact': 'CONTATO DE PRIVACIDADE',
+  'privacy.contactBody': 'para dúvidas ou solicitações de privacidade, use o contato oficial do desenvolvedor exibido na ficha do STACKUP HOLD’EM ENDURANCE no Google Play.',
+
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
