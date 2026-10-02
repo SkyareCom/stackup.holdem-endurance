@@ -424,6 +424,33 @@ export const pt = {
   'overlay.heatmapInsufficient': 'ainda não há sessões suficientes para identificar um padrão confiável.',
   'overlay.heatmapCollect': 'registre check-ins durante suas próximas sessões para construir o mapa.',
 
+  'common.whenToUse': 'QUANDO USAR',
+  'overlay.warRoomWhat': 'um espaço para reconhecer gatilhos e interromper padrões antes que dominem a sessão.',
+  'overlay.warRoomWhen': 'use após mudança brusca de estado, repetição de erro, pressa, raiva, medo, fadiga, euforia ou piloto automático.',
+  'overlay.sosTilt': 'SOS TILT',
+  'overlay.sosTiltBody': 'interrompa a escalada emocional e recupere a próxima decisão.',
+  'overlay.audioObjective': 'OBJETIVO',
+  'overlay.audioBestMoment': 'MELHOR MOMENTO',
+  'overlay.audioDuration': 'DURAÇÃO',
+  'overlay.audioExpectedEffect': 'EFEITO ESPERADO',
+  'overlay.audioCue': 'CUE PRINCIPAL',
+  'playlist.lockIn.objective': 'preparar foco antes da sessão e reduzir ruído mental.',
+  'playlist.lockIn.bestMoment': '5–10 minutos antes de jogar.',
+  'playlist.aGame.objective': 'sustentar processo, ritmo e atenção durante a sessão.',
+  'playlist.aGame.bestMoment': 'no início de um bloco ou ao retornar de uma pausa.',
+  'playlist.discipline.objective': 'reduzir impulso e proteger decisões que pedem paciência.',
+  'playlist.discipline.bestMoment': 'quando surgir urgência, caça à ação ou vontade de recuperar perdas.',
+  'playlist.longGrind.objective': 'preservar energia mental durante sessões prolongadas.',
+  'playlist.longGrind.bestMoment': 'em sessões longas, antes de a fadiga virar queda de qualidade.',
+  'playlist.pressure.objective': 'regular ativação e manter precisão sob pressão competitiva.',
+  'playlist.pressure.bestMoment': 'antes de fases decisivas ou quando a intensidade do jogo subir.',
+  'playlist.mentalFortress.objective': 'recuperar estabilidade após perda, erro ou variância adversa.',
+  'playlist.mentalFortress.bestMoment': 'depois de um evento emocionalmente forte, antes de acelerar a próxima decisão.',
+  'playlist.cooldown.objective': 'desacelerar e separar resultado, execução e estado.',
+  'playlist.cooldown.bestMoment': 'logo após encerrar a sessão.',
+  'playlist.break4.objective': 'interromper queda de qualidade e recuperar o processo.',
+  'playlist.break4.bestMoment': 'antes da janela crítica ou assim que surgirem pressa e perda de foco.',
+
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
