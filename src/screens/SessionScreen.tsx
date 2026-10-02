@@ -205,7 +205,10 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const tiltRisk=classifyTiltRisk({tension,fatigue,impulse,emotion:activeSession.pre.emotion});
   const minutes=Math.floor((now-activeSession.startedAt)/60000);
   const durationExceeded=minutes>=profile.stopRules.maxDurationMinutes;
-  let action=getSessionAction({mode:activeSession.plan.mode,canLeave:activeSession.plan.canLeave,tiltRisk,fatigue});
+  let action=getSessionAction({
+    mode:activeSession.plan.mode,canLeave:activeSession.plan.canLeave,tiltRisk,fatigue,
+    focus,tension,minFocus:profile.stopRules.minFocus,maxTension:profile.stopRules.maxTension,
+  });
   if(durationExceeded) action=activeSession.plan.mode==='tournament'&&!activeSession.plan.canLeave?'contain':'stop-session';
   const decisionLock=action==='contain'||action==='stop-session';
   const readiness=calculateReadiness(activeSession.pre);
