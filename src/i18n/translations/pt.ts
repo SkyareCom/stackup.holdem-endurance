@@ -716,6 +716,16 @@ export const pt = {
   'development.lifestyle.body': "sono, hidratação, alimentação e atividade como base de sustentação.",
   'overlay.wait': "AGUARDE",
   'overlay.waitBody': "espere o estímulo aparecer antes de tocar.",
+  'profile.tiltDNA': "TILT DNA",
+  'profile.tiltDNABody': "perfil de gatilhos construído apenas a partir de eventos que você registrou.",
+  'profile.sleepCorrelation': "SONO × MENTAL EV",
+  'profile.stressCorrelation': "ESTRESSE × MENTAL EV",
+  'profile.readinessCorrelation': "PRONTIDÃO × MENTAL EV",
+  'profile.correlationBody': "correlação observada na sua amostra; associação não demonstra causalidade.",
+  'debrief.readinessComponent': "READINESS EV",
+  'debrief.executionComponent': "EXECUTION EV",
+  'debrief.disciplineComponent': "DISCIPLINE EV",
+  'debrief.emotionalComponent': "EMOTIONAL CONTROL EV",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
