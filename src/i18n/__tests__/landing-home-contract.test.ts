@@ -10,7 +10,8 @@ describe('landing home and shared UI localization contract', () => {
     expect(source).toContain("t('landing.division')");
     expect(source).toContain("t('landing.system')");
     expect(source).toContain("t('landing.enter')");
-    expect(source).toContain("t('nav.home')");
+    expect(source).toContain("labelKey:'nav.home'");
+    expect(source).toContain('t(i.labelKey)');
     expect(source).not.toContain('PERFORMANCE DIVISION');
     expect(source).not.toContain('ENTER ENDURANCE');
   });
