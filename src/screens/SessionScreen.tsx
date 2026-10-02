@@ -12,6 +12,7 @@ import {
   deriveMentalState,
   getRitualMinutes,
   getSessionAction,
+  mentalEvComponents,
   type Emotion,
   type GameMode,
   type PlayReason,
@@ -260,6 +261,7 @@ function Debrief({ save }: { save:()=>void }) {
 
   const readinessIndex=activeSession?calculateReadiness(activeSession.pre):0;
   const mentalEv=calculateMentalEv({gameQuality,foldDiscipline,readinessIndex});
+  const evComponents=mentalEvComponents({gameQuality,foldDiscipline,readinessIndex,attitude,logic,patience});
   const toggle=(id:WarRoomTriggerId)=>setTriggers(v=>v.includes(id)?v.filter(t=>t!==id):[...v,id]);
 
   const persist=()=>{
@@ -311,6 +313,12 @@ function Debrief({ save }: { save:()=>void }) {
 
     {debriefStep===4?<>
       <View style={s.readingCard}><Label>{t('debrief.mentalEv')}</Label><Serif style={s.heroNumber}>{mentalEv.toFixed(1)}</Serif><AppText style={s.body}>{t('debrief.mentalEvBody')}</AppText></View>
+      <View style={s.panel}>
+        <View style={s.rowBetween}><Label>{t('debrief.readinessComponent')}</Label><AppText style={s.goldText}>{evComponents.readiness.toFixed(1)}</AppText></View>
+        <View style={s.rowBetween}><Label>{t('debrief.executionComponent')}</Label><AppText style={s.goldText}>{evComponents.execution.toFixed(1)}</AppText></View>
+        <View style={s.rowBetween}><Label>{t('debrief.disciplineComponent')}</Label><AppText style={s.goldText}>{evComponents.discipline.toFixed(1)}</AppText></View>
+        <View style={s.rowBetween}><Label>{t('debrief.emotionalComponent')}</Label><AppText style={s.goldText}>{evComponents.emotionalControl.toFixed(1)}</AppText></View>
+      </View>
       <View style={s.panel}><Label>{t('debrief.resultVsExecution')}</Label><AppText style={s.body}>{t('debrief.resultBody')}</AppText></View>
     </>:null}
 
