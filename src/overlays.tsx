@@ -3,7 +3,7 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { C } from './theme';
-import { diaryQuestions, lifestyleSections, mentalPlaylists, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
+import { diaryQuestions, emotionalHeatmapBuckets, heatmapIntensityLegend, lifestyleSections, mentalPlaylists, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
 import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
 import { TestIntro } from './components/TestIntro';
 import { s } from './styles';
@@ -28,6 +28,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const [vaccine,setVaccine]=useState('');
   const meta=moduleMeta[module];
   const intro=moduleIntroById[module];
+  const heatmapHasHistory=true;
 
   let body:React.ReactNode;
 
@@ -36,8 +37,25 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
       <View style={s.panel}>
         <Label>{t('overlay.heatmap')}</Label>
         <Serif style={s.overlayHeadline}>{t('overlay.whereCGameStarts')}</Serif>
-        <View style={s.heatmap}>{Array.from({length:28}).map((_,i)=><View key={i} style={[s.heat,{opacity:.18+((i*37)%80)/100}]}/>)}</View>
-        <AppText style={s.body}>{t('overlay.criticalWindow')}</AppText>
+        <AppText style={s.body}>{t('overlay.heatmapExplanation')}</AppText>
+        {heatmapHasHistory?<>
+          <View style={s.heatLegend}>{heatmapIntensityLegend.map(item=><View key={item.id} style={s.heatLegendItem}><Label>{t(item.labelKey)}</Label></View>)}</View>
+          <View style={s.heatmap}>{emotionalHeatmapBuckets.map(bucket=><View key={bucket.id} style={s.heatBucket}>
+            <View style={s.rowBetween}><AppText style={s.goldText}>{t(bucket.labelKey)}</AppText><Label>{t(bucket.intensityKey)}</Label></View>
+            {bucket.triggerKeys.length?<AppText style={s.heatTriggers}>{bucket.triggerKeys.map(key=>t(key)).join(' + ')}</AppText>:null}
+          </View>)}</View>
+          <View style={s.guidedBlock}><Label>{t('common.yourReading')}</Label><AppText style={s.body}>{t('overlay.heatmapReading')}</AppText></View>
+          <View style={s.guidedBlock}>
+            <Label>{t('common.nextAction')}</Label>
+            <AppText style={s.heatAction}>{t('overlay.heatmapActionBreak')}</AppText>
+            <AppText style={s.heatAction}>{t('overlay.heatmapActionCue')}</AppText>
+            <AppText style={s.heatAction}>{t('overlay.heatmapActionSlow')}</AppText>
+            <AppText style={s.heatAction}>{t('overlay.heatmapActionCheckin')}</AppText>
+          </View>
+        </>:<View style={s.guidedBlock}>
+          <AppText style={s.body}>{t('overlay.heatmapInsufficient')}</AppText>
+          <AppText style={s.body}>{t('overlay.heatmapCollect')}</AppText>
+        </View>}
       </View>
       <View style={s.moduleAction}><View><Label>{t('overlay.battleDiary')}</Label><Serif style={s.actionTitle}>{t('overlay.auditExecution')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
       <View style={s.moduleAction}><View><Label>{t('overlay.psychVaccines')}</Label><Serif style={s.actionTitle}>{t('overlay.desensitizeVariance')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
