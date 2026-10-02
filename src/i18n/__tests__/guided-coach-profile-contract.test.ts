@@ -69,6 +69,14 @@ describe('guided Coach and Profile contract', () => {
     expect(coach).not.toContain("t('coach.contextBody')");
   });
 
+  it('does not fabricate current Coach measurements or prior chat history', () => {
+    expect(coach).toContain("t('coach.contextUnavailable')");
+    expect(coach).not.toContain("t('coach.contextReadinessValue')");
+    expect(coach).not.toContain('sampleMessages');
+    expect(coach).not.toContain("t('coach.sampleUser')");
+    expect(coach).not.toContain("t('coach.sampleReply')");
+  });
+
   it('shows explicit insufficient-history copy for patterns when needed', () => {
     expect(profile).toContain("t('profile.patternsInsufficient')");
     expect(profile).toContain("t('profile.patternsCollect')");
