@@ -15,6 +15,7 @@ import { ProfileScreen } from '../src/screens/ProfileScreen';
 import { BreakOverlay, CheckinOverlay, ModuleOverlay, SOSOverlay } from '../src/overlays';
 import { LanguageSelector } from '../src/components/LanguageSelector';
 import { useI18n, type TranslationKey } from '../src/i18n';
+import { usePerformance } from '../src/performanceStore';
 
 function Landing({ enter }: { enter:()=>void }) {
   const { t } = useI18n();
@@ -63,6 +64,7 @@ function BottomNav({ tab,setTab,openSOS }: { tab:Tab; setTab:(t:Tab)=>void; open
 }
 
 export default function Index() {
+  const { activeSession } = usePerformance();
   const [entered,setEntered]=useState(false); const [tab,setTab]=useState<Tab>('home'); const [phase,setPhase]=useState<Phase>('ready'); const [module,setModule]=useState<Module|null>(null); const [sos,setSos]=useState(false); const [breakOpen,setBreakOpen]=useState(false); const [checkin,setCheckin]=useState(false);
 
   useFocusEffect(useCallback(()=>{
@@ -79,5 +81,5 @@ export default function Index() {
   },[entered,sos,checkin,breakOpen,module,tab]));
 
   if(!entered) return <Landing enter={()=>setEntered(true)}/>;
-  return <View style={s.root}>{tab==='home'?<HomeScreen startSession={()=>{setTab('session');setPhase('ready')}} openModule={setModule}/>:null}{tab==='session'?<SessionScreen phase={phase} setPhase={setPhase} openModule={setModule} openBreak={()=>setBreakOpen(true)} openCheckin={()=>setCheckin(true)}/>:null}{tab==='train'?<TrainScreen openModule={setModule}/>:null}{tab==='coach'?<CoachScreen phase={phase}/>:null}{tab==='profile'?<ProfileScreen openDiary={()=>setModule('diary')}/>:null}<BottomNav tab={tab} setTab={setTab} openSOS={()=>setSos(true)}/>{module?<ModuleOverlay module={module} close={()=>setModule(null)}/>:null}{breakOpen?<BreakOverlay close={()=>setBreakOpen(false)}/>:null}{checkin?<CheckinOverlay close={()=>setCheckin(false)}/>:null}{sos?<SOSOverlay close={()=>setSos(false)} goCoach={()=>{setSos(false);setTab('coach')}}/>:null}</View>;
+  return <View style={s.root}>{tab==='home'?<HomeScreen startSession={()=>{setTab('session');setPhase(activeSession?'active':'ready')}} openModule={setModule}/>:null}{tab==='session'?<SessionScreen phase={phase} setPhase={setPhase} openModule={setModule} openBreak={()=>setBreakOpen(true)} openCheckin={()=>setCheckin(true)}/>:null}{tab==='train'?<TrainScreen openModule={setModule}/>:null}{tab==='coach'?<CoachScreen phase={phase}/>:null}{tab==='profile'?<ProfileScreen openDiary={()=>setModule('diary')}/>:null}<BottomNav tab={tab} setTab={setTab} openSOS={()=>setSos(true)}/>{module?<ModuleOverlay module={module} close={()=>setModule(null)}/>:null}{breakOpen?<BreakOverlay close={()=>setBreakOpen(false)}/>:null}{checkin?<CheckinOverlay close={()=>setCheckin(false)}/>:null}{sos?<SOSOverlay close={()=>setSos(false)} goCoach={()=>{setSos(false);setTab('coach')}}/>:null}</View>;
 }
