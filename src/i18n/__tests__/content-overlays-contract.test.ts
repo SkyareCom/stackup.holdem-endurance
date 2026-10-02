@@ -19,6 +19,7 @@ describe('Train, content libraries, and overlays localization contract', () => {
     expect(content).toContain("titleKey: 'tell.baseline.title'");
     expect(content).toContain("id: 'control'");
     expect(content).toContain("titleKey: 'stoic.control.title'");
+    expect(content).not.toContain("title: 'DISCIPLINE'");
   });
 
   it('renders Train and overlays through translation keys', () => {
@@ -34,7 +35,6 @@ describe('Train, content libraries, and overlays localization contract', () => {
     expect(overlays).not.toContain('EMOTIONAL HEATMAP');
     expect(overlays).not.toContain('RETURN TO SESSION');
     expect(overlays).not.toContain('SAVE CHECK-IN');
-    expect(content).not.toContain("title: 'DISCIPLINE'");
   });
 
   it('keeps overlay state on stable ids or indexes', () => {
