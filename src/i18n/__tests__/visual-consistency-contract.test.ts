@@ -15,11 +15,12 @@ describe('premium visual consistency contract', () => {
     expect(styles).toContain('borderRadius:CONTROL_RADIUS');
   });
 
-  it('distributes Ready Check and process choices into balanced card layouts', () => {
-    expect(session).toContain('style={s.sessionGuideCard}');
+  it('uses balanced wizard controls instead of dense mixed card layouts', () => {
+    expect(session).toContain('style={s.scoreGrid}');
     expect(session).toContain('style={s.processGrid}');
     expect(session).toContain('s.processChip');
     expect(session).toContain('style={s.readingCard}');
+    expect(session).toContain('style={s.wizardActions}');
   });
 
   it('uses progressive disclosure to keep Coach calm and intuitive', () => {
