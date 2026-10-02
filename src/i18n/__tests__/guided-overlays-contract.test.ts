@@ -62,7 +62,8 @@ describe('guided module and exercise contract', () => {
     expect(overlays).toContain("t('overlay.heatmapActionCheckin')");
   });
 
-  it('has an explicit insufficient-history state instead of pseudo-analysis', () => {
+  it('defaults the heatmap to insufficient history until real session history exists', () => {
+    expect(overlays).toContain('const heatmapHasHistory=false');
     expect(overlays).toContain('heatmapHasHistory');
     expect(overlays).toContain("t('overlay.heatmapInsufficient')");
     expect(overlays).toContain("t('overlay.heatmapCollect')");
