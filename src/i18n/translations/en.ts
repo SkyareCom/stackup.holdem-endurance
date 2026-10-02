@@ -489,4 +489,26 @@ export const en: TranslationCatalog = {
 
   'session.resetBeforeStart': 'RESET BEFORE STARTING',
 
+  'privacy.subtitle': 'PRIVACY AND DATA',
+  'privacy.title': 'PRIVACY POLICY',
+  'privacy.updated': 'Updated October 2, 2026.',
+  'privacy.scope': 'SCOPE',
+  'privacy.scopeBody': 'this policy describes the behavior of the current STACKUP HOLD’EM ENDURANCE release and how it handles on-device data and external resources.',
+  'privacy.dataOnDevice': 'DATA ON DEVICE',
+  'privacy.localOnlyBody': 'the language preference is stored locally on the device. text entered in Coach and Battle Diary remains only in session memory in this release and is not sent by the app to a server.',
+  'privacy.networkResources': 'NETWORK RESOURCES',
+  'privacy.pexelsBody': 'background photographs are loaded over HTTPS from Pexels. that provider may receive ordinary technical information associated with an internet request under its own policies.',
+  'privacy.coachAndVoice': 'COACH AND VOICE',
+  'privacy.noRemoteAiBody': 'the current Coach uses local app responses and context. this release does not send your messages to an external artificial intelligence service.',
+  'privacy.noMicBody': 'the microphone control is currently visual only; it does not record or upload audio and this release does not request microphone permission.',
+  'privacy.security': 'SECURITY',
+  'privacy.securityBody': 'this release does not operate a personal-data backend. the language preference remains in local app storage and external resources are requested over HTTPS.',
+  'privacy.retention': 'RETENTION AND DELETION',
+  'privacy.retentionBody': 'the language preference remains until replaced, app data is cleared, or the app is uninstalled. content held only in memory is discarded when the session state ends.',
+  'privacy.deletionBody': 'you can remove local data by clearing the app data or uninstalling the app. this release does not offer account creation and therefore does not retain a remote account to delete.',
+  'privacy.future': 'FUTURE CHANGES',
+  'privacy.futureBody': 'if future releases add accounts, remote AI, voice, analytics, payments, or other data-processing services, this policy and the Data safety declaration will be updated before those features are enabled.',
+  'privacy.contact': 'PRIVACY CONTACT',
+  'privacy.contactBody': 'for privacy questions or requests, use the official developer contact shown on the STACKUP HOLD’EM ENDURANCE Google Play listing.',
+
 };
