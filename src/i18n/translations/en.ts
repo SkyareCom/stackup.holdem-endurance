@@ -731,4 +731,9 @@ export const en: TranslationCatalog = {
   'debrief.emotionalComponent': "EMOTIONAL CONTROL EV",
   'profile.showAnalytics': "VIEW ANALYTICS",
   'profile.hideAnalytics': "HIDE ANALYTICS",
+  'pregrind.activation': 'ACTIVATION',
+  'pregrind.activationBody': 'complete the recommended preparation before the first hand so you enter with one clear process rule.',
+  'pregrind.openAudio': 'OPEN MENTAL AUDIO',
+  'pregrind.openBreathing': 'OPEN GUIDED RESET',
+  'pregrind.activationComplete': 'PREPARATION COMPLETE · START SESSION',
 };
