@@ -18,8 +18,12 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
   const { t } = useI18n();
   const snapshot = { energy: 4, focus: 4, tension: 2 };
   const readiness = getReadinessGuidance(snapshot);
-  const history = getHistoryGuidance({ hasHistory: true, thirdBlockDrop: true });
+  const hasHistory = false;
+  const history = getHistoryGuidance({ hasHistory, thirdBlockDrop: false });
   const focus = history ?? readiness;
+  const hasHistoricalBreak = focus.actionId==='break-4';
+  const actionTitle = hasHistoricalBreak ? t('home.prepareBreak') : t('home.startSession');
+  const actionBody = hasHistoricalBreak ? t('home.recommendedActionBody') : t('home.startSessionBody');
 
   return (
     <Backdrop uri={PHOTO.focus}>
@@ -55,17 +59,19 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
             title={t(focus.titleKey)}
             description={t(focus.bodyKey)}
           >
-            <View style={s.guidedInline}>
-              <Label>{t('home.intelligence')}</Label>
-              <AppText style={s.goldText}>02:55 → 03:30</AppText>
-            </View>
-            <AppText style={s.body}>{t(focus.reasonKey)}</AppText>
+            {hasHistory?<>
+              <View style={s.guidedInline}>
+                <Label>{t('home.intelligence')}</Label>
+                <AppText style={s.goldText}>{t('home.historyWindow')}</AppText>
+              </View>
+              <AppText style={s.body}>{t(focus.reasonKey)}</AppText>
+            </>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
           </GuidedSection>
 
           <GuidedSection
             subtitle={t('home.recommendedAction')}
-            title={t('home.prepareBreak')}
-            description={t('home.recommendedActionBody')}
+            title={actionTitle}
+            description={actionBody}
           >
             <AppText style={s.goldText}>{t('home.primaryAction')}</AppText>
             <PremiumButton label={t('home.startWithPlan')} onPress={startSession}/>
@@ -76,7 +82,7 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
             title={t('home.toolsTitle')}
             description={t('home.toolsBody')}
           >
-            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('audio')}>
+            {focus.actionId==='break-4'?<TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('audio')}>
               <Ionicons name="pause-circle-outline" size={24} color={C.goldLight}/>
               <View style={s.flex}>
                 <Label>{t('home.break4Tool')}</Label>
@@ -84,7 +90,7 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
                 <AppText style={s.guidedToolBody}>{t('home.break4Body')}</AppText>
               </View>
               <Ionicons name="chevron-forward" size={18} color={C.goldLight}/>
-            </TouchableOpacity>
+            </TouchableOpacity>:null}
             <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('audio')}>
               <Ionicons name="headset-outline" size={24} color={C.goldLight}/>
               <View style={s.flex}>
