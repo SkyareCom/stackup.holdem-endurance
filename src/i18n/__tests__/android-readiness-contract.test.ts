@@ -34,6 +34,7 @@ describe('Android publication readiness contract',()=>{
   });
 
   it('handles Android back navigation inside the single-screen state machine',()=>{
+    expect(index).toContain('useFocusEffect');
     expect(index).toContain('BackHandler');
     expect(index).toContain("BackHandler.addEventListener('hardwareBackPress'");
     expect(index).toContain('subscription.remove()');
