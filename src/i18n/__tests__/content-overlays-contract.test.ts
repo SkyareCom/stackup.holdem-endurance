@@ -7,6 +7,7 @@ const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), rela
 describe('Train, content libraries, and overlays localization contract', () => {
   it('stores localizable content as stable ids plus translation keys', () => {
     const content = read('src/content.ts');
+    expect(content).toContain("titleKey: 'playlist.lockIn.title'");
     expect(content).toContain("modeKey: 'playlist.lockIn.mode'");
     expect(content).toContain("descriptionKey: 'playlist.lockIn.description'");
     expect(content).toContain("cueKey: 'playlist.lockIn.cue'");
@@ -25,6 +26,7 @@ describe('Train, content libraries, and overlays localization contract', () => {
     const overlays = read('src/overlays.tsx');
     expect(train).toContain("t('train.title')");
     expect(train).toContain("t('train.reserveBody')");
+    expect(overlays).toContain('t(p.titleKey)');
     expect(overlays).toContain("t('overlay.heatmap')");
     expect(overlays).toContain("t('break.label')");
     expect(overlays).toContain("t('checkin.label')");
@@ -32,6 +34,7 @@ describe('Train, content libraries, and overlays localization contract', () => {
     expect(overlays).not.toContain('EMOTIONAL HEATMAP');
     expect(overlays).not.toContain('RETURN TO SESSION');
     expect(overlays).not.toContain('SAVE CHECK-IN');
+    expect(content).not.toContain("title: 'DISCIPLINE'");
   });
 
   it('keeps overlay state on stable ids or indexes', () => {
