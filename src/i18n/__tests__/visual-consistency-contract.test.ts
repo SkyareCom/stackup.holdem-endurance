@@ -22,16 +22,20 @@ describe('premium visual consistency contract', () => {
     expect(session).toContain('style={s.readingCard}');
   });
 
-  it('uses Coach space intentionally before a conversation starts', () => {
-    expect(coach).toContain('style={s.coachQuickGrid}');
-    expect(coach).toContain('s.coachQuickAction');
-    expect(coach).toContain('messages.length===0');
-    expect(coach).toContain("t('coach.emptyPrompt')");
+  it('uses progressive disclosure to keep Coach calm and intuitive', () => {
+    expect(coach).toContain('const [contextExpanded,setContextExpanded]=useState(false)');
+    expect(coach).toContain('contextExpanded?<View style={s.contextList}>');
+    expect(coach).toContain("t(contextExpanded?'coach.hideContext':'coach.showContext')");
+    expect(coach).toContain('primaryQuickPromptKeys');
+    expect(coach).toContain("phase==='debrief'");
+    expect(coach).not.toContain('style={s.coachEmptyState}');
+    expect(coach).not.toContain('style={s.voice}');
   });
 
-  it('keeps SOS clear of typing and improves bottom navigation icon states', () => {
-    expect(styles).toContain("composer:{position:'absolute',left:0,right:0,bottom:140");
+  it('keeps SOS physically clear of typing and improves bottom navigation icon states', () => {
+    expect(styles).toContain("composer:{position:'absolute',left:0,right:0,bottom:160");
     expect(styles).toContain("navSOS:{position:'absolute',right:14,top:-54");
+    expect(styles).toContain("scroll:{padding:18,paddingBottom:140,gap:18}");
     expect(shell).toContain('activeIcon');
     expect(shell).toContain('s.navIconWrap');
     expect(shell).toContain('s.navIconWrapActive');
