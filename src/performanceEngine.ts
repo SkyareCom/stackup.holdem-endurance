@@ -201,6 +201,30 @@ export function buildBaseline(sessions:SessionRecord[]) {
       financial.map(s=>s.debrief.financialResult as number),
       financial.map(s=>s.mentalEv)
     ),
+    sleepToMentalEvCorrelation:pearsonCorrelation(sessions.map(s=>s.pre.sleep),sessions.map(s=>s.mentalEv)),
+    stressToMentalEvCorrelation:pearsonCorrelation(
+      sessions.map(s=>(s.pre.personalStress+s.pre.financialStress)/2),
+      sessions.map(s=>s.mentalEv)
+    ),
+    readinessToMentalEvCorrelation:pearsonCorrelation(sessions.map(s=>s.readinessIndex),sessions.map(s=>s.mentalEv)),
+  };
+}
+
+export function buildTiltProfile(sessions:SessionRecord[]) {
+  const counts=new Map<TiltTrigger,number>();
+  for(const session of sessions){
+    for(const trigger of session.debrief.triggers) counts.set(trigger,(counts.get(trigger)??0)+1);
+    for(const checkin of session.checkins) if(checkin.trigger) counts.set(checkin.trigger,(counts.get(checkin.trigger)??0)+1);
+  }
+  return [...counts.entries()].sort((a,b)=>b[1]-a[1]).map(([trigger,count])=>({trigger,count}));
+}
+
+export function mentalEvComponents(input:{gameQuality:number;foldDiscipline:number;readinessIndex:number;attitude:number;logic:number;patience:number}) {
+  return {
+    readiness:Math.round((input.readinessIndex/10)*10)/10,
+    execution:Math.round(clamp(input.gameQuality)*10)/10,
+    discipline:Math.round(clamp(input.foldDiscipline)*10)/10,
+    emotionalControl:Math.round(((clamp(input.attitude)+clamp(input.logic)+clamp(input.patience))/3)*10)/10,
   };
 }
 
