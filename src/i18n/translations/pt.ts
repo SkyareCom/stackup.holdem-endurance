@@ -406,6 +406,24 @@ export const pt = {
   'overlay.reactionNextTitle': 'FAÇA 3 BLOCOS DE 60 SEGUNDOS',
   'overlay.reactionNextBody': 'repita o teste em blocos curtos e compare a variação. se a resposta piorar de forma consistente, trate como sinal de fadiga ou perda de foco.',
   'overlay.reactionRepeat': 'REPETIR TESTE',
+  'heatmap.window.0_45': '0–45 min',
+  'heatmap.window.45_90': '45–90 min',
+  'heatmap.window.90_135': '90–135 min',
+  'heatmap.window.135_180': '135–180 min',
+  'heatmap.window.180_plus': '180+ min',
+  'heatmap.intensity.low': 'BAIXA',
+  'heatmap.intensity.moderate': 'MODERADA',
+  'heatmap.intensity.high': 'ALTA',
+  'heatmap.intensity.critical': 'CRÍTICA',
+  'overlay.heatmapExplanation': 'mostra quando sua estabilidade se deteriora ao longo da sessão e quais gatilhos aparecem próximos desses momentos.',
+  'overlay.heatmapReading': 'seu maior risco aparece entre 135 e 180 minutos e costuma coincidir com fadiga + pressa.',
+  'overlay.heatmapActionBreak': 'programe o BREAK 4 antes de 135 min.',
+  'overlay.heatmapActionCue': 'ative o Sinal de Decisão antes da janela crítica.',
+  'overlay.heatmapActionSlow': 'reduza a velocidade de ação quando notar urgência.',
+  'overlay.heatmapActionCheckin': 'faça um check-in de foco antes do quarto bloco.',
+  'overlay.heatmapInsufficient': 'ainda não há sessões suficientes para identificar um padrão confiável.',
+  'overlay.heatmapCollect': 'registre check-ins durante suas próximas sessões para construir o mapa.',
+
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
