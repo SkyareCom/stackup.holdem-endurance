@@ -289,6 +289,21 @@ export const pt = {
   'trigger.euphoria': 'EUFORIA',
   'trigger.fatigue': 'FADIGA',
   'trigger.autopilot': 'AUTOPILOT',
+
+  'common.whatItIs': 'O QUE É',
+  'common.howToUse': 'COMO USAR',
+  'common.yourReading': 'SUA LEITURA',
+  'common.nextAction': 'PRÓXIMA AÇÃO',
+  'common.insufficientData': 'ainda não há dados suficientes para uma leitura confiável.',
+  'guidance.reset.title': 'FAÇA UM RESET ANTES DE COMEÇAR',
+  'guidance.reset.body': 'reduza a ativação e recupere foco antes de abrir a primeira mão.',
+  'guidance.reset.reason': 'foco baixo ou tensão alta aumenta o risco de decisões aceleradas.',
+  'guidance.start.title': 'VOCÊ PODE INICIAR',
+  'guidance.start.body': 'seu estado atual está estável para começar a sessão.',
+  'guidance.start.reason': 'energia, foco e tensão estão dentro de uma faixa funcional.',
+  'guidance.thirdBlock.title': 'PROTEJA O TERCEIRO BLOCO',
+  'guidance.thirdBlock.body': 'programe um BREAK 4 antes da janela em que seu foco costuma cair.',
+  'guidance.thirdBlock.reason': 'seu histórico mostra queda de qualidade antes da fadiga subjetiva.',
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
