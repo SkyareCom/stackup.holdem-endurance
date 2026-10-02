@@ -375,11 +375,7 @@ Replace every functional string with `t()`, including header subtitles, buttons,
 
 Remove `src/screens/SessionScreen.tsx` from `LEGACY_I18N_FILES`.
 
-- [ ] **Step 5: Remove Coach and Profile from the temporary legacy baseline**
-
-Remove `src/screens/CoachScreen.tsx` and `src/screens/ProfileScreen.tsx` from `LEGACY_I18N_FILES`. Assert the baseline is now empty.
-
-- [ ] **Step 6: Verify GREEN**
+- [ ] **Step 5: Verify GREEN**
 
 Run:
 - `npm test`
@@ -487,7 +483,11 @@ Use active locale for canned assistant/system copy and expose `locale` for futur
 
 Localize Profile fully while keeping the shared `LanguageSelector variant="profile"`.
 
-- [ ] **Step 5: Verify GREEN**
+- [ ] **Step 5: Remove Coach and Profile from the temporary legacy baseline**
+
+Remove `src/screens/CoachScreen.tsx` and `src/screens/ProfileScreen.tsx` from `LEGACY_I18N_FILES`. Assert the baseline is now empty.
+
+- [ ] **Step 6: Verify GREEN**
 
 Run:
 - `npm test`
