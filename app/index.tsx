@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { BackHandler, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from 'expo-router';
 import { C, PHOTO } from '../src/theme';
 import { AppText, Backdrop, PremiumButton, Serif } from '../src/ui';
 import { s } from '../src/styles';
@@ -64,7 +65,7 @@ function BottomNav({ tab,setTab,openSOS }: { tab:Tab; setTab:(t:Tab)=>void; open
 export default function Index() {
   const [entered,setEntered]=useState(false); const [tab,setTab]=useState<Tab>('home'); const [phase,setPhase]=useState<Phase>('ready'); const [module,setModule]=useState<Module|null>(null); const [sos,setSos]=useState(false); const [breakOpen,setBreakOpen]=useState(false); const [checkin,setCheckin]=useState(false);
 
-  useEffect(()=>{
+  useFocusEffect(useCallback(()=>{
     const subscription=BackHandler.addEventListener('hardwareBackPress',()=>{
       if(!entered) return false;
       if(sos){setSos(false);return true;}
@@ -75,7 +76,7 @@ export default function Index() {
       return false;
     });
     return ()=>subscription.remove();
-  },[entered,sos,checkin,breakOpen,module,tab]);
+  },[entered,sos,checkin,breakOpen,module,tab]));
 
   if(!entered) return <Landing enter={()=>setEntered(true)}/>;
   return <View style={s.root}>{tab==='home'?<HomeScreen startSession={()=>{setTab('session');setPhase('ready')}} openModule={setModule}/>:null}{tab==='session'?<SessionScreen phase={phase} setPhase={setPhase} openModule={setModule} openBreak={()=>setBreakOpen(true)} openCheckin={()=>setCheckin(true)}/>:null}{tab==='train'?<TrainScreen openModule={setModule}/>:null}{tab==='coach'?<CoachScreen phase={phase}/>:null}{tab==='profile'?<ProfileScreen openDiary={()=>setModule('diary')}/>:null}<BottomNav tab={tab} setTab={setTab} openSOS={()=>setSos(true)}/>{module?<ModuleOverlay module={module} close={()=>setModule(null)}/>:null}{breakOpen?<BreakOverlay close={()=>setBreakOpen(false)}/>:null}{checkin?<CheckinOverlay close={()=>setCheckin(false)}/>:null}{sos?<SOSOverlay close={()=>setSos(false)} goCoach={()=>{setSos(false);setTab('coach')}}/>:null}</View>;
