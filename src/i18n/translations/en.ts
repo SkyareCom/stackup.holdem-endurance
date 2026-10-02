@@ -487,4 +487,6 @@ export const en: TranslationCatalog = {
   'profile.settings': 'SETTINGS',
   'profile.language': 'LANGUAGE',
 
+  'session.resetBeforeStart': 'RESET BEFORE STARTING',
+
 };
