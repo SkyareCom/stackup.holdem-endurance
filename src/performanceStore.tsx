@@ -165,7 +165,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
         readinessIndex,
         mentalEv:calculateMentalEv({gameQuality:debrief.gameQuality,foldDiscipline:debrief.foldDiscipline,readinessIndex}),
       };
-      return {...s,sessions:[created,...s.sessions],activeSession:null};
+      return {...s,sessions:[created,...s.sessions],activeSession:null,latestCheckin:null};
     });
     return created;
   },[]);
