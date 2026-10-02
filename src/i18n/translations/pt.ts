@@ -407,7 +407,7 @@ export const pt = {
   'overlay.reactionDuration': 'cerca de 60 segundos',
   'overlay.reactionStart': 'INICIAR TESTE',
   'overlay.reactionResult': 'SEU RESULTADO',
-  'overlay.reactionInterpretation': '284 ms está dentro do seu baseline atual. o número isolado não define performance; compare estabilidade e tendência.',
+  'overlay.reactionInterpretation': 'o número isolado não define performance; compare estabilidade entre tentativas e tendência ao longo do tempo.',
   'overlay.reactionConsistency': 'o objetivo é repetir uma resposta limpa sem acelerar às custas de precisão.',
   'overlay.reactionNext': 'VER PRÓXIMA AÇÃO',
   'overlay.reactionNextTitle': 'FAÇA 3 BLOCOS DE 60 SEGUNDOS',
@@ -714,6 +714,8 @@ export const pt = {
   'development.logic.body': "capacidade de reenquadrar emoção usando processo, probabilidade e longo prazo.",
   'development.lifestyle.title': "ESTILO DE VIDA",
   'development.lifestyle.body': "sono, hidratação, alimentação e atividade como base de sustentação.",
+  'overlay.wait': "AGUARDE",
+  'overlay.waitBody': "espere o estímulo aparecer antes de tocar.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
