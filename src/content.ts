@@ -183,3 +183,18 @@ export const moduleIntroById = {
   whenKey: TranslationKey;
   durationKey: TranslationKey;
 }>;
+
+
+export const developmentGroups = [
+  { id: 'discipline', titleKey: 'development.discipline.title', bodyKey: 'development.discipline.body' },
+  { id: 'focus', titleKey: 'development.focus.title', bodyKey: 'development.focus.body' },
+  { id: 'consistency', titleKey: 'development.consistency.title', bodyKey: 'development.consistency.body' },
+  { id: 'resilience', titleKey: 'development.resilience.title', bodyKey: 'development.resilience.body' },
+  { id: 'attitude', titleKey: 'development.attitude.title', bodyKey: 'development.attitude.body' },
+  { id: 'decision-confidence', titleKey: 'development.decisionConfidence.title', bodyKey: 'development.decisionConfidence.body' },
+  { id: 'patience', titleKey: 'development.patience.title', bodyKey: 'development.patience.body' },
+  { id: 'game-understanding', titleKey: 'development.gameUnderstanding.title', bodyKey: 'development.gameUnderstanding.body' },
+  { id: 'cordiality', titleKey: 'development.cordiality.title', bodyKey: 'development.cordiality.body' },
+  { id: 'logic', titleKey: 'development.logic.title', bodyKey: 'development.logic.body' },
+  { id: 'lifestyle', titleKey: 'development.lifestyle.title', bodyKey: 'development.lifestyle.body' },
+] as const satisfies readonly { id:string; titleKey:TranslationKey; bodyKey:TranslationKey }[];
