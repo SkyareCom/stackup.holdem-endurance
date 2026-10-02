@@ -44,7 +44,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
           <View style={s.panel}>
             <Label>{t('coach.activeContext')}</Label>
             <Serif style={s.contextTitle}>{t('coach.contextTitle')}</Serif>
-            <AppText style={s.body}>{t('coach.contextBody')}</AppText>
+            <AppText style={s.body}>{t('coach.contextNoHistory')}</AppText>
             <View style={s.contextList}>
               <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{t('coach.contextReadinessValue')}</AppText></View>
               <View style={s.contextRow}><Label>{t('coach.contextPhase')}</Label><AppText style={s.contextValue}>{t(phaseKey)}</AppText></View>
