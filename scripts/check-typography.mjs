@@ -57,6 +57,12 @@ for (const file of sourceFiles) {
   if (/<TextInput(?:\s|>)/.test(source)) {
     fail(`${file} still renders raw React Native TextInput.`);
   }
+  if (/<AppText\b/.test(source) && !/import\s*\{[^}]*\bAppText\b[^}]*\}\s*from\s*['"][^'"]*ui['"]/.test(source)) {
+    fail(`${file} renders AppText without importing it from the shared UI layer.`);
+  }
+  if (/<AppTextInput\b/.test(source) && !/import\s*\{[^}]*\bAppTextInput\b[^}]*\}\s*from\s*['"][^'"]*ui['"]/.test(source)) {
+    fail(`${file} renders AppTextInput without importing it from the shared UI layer.`);
+  }
 }
 
 console.log('Typography check passed: all app text is routed through Kulim Park italic components.');
