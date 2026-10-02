@@ -14,9 +14,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { C } from './theme';
 import { s } from './styles';
 
-const REGULAR_ITALIC = 'KulimPark_400Regular_Italic';
-const SEMIBOLD_ITALIC = 'KulimPark_600SemiBold_Italic';
-const BOLD_ITALIC = 'KulimPark_700Bold_Italic';
+const REGULAR_ITALIC = 'TitilliumWeb_400Regular_Italic';
+const SEMIBOLD_ITALIC = 'TitilliumWeb_600SemiBold_Italic';
+const BOLD_ITALIC = 'TitilliumWeb_700Bold_Italic';
 
 function resolveItalicFont(style: TextProps['style']) {
   const weight = StyleSheet.flatten(style)?.fontWeight;
