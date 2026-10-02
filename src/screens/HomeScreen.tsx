@@ -3,7 +3,9 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { PHOTO, C } from '../theme';
-import { AppText, Backdrop, GoldRule, Header, Label, Serif } from '../ui';
+import { AppText, Backdrop, GoldRule, Header, Label, PremiumButton, Serif } from '../ui';
+import { GuidedSection } from '../components/GuidedSection';
+import { getHistoryGuidance, getReadinessGuidance } from '../guidance';
 import { s } from '../styles';
 import { Module } from '../types';
 import { useI18n } from '../i18n';
@@ -14,37 +16,93 @@ function Metric({ label, value }: { label: string; value: number }) {
 
 export function HomeScreen({ startSession, openModule }: { startSession: () => void; openModule: (m: Module) => void }) {
   const { t } = useI18n();
+  const snapshot = { energy: 4, focus: 4, tension: 2 };
+  const readiness = getReadinessGuidance(snapshot);
+  const history = getHistoryGuidance({ hasHistory: true, thirdBlockDrop: true });
+  const focus = history ?? readiness;
 
   return (
     <Backdrop uri={PHOTO.focus}>
       <SafeAreaView style={s.flex}>
         <Header title="ENDURANCE" subtitle={t('home.subtitle')} />
         <ScrollView contentContainerStyle={s.scroll}>
-          <View style={s.heroPanel}>
-            <View style={s.rowBetweenTop}>
-              <View style={s.flex}><Label>{t('home.readiness')}</Label><Serif style={s.heroNumber}>82</Serif><AppText style={s.body}>{t('home.readinessBody')}</AppText></View>
-              <View style={s.ring}><Serif style={s.grade}>A-</Serif><AppText style={s.ringLabel}>{t('home.baseline')}</AppText></View>
+          <GuidedSection
+            subtitle={t('home.stateToday')}
+            title={t('home.readinessTitle')}
+            description={t('home.readinessBody')}
+          >
+            <View style={s.heroPanel}>
+              <View style={s.rowBetweenTop}>
+                <View style={s.flex}><Label>{t('home.readiness')}</Label><Serif style={s.heroNumber}>82</Serif></View>
+                <View style={s.ring}><Serif style={s.grade}>A-</Serif><AppText style={s.ringLabel}>{t('home.baseline')}</AppText></View>
+              </View>
+              <GoldRule />
+              <Metric label={t('home.energy')} value={snapshot.energy}/>
+              <Metric label={t('home.focus')} value={snapshot.focus}/>
+              <Metric label={t('home.tension')} value={snapshot.tension}/>
             </View>
-            <GoldRule /><Metric label={t('home.energy')} value={4}/><Metric label={t('home.focus')} value={4}/><Metric label={t('home.tension')} value={2}/>
-          </View>
+          </GuidedSection>
 
-          <TouchableOpacity style={s.primaryAction} onPress={startSession}>
-            <View style={s.flex}><Label>{t('home.primaryAction')}</Label><Serif style={s.primaryTitle}>{t('home.startSession')}</Serif><AppText style={s.body}>{t('home.startSessionBody')}</AppText></View>
-            <Ionicons name="arrow-forward" size={23} color={C.goldLight}/>
-          </TouchableOpacity>
+          <GuidedSection
+            subtitle={t('home.meaning')}
+            title={t('home.meaningTitle')}
+            description={t(readiness.reasonKey)}
+            result={t(readiness.bodyKey)}
+          />
 
-          <View style={s.intelligence}>
-            <View style={s.rowBetween}><Label>{t('home.intelligence')}</Label><AppText style={s.goldText}>02:55 → 03:30</AppText></View>
-            <Serif style={s.intelligenceTitle}>{t('home.protectThirdBlock')}</Serif>
-            <AppText style={s.body}>{t('home.intelligenceBody')}</AppText>
-          </View>
+          <GuidedSection
+            subtitle={t('home.focusOfDay')}
+            title={t(focus.titleKey)}
+            description={t(focus.bodyKey)}
+          >
+            <View style={s.guidedInline}>
+              <Label>{t('home.intelligence')}</Label>
+              <AppText style={s.goldText}>02:55 → 03:30</AppText>
+            </View>
+            <AppText style={s.body}>{t(focus.reasonKey)}</AppText>
+          </GuidedSection>
 
-          <View style={s.quickGrid}>
-            <TouchableOpacity style={s.quickCard} onPress={()=>openModule('audio')}><Ionicons name="headset-outline" size={24} color={C.goldLight}/><Label>{t('home.mentalAudio')}</Label><Serif style={s.quickTitle}>{t('home.lockIn')}</Serif><AppText style={s.quickCopy}>{t('home.quickFocus')}</AppText></TouchableOpacity>
-            <TouchableOpacity style={s.quickCard} onPress={()=>openModule('war')}><Ionicons name="analytics-outline" size={24} color={C.goldLight}/><Label>{t('home.warRoom')}</Label><Serif style={s.quickTitle}>{t('home.heatmap')}</Serif><AppText style={s.quickCopy}>{t('home.patternsTriggers')}</AppText></TouchableOpacity>
-          </View>
+          <GuidedSection
+            subtitle={t('home.recommendedAction')}
+            title={t('home.prepareBreak')}
+            description={t('home.recommendedActionBody')}
+          >
+            <AppText style={s.goldText}>{t('home.primaryAction')}</AppText>
+            <PremiumButton label={t('home.startWithPlan')} onPress={startSession}/>
+          </GuidedSection>
 
-          <View style={s.editorial}><Label>{t('home.decisionCue')}</Label><Serif style={s.editorialText}>“{t('home.decisionCueText')}”</Serif></View>
+          <GuidedSection
+            subtitle={t('home.toolsForThis')}
+            title={t('home.toolsTitle')}
+            description={t('home.toolsBody')}
+          >
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('audio')}>
+              <Ionicons name="pause-circle-outline" size={24} color={C.goldLight}/>
+              <View style={s.flex}>
+                <Label>{t('home.break4Tool')}</Label>
+                <Serif style={s.guidedToolTitle}>{t('home.break4Title')}</Serif>
+                <AppText style={s.guidedToolBody}>{t('home.break4Body')}</AppText>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={C.goldLight}/>
+            </TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('audio')}>
+              <Ionicons name="headset-outline" size={24} color={C.goldLight}/>
+              <View style={s.flex}>
+                <Label>{t('home.mentalAudio')}</Label>
+                <Serif style={s.guidedToolTitle}>{t('home.lockIn')}</Serif>
+                <AppText style={s.guidedToolBody}>{t('home.lockInBody')}</AppText>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={C.goldLight}/>
+            </TouchableOpacity>
+          </GuidedSection>
+
+          <GuidedSection
+            subtitle={t('home.decisionCue')}
+            title={t('home.decisionCueTitle')}
+            description={t('home.decisionCueText')}
+          >
+            <AppText style={s.body}>{t('home.decisionCueWhy')}</AppText>
+          </GuidedSection>
         </ScrollView>
       </SafeAreaView>
     </Backdrop>

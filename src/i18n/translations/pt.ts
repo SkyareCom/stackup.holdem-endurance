@@ -304,6 +304,25 @@ export const pt = {
   'guidance.thirdBlock.title': 'PROTEJA O TERCEIRO BLOCO',
   'guidance.thirdBlock.body': 'programe um BREAK 4 antes da janela em que seu foco costuma cair.',
   'guidance.thirdBlock.reason': 'seu histórico mostra queda de qualidade antes da fadiga subjetiva.',
+
+  'home.stateToday': 'SEU ESTADO HOJE',
+  'home.readinessTitle': 'PRONTIDÃO PARA JOGAR',
+  'home.meaning': 'O QUE ISSO SIGNIFICA',
+  'home.meaningTitle': 'ESTADO FUNCIONAL',
+  'home.focusOfDay': 'FOCO DO DIA',
+  'home.recommendedAction': 'AÇÃO RECOMENDADA',
+  'home.prepareBreak': 'PREPARE O RESET ANTES DA QUEDA',
+  'home.recommendedActionBody': 'entre na sessão com o terceiro bloco protegido e o reset já previsto.',
+  'home.startWithPlan': 'INICIAR SESSÃO COM PLANO',
+  'home.toolsForThis': 'FERRAMENTAS PARA ISSO',
+  'home.toolsTitle': 'DUAS FERRAMENTAS, UM OBJETIVO',
+  'home.toolsBody': 'use apenas o que ajuda a sustentar foco e interromper a queda antes que ela aconteça.',
+  'home.break4Tool': 'RESET PROGRAMADO',
+  'home.break4Title': 'BREAK 4',
+  'home.break4Body': 'quatro minutos de respiração, mobilidade, água e reorientação antes da janela crítica.',
+  'home.lockInBody': 'preparação de foco para entrar no primeiro bloco com menos ruído mental.',
+  'home.decisionCueTitle': 'UMA DECISÃO POR VEZ',
+  'home.decisionCueWhy': 'este lembrete reduz a chance de carregar o resultado da mão anterior para a próxima decisão.',
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
