@@ -68,9 +68,6 @@ for (const [locale, catalog] of Object.entries(catalogs)) {
 }
 
 const LEGACY_I18N_FILES = new Set([
-  'app/index.tsx',
-  'src/ui.tsx',
-  'src/screens/HomeScreen.tsx',
   'src/screens/SessionScreen.tsx',
   'src/screens/TrainScreen.tsx',
   'src/screens/CoachScreen.tsx',
@@ -85,6 +82,7 @@ const invariantStrings = new Set([
   'A',
   'B',
   'C',
+  'A-',
 ]);
 
 const userFacingAttributes = new Set([

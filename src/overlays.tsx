@@ -7,8 +7,10 @@ import { diaryQuestions, lifestyleSections, mentalPlaylists, stoicPrinciples, te
 import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
 import { s } from './styles';
 import { GameState, Module, moduleMeta } from './types';
+import { useI18n } from './i18n';
 
 export function ModuleOverlay({ module, close }: { module:Module; close:()=>void }) {
+  const { t } = useI18n();
   const [playlist,setPlaylist]=useState('a-game');
   const [reaction,setReaction]=useState<number|null>(null);
   const [diaryIndex,setDiaryIndex]=useState(0);
@@ -26,7 +28,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   else if(module==='vaccines') body=<View style={s.moduleContent}><View style={s.panel}><Label>BAD BEAT VACCINE / 01</Label><Serif style={s.overlayHeadline}>AA vs KK · all-in pré-flop</Serif><AppText style={s.dangerText}>RIVER: K</AppText><AppText style={s.body}>Seu resultado foi negativo. A decisão anterior continua sendo avaliada pelo processo, não pelo river.</AppText></View>{['Jogo sempre azarado.','Não deveria ter ido all-in.','Decisão correta, resultado desfavorável.','Preciso recuperar agora.'].map(x=><TouchableOpacity key={x} onPress={()=>setVaccine(x)} style={[s.option,vaccine===x&&s.optionActive]}><AppText style={[s.optionText,vaccine===x&&s.optionTextActive]}>{x}</AppText></TouchableOpacity>)}</View>;
   else body=<View style={s.moduleContent}>{stoicPrinciples.map(x=><View key={x.title} style={s.stoic}><Label>{x.title}</Label><Serif style={s.stoicText}>{x.body}</Serif></View>)}</View>;
 
-  return <View style={s.overlay}><SafeAreaView style={s.flex}><View style={s.overlayHeader}><View><Label>{meta.subtitle}</Label><Serif style={s.overlayTitle}>{meta.title}</Serif></View><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View><ScrollView contentContainerStyle={s.overlayScroll}>{body}</ScrollView></SafeAreaView></View>;
+  return <View style={s.overlay}><SafeAreaView style={s.flex}><View style={s.overlayHeader}><View><Label>{t(meta.subtitleKey)}</Label><Serif style={s.overlayTitle}>{t(meta.titleKey)}</Serif></View><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View><ScrollView contentContainerStyle={s.overlayScroll}>{body}</ScrollView></SafeAreaView></View>;
 }
 
 export function BreakOverlay({ close }: { close:()=>void }) {

@@ -39,6 +39,8 @@ export const pt = {
   'home.protectThirdBlock': 'Proteja o terceiro bloco.',
   'home.intelligenceBody': 'Nas últimas sessões longas, seu foco caiu antes do cansaço subjetivo. Programe o reset antes da queda, não depois.',
   'home.mentalAudio': 'ÁUDIO MENTAL',
+  'home.lockIn': 'LOCK IN',
+  'home.heatmap': 'Mapa de calor',
   'home.warRoom': 'SALA DE GUERRA',
   'home.quickFocus': '38 min · Foco',
   'home.patternsTriggers': 'Padrões · gatilhos',

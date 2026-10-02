@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { C } from './theme';
 import { s } from './styles';
+import { useI18n } from './i18n';
 
 const REGULAR_ITALIC = 'TitilliumWeb_400Regular_Italic';
 const SEMIBOLD_ITALIC = 'TitilliumWeb_600SemiBold_Italic';
@@ -81,14 +82,15 @@ export function Backdrop({ uri, children, blur = 10, overlay = 0.78 }: {
 }
 
 export function Header({ title, subtitle }: { title: string; subtitle?: string }) {
+  const { t } = useI18n();
   return (
     <View style={s.header}>
       <View>
-        <AppText style={s.stackup}>STACKUP HOLD'EM</AppText>
+        <AppText style={s.stackup}>{t('brand.stackup')}</AppText>
         <Serif style={s.headerTitle}>{title}</Serif>
         {subtitle ? <AppText style={s.headerSub}>{subtitle}</AppText> : null}
       </View>
-      <View style={s.status}><View style={s.statusDot} /><AppText style={s.statusText}>ACTIVE</AppText></View>
+      <View style={s.status}><View style={s.statusDot} /><AppText style={s.statusText}>{t('common.active')}</AppText></View>
     </View>
   );
 }

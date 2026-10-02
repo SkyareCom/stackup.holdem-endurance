@@ -41,6 +41,8 @@ export const es: TranslationCatalog = {
   'home.protectThirdBlock': 'Protege el tercer bloque.',
   'home.intelligenceBody': 'En las últimas sesiones largas, tu enfoque cayó antes que la fatiga subjetiva. Programa el reset antes de la caída, no después.',
   'home.mentalAudio': 'AUDIO MENTAL',
+  'home.lockIn': 'LOCK IN',
+  'home.heatmap': 'Mapa de calor',
   'home.warRoom': 'SALA DE GUERRA',
   'home.quickFocus': '38 min · Enfoque',
   'home.patternsTriggers': 'Patrones · disparadores',
