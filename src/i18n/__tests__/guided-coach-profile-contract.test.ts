@@ -56,6 +56,19 @@ describe('guided Coach and Profile contract', () => {
     expect(profile.indexOf("t('profile.plan')")).toBeGreaterThan(settingsIndex);
   });
 
+  it('does not present fabricated evolution metrics before history exists', () => {
+    expect(profile).toContain('const hasEvolutionHistory=false');
+    expect(profile).toContain("t('profile.evolutionInsufficient')");
+    expect(profile).toContain("t('profile.evolutionCollect')");
+    expect(profile).not.toContain('>125</Serif>');
+    expect(profile).not.toContain('>88</Serif>');
+  });
+
+  it('keeps Coach context honest when historical context is unavailable', () => {
+    expect(coach).toContain("t('coach.contextNoHistory')");
+    expect(coach).not.toContain("t('coach.contextBody')");
+  });
+
   it('shows explicit insufficient-history copy for patterns when needed', () => {
     expect(profile).toContain("t('profile.patternsInsufficient')");
     expect(profile).toContain("t('profile.patternsCollect')");
