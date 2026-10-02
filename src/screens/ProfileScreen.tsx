@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,7 +7,7 @@ import { C, PHOTO } from '../theme';
 import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
 import { LanguageSelector } from '../components/LanguageSelector';
-import { buildDevelopmentSnapshot, type Temperament, type TiltTrigger } from '../performanceEngine';
+import { buildDevelopmentSnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
 import { useI18n, type TranslationKey } from '../i18n';
 
@@ -32,6 +32,8 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const router = useRouter();
   const { profile,updateProfile,updateExtraGrind,updateStopRules,sessions,baseline,clearHistory }=usePerformance();
   const developmentSnapshot=buildDevelopmentSnapshot(sessions);
+  const tiltProfile=buildTiltProfile(sessions);
+  const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.88}>
@@ -87,9 +89,19 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
 
           <View style={s.profileSection}>
             <Label>{t('profile.patterns')}</Label>
-            {baseline.topTrigger?<View style={s.panel}>
-              <Label>{t('profile.topTrigger')}</Label><Serif style={s.actionTitle}>{t(triggerKeys[baseline.topTrigger])}</Serif>
-              <View style={s.guidedBlock}><Label>{t('profile.resultCorrelation')}</Label>{baseline.resultCorrelation===null?<AppText style={s.body}>{t('profile.correlationInsufficient')}</AppText>:<AppText style={s.goldText}>{baseline.resultCorrelation.toFixed(2)}</AppText>}</View>
+            {sessions.length?<View style={s.panel}>
+              <Label>{t('profile.tiltDNA')}</Label>
+              <AppText style={s.body}>{t('profile.tiltDNABody')}</AppText>
+              {tiltProfile.length?tiltProfile.slice(0,3).map(item=><View key={item.trigger} style={s.rowBetween}><AppText style={s.body}>{t(triggerKeys[item.trigger])}</AppText><AppText style={s.goldText}>{item.count}</AppText></View>):<AppText style={s.body}>{t('profile.patternsCollect')}</AppText>}
+              <TouchableOpacity style={s.coachContextToggle} onPress={()=>setAnalyticsExpanded(v=>!v)}><AppText style={s.coachContextToggleText}>{t(analyticsExpanded?'profile.hideAnalytics':'profile.showAnalytics')}</AppText><Ionicons name={analyticsExpanded?'chevron-up':'chevron-down'} size={18} color={C.goldLight}/></TouchableOpacity>
+              {analyticsExpanded?<View style={s.contextList}>
+                <AppText style={s.body}>{t('profile.correlationBody')}</AppText>
+                <View style={s.rowBetween}><Label>{t('profile.resultCorrelation')}</Label><AppText style={s.goldText}>{baseline.resultCorrelation===null?'—':baseline.resultCorrelation.toFixed(2)}</AppText></View>
+                <View style={s.rowBetween}><Label>{t('profile.sleepCorrelation')}</Label><AppText style={s.goldText}>{baseline.sleepToMentalEvCorrelation===null?'—':baseline.sleepToMentalEvCorrelation.toFixed(2)}</AppText></View>
+                <View style={s.rowBetween}><Label>{t('profile.stressCorrelation')}</Label><AppText style={s.goldText}>{baseline.stressToMentalEvCorrelation===null?'—':baseline.stressToMentalEvCorrelation.toFixed(2)}</AppText></View>
+                <View style={s.rowBetween}><Label>{t('profile.readinessCorrelation')}</Label><AppText style={s.goldText}>{baseline.readinessToMentalEvCorrelation===null?'—':baseline.readinessToMentalEvCorrelation.toFixed(2)}</AppText></View>
+                {baseline.resultCorrelation===null?<AppText style={s.body}>{t('profile.correlationInsufficient')}</AppText>:null}
+              </View>:null}
             </View>:<>
               <AppText style={s.body}>{t('profile.patternsInsufficient')}</AppText>
               <AppText style={s.body}>{t('profile.patternsCollect')}</AppText>
