@@ -139,6 +139,29 @@ function scanTsx(filePath, relative) {
   visit(source);
 }
 
+
+const localizableContentProperties = new Set([
+  'title', 'subtitle', 'body', 'mode', 'description', 'cue', 'text', 'label',
+  'name', 'copy', 'question', 'answer', 'message', 'placeholder',
+]);
+
+function scanContentTs(filePath, relative) {
+  const sourceText = fs.readFileSync(filePath, 'utf8');
+  const source = ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+
+  function visit(node) {
+    if (ts.isPropertyAssignment(node)) {
+      const name = ts.isIdentifier(node.name) || ts.isStringLiteral(node.name) ? node.name.text : null;
+      if (name && localizableContentProperties.has(name) && (ts.isStringLiteral(node.initializer) || ts.isNoSubstitutionTemplateLiteral(node.initializer))) {
+        fail(`${relative} contains hard-coded localizable ${name}: "${node.initializer.text}"`);
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+
+  visit(source);
+}
+
 function walk(dir, found = []) {
   if (!fs.existsSync(dir)) return found;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -156,6 +179,8 @@ const candidates = [
   ...walk(path.join(root, 'src/components')),
   ...walk(path.join(root, 'src/screens')),
 ];
+
+scanContentTs(path.join(root, 'src/content.ts'), 'src/content.ts');
 
 for (const file of [...new Set(candidates)]) {
   if (!fs.existsSync(file)) continue;

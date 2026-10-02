@@ -59,7 +59,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     body=<View style={s.moduleContent}>{mentalPlaylists.map(p=><TouchableOpacity key={p.id} onPress={()=>setPlaylist(p.id)} style={[s.playlist,playlist===p.id&&s.playlistActive]}>
       <View style={[s.playCircle,playlist===p.id&&s.playCircleActive]}><Ionicons name={playlist===p.id?'pause':'play'} size={17} color={playlist===p.id?C.ink:C.goldLight}/></View>
       <View style={s.flex}>
-        <View style={s.rowBetween}><Serif style={s.playlistTitle}>{p.title}</Serif><AppText style={s.goldText}>{p.duration}</AppText></View>
+        <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(p.titleKey)}</Serif><AppText style={s.goldText}>{p.duration}</AppText></View>
         <Label>{t(p.modeKey)}</Label>
         <AppText style={s.playlistBody}>{t(p.descriptionKey)}</AppText>
         {playlist===p.id?<Serif style={s.nowCue}>“{t(p.cueKey)}”</Serif>:null}

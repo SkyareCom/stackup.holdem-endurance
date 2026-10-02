@@ -1,17 +1,17 @@
 import type { TranslationKey } from './i18n';
 
 export const mentalPlaylists = [
-  { id: 'lock-in', title: 'LOCK IN', duration: '38 MIN', modeKey: 'playlist.lockIn.mode', descriptionKey: 'playlist.lockIn.description', cueKey: 'playlist.lockIn.cue' },
-  { id: 'a-game', title: 'A-GAME', duration: '45 MIN', modeKey: 'playlist.aGame.mode', descriptionKey: 'playlist.aGame.description', cueKey: 'playlist.aGame.cue' },
-  { id: 'discipline', title: 'DISCIPLINE', duration: '32 MIN', modeKey: 'playlist.discipline.mode', descriptionKey: 'playlist.discipline.description', cueKey: 'playlist.discipline.cue' },
-  { id: 'long-grind', title: 'LONG GRIND', duration: '55 MIN', modeKey: 'playlist.longGrind.mode', descriptionKey: 'playlist.longGrind.description', cueKey: 'playlist.longGrind.cue' },
-  { id: 'pressure', title: 'PRESSURE', duration: '28 MIN', modeKey: 'playlist.pressure.mode', descriptionKey: 'playlist.pressure.description', cueKey: 'playlist.pressure.cue' },
-  { id: 'mental-fortress', title: 'MENTAL FORTRESS', duration: '34 MIN', modeKey: 'playlist.mentalFortress.mode', descriptionKey: 'playlist.mentalFortress.description', cueKey: 'playlist.mentalFortress.cue' },
-  { id: 'cooldown', title: 'COOLDOWN', duration: '18 MIN', modeKey: 'playlist.cooldown.mode', descriptionKey: 'playlist.cooldown.description', cueKey: 'playlist.cooldown.cue' },
-  { id: 'break-4', title: 'BREAK 4', duration: '04:00', modeKey: 'playlist.break4.mode', descriptionKey: 'playlist.break4.description', cueKey: 'playlist.break4.cue' },
+  { id: 'lock-in', titleKey: 'playlist.lockIn.title', duration: '38 MIN', modeKey: 'playlist.lockIn.mode', descriptionKey: 'playlist.lockIn.description', cueKey: 'playlist.lockIn.cue' },
+  { id: 'a-game', titleKey: 'playlist.aGame.title', duration: '45 MIN', modeKey: 'playlist.aGame.mode', descriptionKey: 'playlist.aGame.description', cueKey: 'playlist.aGame.cue' },
+  { id: 'discipline', titleKey: 'playlist.discipline.title', duration: '32 MIN', modeKey: 'playlist.discipline.mode', descriptionKey: 'playlist.discipline.description', cueKey: 'playlist.discipline.cue' },
+  { id: 'long-grind', titleKey: 'playlist.longGrind.title', duration: '55 MIN', modeKey: 'playlist.longGrind.mode', descriptionKey: 'playlist.longGrind.description', cueKey: 'playlist.longGrind.cue' },
+  { id: 'pressure', titleKey: 'playlist.pressure.title', duration: '28 MIN', modeKey: 'playlist.pressure.mode', descriptionKey: 'playlist.pressure.description', cueKey: 'playlist.pressure.cue' },
+  { id: 'mental-fortress', titleKey: 'playlist.mentalFortress.title', duration: '34 MIN', modeKey: 'playlist.mentalFortress.mode', descriptionKey: 'playlist.mentalFortress.description', cueKey: 'playlist.mentalFortress.cue' },
+  { id: 'cooldown', titleKey: 'playlist.cooldown.title', duration: '18 MIN', modeKey: 'playlist.cooldown.mode', descriptionKey: 'playlist.cooldown.description', cueKey: 'playlist.cooldown.cue' },
+  { id: 'break-4', titleKey: 'playlist.break4.title', duration: '04:00', modeKey: 'playlist.break4.mode', descriptionKey: 'playlist.break4.description', cueKey: 'playlist.break4.cue' },
 ] as const satisfies readonly {
   id: string;
-  title: string;
+  titleKey: TranslationKey;
   duration: string;
   modeKey: TranslationKey;
   descriptionKey: TranslationKey;
