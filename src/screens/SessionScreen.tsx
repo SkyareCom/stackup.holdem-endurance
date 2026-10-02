@@ -159,7 +159,11 @@ function Ready({ onStart }: { onStart:()=>void }) {
         <Label>{t('session.processGoal')}</Label>
         <ChoiceGrid items={processGoals.map(x=>({id:x.id,label:t(x.labelKey)}))} value={goal} onChange={setGoal}/>
         <Label>{t('pregrind.stopRules')}</Label>
-        <AppText style={s.body}>{profile.stopRules.maxDurationMinutes} min · {profile.stopRules.maxReentries} reentry · {t('profile.noStakeIncrease')}</AppText>
+        <View style={s.rowBetween}>
+          <View><Label>{t('profile.maxDuration')}</Label><AppText style={s.body}>{profile.stopRules.maxDurationMinutes}</AppText></View>
+          <View><Label>{t('profile.maxReentries')}</Label><AppText style={s.body}>{profile.stopRules.maxReentries}</AppText></View>
+        </View>
+        <AppText style={s.body}>{t('profile.noStakeIncrease')}</AppText>
       </View>
     </>:null}
 
