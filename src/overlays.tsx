@@ -3,13 +3,13 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { C } from './theme';
-import { diaryQuestions, emotionalHeatmapBuckets, heatmapIntensityLegend, lifestyleSections, mentalPlaylists, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
+import { diaryQuestions, heatmapIntensityLegend, lifestyleSections, mentalPlaylists, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
 import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
 import { TestIntro } from './components/TestIntro';
 import { s } from './styles';
 import { ExercisePhase, GameState, Module, moduleMeta } from './types';
 import { useI18n, type TranslationKey } from './i18n';
-import { getSOSProtocol, type TiltTrigger } from './performanceEngine';
+import { buildHeatmap, getSOSProtocol, type HeatmapIntensity, type HeatmapWindowId, type TiltTrigger } from './performanceEngine';
 import { usePerformance } from './performanceStore';
 
 const vaccineAnswers = [
@@ -51,7 +51,21 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   };
   const meta=moduleMeta[module];
   const intro=moduleIntroById[module];
-  const heatmapHasHistory=false;
+  const { sessions }=usePerformance();
+  const heatmap=buildHeatmap(sessions);
+  const heatmapHasHistory=heatmap.some(bucket=>bucket.count>0);
+  const heatmapWindowKey:Record<HeatmapWindowId,TranslationKey>={
+    '0-45':'heatmap.window.0_45','45-90':'heatmap.window.45_90','90-135':'heatmap.window.90_135',
+    '135-180':'heatmap.window.135_180','180-plus':'heatmap.window.180_plus',
+  };
+  const heatmapIntensityKey:Record<HeatmapIntensity,TranslationKey>={
+    low:'heatmap.intensity.low',moderate:'heatmap.intensity.moderate',high:'heatmap.intensity.high',critical:'heatmap.intensity.critical',
+  };
+  const heatTriggerKey:Record<TiltTrigger,TranslationKey>={
+    'bad-beat':'trigger.badBeat','own-error':'trigger.ownError',anger:'trigger.anger',rush:'trigger.rush',
+    fear:'trigger.fear',euphoria:'trigger.euphoria',fatigue:'trigger.fatigue',autopilot:'trigger.autopilot',
+    revenge:'trigger.revenge',personal:'trigger.personal',
+  };
 
   let body:React.ReactNode;
 
@@ -67,15 +81,13 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
         <AppText style={s.body}>{t('overlay.heatmapExplanation')}</AppText>
         {heatmapHasHistory?<>
           <View style={s.heatLegend}>{heatmapIntensityLegend.map(item=><View key={item.id} style={s.heatLegendItem}><Label>{t(item.labelKey)}</Label></View>)}</View>
-          <View style={s.heatmap}>{emotionalHeatmapBuckets.map(bucket=><View key={bucket.id} style={s.heatBucket}>
-            <View style={s.rowBetween}><AppText style={s.goldText}>{t(bucket.labelKey)}</AppText><Label>{t(bucket.intensityKey)}</Label></View>
-            {bucket.triggerKeys.length?<AppText style={s.heatTriggers}>{bucket.triggerKeys.map(key=>t(key)).join(' + ')}</AppText>:null}
+          <View style={s.heatmap}>{heatmap.filter(bucket=>bucket.count>0).map(bucket=><View key={bucket.id} style={s.heatBucket}>
+            <View style={s.rowBetween}><AppText style={s.goldText}>{t(heatmapWindowKey[bucket.id])}</AppText><Label>{t(heatmapIntensityKey[bucket.intensity])}</Label></View>
+            {bucket.triggers.length?<AppText style={s.heatTriggers}>{bucket.triggers.map(key=>t(heatTriggerKey[key])).join(' + ')}</AppText>:null}
           </View>)}</View>
-          <View style={s.guidedBlock}><Label>{t('common.yourReading')}</Label><AppText style={s.body}>{t('overlay.heatmapReading')}</AppText></View>
+          <View style={s.guidedBlock}><Label>{t('common.yourReading')}</Label><AppText style={s.body}>{t('profile.correlationBody')}</AppText></View>
           <View style={s.guidedBlock}>
             <Label>{t('common.nextAction')}</Label>
-            <AppText style={s.heatAction}>{t('overlay.heatmapActionBreak')}</AppText>
-            <AppText style={s.heatAction}>{t('overlay.heatmapActionCue')}</AppText>
             <AppText style={s.heatAction}>{t('overlay.heatmapActionSlow')}</AppText>
             <AppText style={s.heatAction}>{t('overlay.heatmapActionCheckin')}</AppText>
           </View>
