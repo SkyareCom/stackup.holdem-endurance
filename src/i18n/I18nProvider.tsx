@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { DEFAULT_LOCALE } from './core';
+import { DEFAULT_LOCALE, translate } from './core';
 import { loadLocale, saveLocale } from './storage';
 import type { I18nContextValue, Locale, TranslationKey } from './types';
 
@@ -24,7 +24,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     void saveLocale(next);
   }, []);
 
-  const t = useCallback((key: TranslationKey) => key, []);
+  const t = useCallback((key: TranslationKey) => translate(locale, key), [locale]);
 
   const value = useMemo<I18nContextValue>(() => ({ locale, setLocale, t }), [locale, setLocale, t]);
 

@@ -1,5 +1,5 @@
 export type Locale = 'pt' | 'en' | 'es';
-export type TranslationKey = string;
+export type TranslationKey = keyof typeof import('./translations/pt').pt;
 
 export type I18nContextValue = {
   locale: Locale;
