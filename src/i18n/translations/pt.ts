@@ -728,6 +728,11 @@ export const pt = {
   'debrief.emotionalComponent': "EMOTIONAL CONTROL EV",
   'profile.showAnalytics': "VER ANÁLISES",
   'profile.hideAnalytics': "OCULTAR ANÁLISES",
+  'pregrind.activation': 'ATIVAÇÃO',
+  'pregrind.activationBody': 'faça a preparação recomendada antes de abrir a primeira mão para entrar com uma regra clara de processo.',
+  'pregrind.openAudio': 'ABRIR ÁUDIO MENTAL',
+  'pregrind.openBreathing': 'ABRIR RESET GUIADO',
+  'pregrind.activationComplete': 'PREPARAÇÃO CONCLUÍDA · INICIAR SESSÃO',
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
