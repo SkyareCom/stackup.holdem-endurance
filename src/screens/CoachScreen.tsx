@@ -31,7 +31,7 @@ const actionKeys:Record<SessionAction,TranslationKey>={
 
 export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
   const { t, locale } = useI18n();
-  const { latestCheckin,activeSession,baseline}=usePerformance();
+  const { latestCheckin,activeSession,baseline,profile}=usePerformance();
   const [input,setInput]=useState('');
   const [messages,setMessages]=useState<ChatMessage[]>([]);
   const [contextExpanded,setContextExpanded]=useState(false);
@@ -57,6 +57,10 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
     canLeave:activeSession?.plan.canLeave??true,
     tiltRisk:currentRisk,
     fatigue:last?.fatigue??latestCheckin?.fatigue??0,
+    focus:last?.focus??latestCheckin?.mentalDrive,
+    tension:last?.tension??latestCheckin?.tension,
+    minFocus:profile.stopRules.minFocus,
+    maxTension:profile.stopRules.maxTension,
   }):null;
 
   return (
