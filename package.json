@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "vitest run",
-    "test:i18n": "vitest run src/i18n/__tests__"
+    "test:i18n": "vitest run src/i18n/__tests__",
+    "check:i18n": "node scripts/check-i18n.mjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",

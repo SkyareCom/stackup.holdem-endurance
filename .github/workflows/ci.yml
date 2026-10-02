@@ -26,5 +26,11 @@ jobs:
       - name: Typography validation
         run: node scripts/check-typography.mjs
 
+      - name: i18n validation
+        run: node scripts/check-i18n.mjs
+
       - name: TypeScript validation
         run: npx tsc --noEmit
+
+      - name: Web export validation
+        run: npx expo export --platform web
