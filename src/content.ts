@@ -19,13 +19,13 @@ export const mentalPlaylists = [
 }[];
 
 export const processGoals = [
-  { id: 'process', labelKey: 'session.goal.process' },
-  { id: 'patience', labelKey: 'session.goal.patience' },
-  { id: 'tempo', labelKey: 'session.goal.tempo' },
-  { id: 'ranges', labelKey: 'session.goal.ranges' },
-  { id: 'breaks', labelKey: 'session.goal.breaks' },
-  { id: 'discipline', labelKey: 'session.goal.discipline' },
-] as const satisfies readonly { id: string; labelKey: TranslationKey }[];
+  { id: 'process', labelKey: 'session.goal.process', descriptionKey: 'session.goal.process.body' },
+  { id: 'patience', labelKey: 'session.goal.patience', descriptionKey: 'session.goal.patience.body' },
+  { id: 'tempo', labelKey: 'session.goal.tempo', descriptionKey: 'session.goal.tempo.body' },
+  { id: 'ranges', labelKey: 'session.goal.ranges', descriptionKey: 'session.goal.ranges.body' },
+  { id: 'breaks', labelKey: 'session.goal.breaks', descriptionKey: 'session.goal.breaks.body' },
+  { id: 'discipline', labelKey: 'session.goal.discipline', descriptionKey: 'session.goal.discipline.body' },
+] as const satisfies readonly { id: string; labelKey: TranslationKey; descriptionKey: TranslationKey }[];
 
 export type ProcessGoalId = (typeof processGoals)[number]['id'];
 

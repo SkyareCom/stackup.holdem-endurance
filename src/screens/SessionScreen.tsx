@@ -6,6 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { C, PHOTO } from '../theme';
 import { decisionCues, processGoals, warRoomTriggers, type ProcessGoalId, type WarRoomTriggerId } from '../content';
 import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
+import { FlowProgress } from '../components/FlowProgress';
+import { GuidedSection } from '../components/GuidedSection';
 import { s } from '../styles';
 import { GameState, Module, Phase } from '../types';
 import { useI18n } from '../i18n';
@@ -21,11 +23,18 @@ function Ready({ onStart }: { onStart:()=>void }) {
   const selectedGoal=processGoals.find((x)=>x.id===goal) ?? processGoals[0];
 
   return <ScrollView contentContainerStyle={s.scroll}>
-    <View style={s.lead}><Label>{t('session.readyCheck')}</Label><Serif style={s.leadTitle}>{t('session.readyTitle')}</Serif><AppText style={s.body}>{t('session.readyBody')}</AppText></View>
+    <FlowProgress current={1} total={3} label={t('session.preparation')}/>
+    <View style={s.lead}><Label>{t('session.readyCheck')}</Label><Serif style={s.leadTitle}>{t('session.readyTitle').toUpperCase()}</Serif><AppText style={s.body}>{t('session.readyBody')}</AppText></View>
+    <View style={s.guidedBlock}><Label>{t('common.whatItIs')}</Label><AppText style={s.body}>{t('session.readyWhat')}</AppText></View>
+    <View style={s.guidedBlock}><Label>{t('session.whyItMatters')}</Label><AppText style={s.body}>{t('session.readyWhy')}</AppText></View>
+    <View style={s.guidedBlock}><Label>{t('common.howToUse')}</Label><AppText style={s.body}>{t('session.readyHow')}</AppText></View>
     <View style={s.panel}><Scale label={t('home.energy')} value={energy} setValue={setEnergy}/><Scale label={t('home.focus')} value={focus} setValue={setFocus}/><Scale label={t('session.stress')} value={stress} setValue={setStress}/></View>
+    <View style={s.guidedBlock}><Label>{t('common.yourReading')}</Label><AppText style={s.body}>{t('session.readyReading')}</AppText><AppText style={s.goldText}>{energy}/5 · {focus}/5 · {stress}/5</AppText></View>
     <View style={s.panel}>
       <Label>{t('session.processGoal')}</Label>
       <View style={s.chips}>{processGoals.map(x=><TouchableOpacity key={x.id} onPress={()=>setGoal(x.id)} style={[s.chip,goal===x.id&&s.chipActive]}><AppText style={[s.chipText,goal===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View>
+      <Serif style={s.actionTitle}>{t(selectedGoal.labelKey).toUpperCase()}</Serif>
+      <AppText style={s.body}>{t(selectedGoal.descriptionKey)}</AppText>
       <AppText style={s.body}>{t('session.currentIntention')} <AppText style={s.goldText}>{t(selectedGoal.labelKey)}</AppText>. {t('session.intentionHelp')}</AppText>
     </View>
     <PremiumButton label={t('session.start')} onPress={onStart}/>
@@ -37,14 +46,17 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const [state,setState]=useState<GameState>('B'); const [cue,setCue]=useState(0);
 
   return <ScrollView contentContainerStyle={s.scroll}>
+    <FlowProgress current={2} total={3} label={t('session.activeStage')}/>
     <ImageBackground source={{uri:PHOTO.session}} blurRadius={3} style={s.sessionHero} imageStyle={s.sessionHeroImage}>
       <LinearGradient colors={['rgba(8,6,4,.10)','rgba(14,10,6,.35)','rgba(7,6,5,.94)']} style={StyleSheet.absoluteFill}/>
       <View style={s.sessionHeroContent}><View style={s.rowBetween}><Label>{t('session.liveMtt')}</Label><AppText style={s.live}>{t('session.live')}</AppText></View><Serif style={s.clock}>02:47:18</Serif><AppText style={s.body}>{t('session.presenceFirst')}</AppText></View>
     </ImageBackground>
     <View style={s.panel}><Label>{t('session.executionState')}</Label><Serif style={s.gameState}>{state}-GAME</Serif><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
     <TouchableOpacity style={s.cueBlock} onPress={()=>setCue((cue+1)%decisionCues.length)}><Label>{t('session.tapCue')}</Label><Serif style={s.cueText}>“{t(decisionCues[cue])}”</Serif></TouchableOpacity>
-    <TouchableOpacity style={s.audioBar} onPress={openAudio}><View style={s.play}><Ionicons name="play" size={18} color={C.ink}/></View><View style={s.flex}><Label>{t('session.mentalPlaylist')}</Label><AppText style={s.audioTitle}>{t('session.deepFocus')}</AppText><View style={s.track}><View style={[s.fill,{width:'43%'}]}/></View></View><AppText style={s.audioTime}>18:42 / 45:00</AppText></TouchableOpacity>
-    <View style={s.twoCols}><PremiumButton label={t('session.checkin')} secondary onPress={openCheckin} icon="pulse-outline"/><PremiumButton label={t('session.break4')} secondary onPress={openBreak} icon="pause-outline"/></View>
+    <GuidedSection subtitle={t('session.currentPriority')} title={t('session.protectTempo')} description={t('session.protectTempoBody')}>
+      <TouchableOpacity style={s.audioBar} onPress={openAudio}><View style={s.play}><Ionicons name="play" size={18} color={C.ink}/></View><View style={s.flex}><Label>{t('session.mentalPlaylist')}</Label><AppText style={s.audioTitle}>{t('session.deepFocus')}</AppText><View style={s.track}><View style={[s.fill,{width:'43%'}]}/></View></View><AppText style={s.audioTime}>18:42 / 45:00</AppText></TouchableOpacity>
+      <View style={s.twoCols}><PremiumButton label={t('session.checkin')} secondary onPress={openCheckin} icon="pulse-outline"/><PremiumButton label={t('session.break4')} secondary onPress={openBreak} icon="pause-outline"/></View>
+    </GuidedSection>
     <PremiumButton label={t('session.end')} secondary onPress={endSession} icon="stop-circle-outline"/>
   </ScrollView>;
 }
@@ -56,10 +68,13 @@ function Debrief({ save, openDiary }: { save:()=>void; openDiary:()=>void }) {
   const toggle=(id:WarRoomTriggerId)=>setTriggers(v=>v.includes(id)?v.filter(t=>t!==id):[...v,id]);
 
   return <ScrollView contentContainerStyle={s.scroll}>
-    <View style={s.lead}><Label>{t('session.debrief')}</Label><Serif style={s.leadTitle}>{t('session.debriefTitle')}</Serif><AppText style={s.body}>{t('session.debriefBody')}</AppText></View>
-    <View style={s.panel}><Label>{t('session.predominantState')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
-    <View style={s.panel}><Label>{t('session.whatChanged')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>toggle(x.id)} style={[s.chip,triggers.includes(x.id)&&s.chipActive]}><AppText style={[s.chipText,triggers.includes(x.id)&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
-    <PremiumButton label={t('session.openDiary')} secondary onPress={openDiary} icon="mic-outline"/>
+    <FlowProgress current={3} total={3} label={t('session.postSession')}/>
+    <View style={s.lead}><Label>{t('session.debrief')}</Label><Serif style={s.leadTitle}>{t('session.debriefTitle').toUpperCase()}</Serif><AppText style={s.body}>{t('session.debriefBody')}</AppText></View>
+    <View style={s.panel}><Label>{t('session.howEnded')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+    <View style={s.panel}><Label>{t('session.whatChanged')}</Label><Label>{t('session.triggers')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>toggle(x.id)} style={[s.chip,triggers.includes(x.id)&&s.chipActive]}><AppText style={[s.chipText,triggers.includes(x.id)&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
+    <GuidedSection subtitle={t('session.whatLearn')} title={t('session.debriefLearningTitle')} description={t('session.debriefLearningBody')}/>
+    <PremiumButton label={t('session.openDiary')} secondary onPress={openDiary} icon="book-outline"/>
+    <GuidedSection subtitle={t('session.nextTraining')} title={t('session.nextTrainingTitle')} description={t('session.nextTrainingBody')}/>
     <PremiumButton label={t('session.save')} onPress={save}/>
   </ScrollView>;
 }
