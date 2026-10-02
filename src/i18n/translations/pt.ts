@@ -485,6 +485,7 @@ export const pt = {
   'profile.settings': 'CONFIGURAÇÕES',
   'profile.language': 'IDIOMA',
 
+  'session.resetBeforeStart': 'FAZER RESET ANTES DE INICIAR',
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
