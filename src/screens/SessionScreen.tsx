@@ -4,36 +4,68 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { C, PHOTO } from '../theme';
-import { decisionCues, warRoomTriggers } from '../content';
+import { decisionCues, processGoals, warRoomTriggers, type ProcessGoalId, type WarRoomTriggerId } from '../content';
 import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
 import { GameState, Module, Phase } from '../types';
+import { useI18n } from '../i18n';
 
 function Scale({ label, value, setValue }: { label:string; value:number; setValue:(n:number)=>void }) {
   return <View style={s.scaleBlock}><View style={s.rowBetween}><Label>{label}</Label><AppText style={s.metricValue}>{value}/5</AppText></View><View style={s.scaleRow}>{[1,2,3,4,5].map(n=><TouchableOpacity key={n} onPress={()=>setValue(n)} style={[s.scaleDot,value===n&&s.scaleDotActive]}><AppText style={[s.scaleText,value===n&&s.scaleTextActive]}>{n}</AppText></TouchableOpacity>)}</View></View>;
 }
 
 function Ready({ onStart }: { onStart:()=>void }) {
-  const [energy,setEnergy]=useState(4), [focus,setFocus]=useState(3), [stress,setStress]=useState(2), [goal,setGoal]=useState('PROCESSO');
-  return <ScrollView contentContainerStyle={s.scroll}><View style={s.lead}><Label>PRE-SESSION / READY CHECK</Label><Serif style={s.leadTitle}>Entre no jogo antes de abrir a primeira mão.</Serif><AppText style={s.body}>Sessenta segundos para medir estado, definir intenção e reduzir decisões contaminadas pela pressa.</AppText></View><View style={s.panel}><Scale label="ENERGIA" value={energy} setValue={setEnergy}/><Scale label="FOCO" value={focus} setValue={setFocus}/><Scale label="ESTRESSE" value={stress} setValue={setStress}/></View><View style={s.panel}><Label>OBJETIVO DE PROCESSO</Label><View style={s.chips}>{['PROCESSO','PACIÊNCIA','TEMPO','RANGES','PAUSAS','DISCIPLINA'].map(x=><TouchableOpacity key={x} onPress={()=>setGoal(x)} style={[s.chip,goal===x&&s.chipActive]}><AppText style={[s.chipText,goal===x&&s.chipTextActive]}>{x}</AppText></TouchableOpacity>)}</View><AppText style={s.body}>Intenção atual: <AppText style={s.goldText}>{goal}</AppText>. Se perceber urgência, desacelere antes da próxima decisão relevante.</AppText></View><PremiumButton label="START SESSION" onPress={onStart}/></ScrollView>;
+  const { t } = useI18n();
+  const [energy,setEnergy]=useState(4), [focus,setFocus]=useState(3), [stress,setStress]=useState(2);
+  const [goal,setGoal]=useState<ProcessGoalId>('process');
+  const selectedGoal=processGoals.find((x)=>x.id===goal) ?? processGoals[0];
+
+  return <ScrollView contentContainerStyle={s.scroll}>
+    <View style={s.lead}><Label>{t('session.readyCheck')}</Label><Serif style={s.leadTitle}>{t('session.readyTitle')}</Serif><AppText style={s.body}>{t('session.readyBody')}</AppText></View>
+    <View style={s.panel}><Scale label={t('home.energy')} value={energy} setValue={setEnergy}/><Scale label={t('home.focus')} value={focus} setValue={setFocus}/><Scale label={t('session.stress')} value={stress} setValue={setStress}/></View>
+    <View style={s.panel}>
+      <Label>{t('session.processGoal')}</Label>
+      <View style={s.chips}>{processGoals.map(x=><TouchableOpacity key={x.id} onPress={()=>setGoal(x.id)} style={[s.chip,goal===x.id&&s.chipActive]}><AppText style={[s.chipText,goal===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View>
+      <AppText style={s.body}>{t('session.currentIntention')} <AppText style={s.goldText}>{t(selectedGoal.labelKey)}</AppText>. {t('session.intentionHelp')}</AppText>
+    </View>
+    <PremiumButton label={t('session.start')} onPress={onStart}/>
+  </ScrollView>;
 }
 
 function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:()=>void; openAudio:()=>void; openBreak:()=>void; openCheckin:()=>void }) {
+  const { t } = useI18n();
   const [state,setState]=useState<GameState>('B'); const [cue,setCue]=useState(0);
+
   return <ScrollView contentContainerStyle={s.scroll}>
-    <ImageBackground source={{uri:PHOTO.session}} blurRadius={3} style={s.sessionHero} imageStyle={s.sessionHeroImage}><LinearGradient colors={['rgba(8,6,4,.10)','rgba(14,10,6,.35)','rgba(7,6,5,.94)']} style={StyleSheet.absoluteFill}/><View style={s.sessionHeroContent}><View style={s.rowBetween}><Label>LIVE SESSION / MTT ONLINE</Label><AppText style={s.live}>● LIVE</AppText></View><Serif style={s.clock}>02:47:18</Serif><AppText style={s.body}>Presença primeiro. Estratégia depois.</AppText></View></ImageBackground>
-    <View style={s.panel}><Label>CURRENT EXECUTION STATE</Label><Serif style={s.gameState}>{state}-GAME</Serif><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
-    <TouchableOpacity style={s.cueBlock} onPress={()=>setCue((cue+1)%decisionCues.length)}><Label>DECISION CUE / TAP TO ROTATE</Label><Serif style={s.cueText}>“{decisionCues[cue]}”</Serif></TouchableOpacity>
-    <TouchableOpacity style={s.audioBar} onPress={openAudio}><View style={s.play}><Ionicons name="play" size={18} color={C.ink}/></View><View style={s.flex}><Label>MENTAL PLAYLIST</Label><AppText style={s.audioTitle}>A-GAME · DEEP FOCUS</AppText><View style={s.track}><View style={[s.fill,{width:'43%'}]}/></View></View><AppText style={s.audioTime}>18:42 / 45:00</AppText></TouchableOpacity>
-    <View style={s.twoCols}><PremiumButton label="CHECK-IN" secondary onPress={openCheckin} icon="pulse-outline"/><PremiumButton label="BREAK 4'" secondary onPress={openBreak} icon="pause-outline"/></View><PremiumButton label="ENCERRAR SESSÃO" secondary onPress={endSession} icon="stop-circle-outline"/>
+    <ImageBackground source={{uri:PHOTO.session}} blurRadius={3} style={s.sessionHero} imageStyle={s.sessionHeroImage}>
+      <LinearGradient colors={['rgba(8,6,4,.10)','rgba(14,10,6,.35)','rgba(7,6,5,.94)']} style={StyleSheet.absoluteFill}/>
+      <View style={s.sessionHeroContent}><View style={s.rowBetween}><Label>{t('session.liveMtt')}</Label><AppText style={s.live}>{t('session.live')}</AppText></View><Serif style={s.clock}>02:47:18</Serif><AppText style={s.body}>{t('session.presenceFirst')}</AppText></View>
+    </ImageBackground>
+    <View style={s.panel}><Label>{t('session.executionState')}</Label><Serif style={s.gameState}>{state}-GAME</Serif><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+    <TouchableOpacity style={s.cueBlock} onPress={()=>setCue((cue+1)%decisionCues.length)}><Label>{t('session.tapCue')}</Label><Serif style={s.cueText}>“{t(decisionCues[cue])}”</Serif></TouchableOpacity>
+    <TouchableOpacity style={s.audioBar} onPress={openAudio}><View style={s.play}><Ionicons name="play" size={18} color={C.ink}/></View><View style={s.flex}><Label>{t('session.mentalPlaylist')}</Label><AppText style={s.audioTitle}>{t('session.deepFocus')}</AppText><View style={s.track}><View style={[s.fill,{width:'43%'}]}/></View></View><AppText style={s.audioTime}>18:42 / 45:00</AppText></TouchableOpacity>
+    <View style={s.twoCols}><PremiumButton label={t('session.checkin')} secondary onPress={openCheckin} icon="pulse-outline"/><PremiumButton label={t('session.break4')} secondary onPress={openBreak} icon="pause-outline"/></View>
+    <PremiumButton label={t('session.end')} secondary onPress={endSession} icon="stop-circle-outline"/>
   </ScrollView>;
 }
 
 function Debrief({ save, openDiary }: { save:()=>void; openDiary:()=>void }) {
-  const [state,setState]=useState<GameState>('B'); const [triggers,setTriggers]=useState<string[]>([]); const toggle=(x:string)=>setTriggers(v=>v.includes(x)?v.filter(t=>t!==x):[...v,x]);
-  return <ScrollView contentContainerStyle={s.scroll}><View style={s.lead}><Label>POST-SESSION / DEBRIEF</Label><Serif style={s.leadTitle}>Primeiro descarregue. Depois analise.</Serif><AppText style={s.body}>Resultado financeiro é opcional. Aqui o foco é execução, estado e aderência ao processo.</AppText></View><View style={s.panel}><Label>ESTADO PREDOMINANTE</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View><View style={s.panel}><Label>O QUE ALTEROU SUA EXECUÇÃO?</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x} onPress={()=>toggle(x)} style={[s.chip,triggers.includes(x)&&s.chipActive]}><AppText style={[s.chipText,triggers.includes(x)&&s.chipTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View><PremiumButton label="OPEN BATTLE DIARY" secondary onPress={openDiary} icon="mic-outline"/><PremiumButton label="SAVE SESSION" onPress={save}/></ScrollView>;
+  const { t } = useI18n();
+  const [state,setState]=useState<GameState>('B');
+  const [triggers,setTriggers]=useState<WarRoomTriggerId[]>([]);
+  const toggle=(id:WarRoomTriggerId)=>setTriggers(v=>v.includes(id)?v.filter(t=>t!==id):[...v,id]);
+
+  return <ScrollView contentContainerStyle={s.scroll}>
+    <View style={s.lead}><Label>{t('session.debrief')}</Label><Serif style={s.leadTitle}>{t('session.debriefTitle')}</Serif><AppText style={s.body}>{t('session.debriefBody')}</AppText></View>
+    <View style={s.panel}><Label>{t('session.predominantState')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+    <View style={s.panel}><Label>{t('session.whatChanged')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>toggle(x.id)} style={[s.chip,triggers.includes(x.id)&&s.chipActive]}><AppText style={[s.chipText,triggers.includes(x.id)&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
+    <PremiumButton label={t('session.openDiary')} secondary onPress={openDiary} icon="mic-outline"/>
+    <PremiumButton label={t('session.save')} onPress={save}/>
+  </ScrollView>;
 }
 
 export function SessionScreen({ phase,setPhase,openModule,openBreak,openCheckin }: { phase:Phase; setPhase:(p:Phase)=>void; openModule:(m:Module)=>void; openBreak:()=>void; openCheckin:()=>void }) {
-  return <Backdrop uri={PHOTO.session} blur={7} overlay={0.8}><SafeAreaView style={s.flex}><Header title="SESSION" subtitle={phase==='ready'?'PREPARATION':phase==='active'?'LIVE PERFORMANCE':'POST-SESSION'}/>{phase==='ready'?<Ready onStart={()=>setPhase('active')}/>:phase==='active'?<Active endSession={()=>setPhase('debrief')} openAudio={()=>openModule('audio')} openBreak={openBreak} openCheckin={openCheckin}/>:<Debrief save={()=>setPhase('ready')} openDiary={()=>openModule('diary')}/>}</SafeAreaView></Backdrop>;
+  const { t } = useI18n();
+  const subtitle=phase==='ready'?t('session.preparation'):phase==='active'?t('session.livePerformance'):t('session.postSession');
+  return <Backdrop uri={PHOTO.session} blur={7} overlay={0.8}><SafeAreaView style={s.flex}><Header title={t('session.title')} subtitle={subtitle}/>{phase==='ready'?<Ready onStart={()=>setPhase('active')}/>:phase==='active'?<Active endSession={()=>setPhase('debrief')} openAudio={()=>openModule('audio')} openBreak={openBreak} openCheckin={openCheckin}/>:<Debrief save={()=>setPhase('ready')} openDiary={()=>openModule('diary')}/>}</SafeAreaView></Backdrop>;
 }

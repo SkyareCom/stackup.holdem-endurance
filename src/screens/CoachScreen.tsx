@@ -5,10 +5,68 @@ import { Ionicons } from '@expo/vector-icons';
 import { C, PHOTO } from '../theme';
 import { AppText, AppTextInput, Backdrop, Header, Label, Serif } from '../ui';
 import { s } from '../styles';
+import { useI18n, type Locale, type TranslationKey } from '../i18n';
+
+type ChatMessage = { role:'you'|'ai'; text:string; locale?:Locale };
+
+const quickPromptKeys: TranslationKey[] = [
+  'coach.quick.tilted',
+  'coach.quick.tired',
+  'coach.quick.focus',
+  'coach.quick.reset',
+];
 
 export function CoachScreen() {
+  const { t, locale } = useI18n();
   const [input,setInput]=useState('');
-  const [messages,setMessages]=useState<{role:'you'|'ai';text:string}[]>([{role:'you',text:'Perdi dois potes grandes e estou acelerando.'},{role:'ai',text:'Você não precisa recuperar os potes. Recupere o tempo da sua decisão.'}]);
-  const send=()=>{const v=input.trim();if(!v)return;setMessages(m=>[...m,{role:'you',text:v},{role:'ai',text:'Primeiro recupere baseline. Pressa é sinal de estado, não informação sobre o range.'}]);setInput('')};
-  return <Backdrop uri={PHOTO.focus} blur={14} overlay={0.87}><SafeAreaView style={s.flex}><Header title="COACH" subtitle="ENDURANCE INTELLIGENCE"/><ScrollView contentContainerStyle={s.coachScroll}><View style={s.panel}><Label>ACTIVE CONTEXT</Label><Serif style={s.contextTitle}>Seu estado faz parte da mão.</Serif><AppText style={s.body}>B-Game detectado. Energia em queda. Irritação registrada há 19 minutos. Reduza urgência antes de ajustar estratégia.</AppText></View><View style={s.chips}>{['Estou tiltado','Estou cansado','Perdi o foco','Preciso resetar'].map(x=><TouchableOpacity key={x} style={s.chip} onPress={()=>setInput(x)}><AppText style={s.chipText}>{x.toUpperCase()}</AppText></TouchableOpacity>)}</View>{messages.map((m,i)=><View key={i} style={[s.bubble,m.role==='you'?s.bubbleYou:s.bubbleAi]}><AppText style={s.chatText}>{m.text}</AppText></View>)}</ScrollView><View style={s.composer}><TouchableOpacity style={s.voice}><Ionicons name="mic" size={18} color={C.goldLight}/><AppText style={s.voiceText}>SEGURE PARA FALAR</AppText></TouchableOpacity><View style={s.inputRow}><AppTextInput value={input} onChangeText={setInput} placeholder="Fale com o Coach..." placeholderTextColor={C.dim} style={s.input}/><TouchableOpacity style={s.send} onPress={send}><Ionicons name="arrow-up" size={19} color={C.ink}/></TouchableOpacity></View></View></SafeAreaView></Backdrop>;
+  const [messages,setMessages]=useState<ChatMessage[]>([]);
+
+  const send=()=>{
+    const v=input.trim();
+    if(!v)return;
+    setMessages(m=>[...m,{role:'you',text:v},{role:'ai',text:t('coach.reply'),locale}]);
+    setInput('');
+  };
+
+  const sampleMessages: ChatMessage[] = [
+    {role:'you',text:t('coach.sampleUser')},
+    {role:'ai',text:t('coach.sampleReply'),locale},
+  ];
+
+  return (
+    <Backdrop uri={PHOTO.focus} blur={14} overlay={0.87}>
+      <SafeAreaView style={s.flex}>
+        <Header title={t('coach.title')} subtitle={t('coach.subtitle')}/>
+        <ScrollView contentContainerStyle={s.coachScroll}>
+          <View style={s.panel}>
+            <Label>{t('coach.activeContext')}</Label>
+            <Serif style={s.contextTitle}>{t('coach.contextTitle')}</Serif>
+            <AppText style={s.body}>{t('coach.contextBody')}</AppText>
+          </View>
+          <View style={s.chips}>
+            {quickPromptKeys.map((key)=>
+              <TouchableOpacity key={key} style={s.chip} onPress={()=>setInput(t(key))}>
+                <AppText style={s.chipText}>{t(key).toUpperCase()}</AppText>
+              </TouchableOpacity>
+            )}
+          </View>
+          {[...sampleMessages,...messages].map((m,i)=>
+            <View key={i} style={[s.bubble,m.role==='you'?s.bubbleYou:s.bubbleAi]}>
+              <AppText style={s.chatText}>{m.text}</AppText>
+            </View>
+          )}
+        </ScrollView>
+        <View style={s.composer}>
+          <TouchableOpacity style={s.voice}>
+            <Ionicons name="mic" size={18} color={C.goldLight}/>
+            <AppText style={s.voiceText}>{t('coach.holdToTalk')}</AppText>
+          </TouchableOpacity>
+          <View style={s.inputRow}>
+            <AppTextInput value={input} onChangeText={setInput} placeholder={t('coach.placeholder')} placeholderTextColor={C.dim} style={s.input}/>
+            <TouchableOpacity style={s.send} onPress={send}><Ionicons name="arrow-up" size={19} color={C.ink}/></TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
+    </Backdrop>
+  );
 }
