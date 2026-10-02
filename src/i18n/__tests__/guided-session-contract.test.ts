@@ -9,8 +9,9 @@ describe('sequential Session contract',()=>{
     expect(source).toContain('wizardStep');
     expect(source).toContain('total={6}');
     expect(source).toContain('current={2}');
-    expect(source).toContain('current={3}');
+    expect(source).toContain('current={debriefStep+1}');
     expect(source).toContain('current={4}');
+    expect(source).toContain('total={5}');
   });
   it('orders human state from sensations through reframe',()=>{
     for(const token of ["pregrind.sensations","pregrind.lifestyle","pregrind.feeling","pregrind.emotion","pregrind.reason","pregrind.reframe"]){
