@@ -26,6 +26,7 @@ export const es: TranslationCatalog = {
   'common.active': 'ACTIVO',
   'common.next': 'SIGUIENTE',
   'common.close': 'CERRAR',
+  'common.milliseconds': 'ms',
 
   'home.subtitle': 'RENDIMIENTO DIARIO',
   'home.readiness': 'PREPARACIÓN / HOY',
