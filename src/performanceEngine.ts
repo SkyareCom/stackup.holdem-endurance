@@ -18,6 +18,9 @@ export type ReadinessInput = {
   fatigue:number;
   energy:number;
   mentalDrive:number;
+  nutrition?:number;
+  hydration?:number;
+  physicalActivity?:number;
 };
 
 export type PreGrindCheckin = ReadinessInput & {
@@ -59,6 +62,12 @@ export type DebriefData = {
   resultHidden:boolean;
   gameQuality:number;
   foldDiscipline:number;
+  patience:number;
+  decisionConfidence:number;
+  professionalConduct:number;
+  attitude:number;
+  gameUnderstanding:number;
+  logic:number;
   endState:'A'|'B'|'C';
   triggers:TiltTrigger[];
   busted:boolean;
@@ -192,5 +201,24 @@ export function buildBaseline(sessions:SessionRecord[]) {
       financial.map(s=>s.debrief.financialResult as number),
       financial.map(s=>s.mentalEv)
     ),
+  };
+}
+
+export function buildDevelopmentSnapshot(sessions:SessionRecord[]) {
+  const avg=(values:number[])=>values.length?Math.round((values.reduce((a,b)=>a+b,0)/values.length)*10)/10:0;
+  return {
+    discipline:avg(sessions.map(s=>s.debrief.foldDiscipline)),
+    focus:avg(sessions.map(s=>s.pre.mentalDrive)),
+    consistency:avg(sessions.map(s=>s.debrief.gameQuality)),
+    resilience:avg(sessions.map(s=>10-Math.min(10,s.pre.personalStress))),
+    attitude:avg(sessions.map(s=>s.debrief.attitude)),
+    decisionConfidence:avg(sessions.map(s=>s.debrief.decisionConfidence)),
+    patience:avg(sessions.map(s=>s.debrief.patience)),
+    gameUnderstanding:avg(sessions.map(s=>s.debrief.gameUnderstanding)),
+    cordiality:avg(sessions.map(s=>s.debrief.professionalConduct)),
+    logic:avg(sessions.map(s=>s.debrief.logic)),
+    lifestyle:avg(sessions.map(s=>(
+      (s.pre.sleep+(s.pre.nutrition??5)+(s.pre.hydration??5)+(s.pre.physicalActivity??5))/4
+    ))),
   };
 }
