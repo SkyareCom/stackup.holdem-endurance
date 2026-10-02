@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,6 +9,8 @@ import { TestIntro } from './components/TestIntro';
 import { s } from './styles';
 import { ExercisePhase, GameState, Module, moduleMeta } from './types';
 import { useI18n, type TranslationKey } from './i18n';
+import { getSOSProtocol, type TiltTrigger } from './performanceEngine';
+import { usePerformance } from './performanceStore';
 
 const vaccineAnswers = [
   { id:'answer1', key:'overlay.vaccineAnswer1' },
@@ -26,6 +28,27 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const [diaryIndex,setDiaryIndex]=useState(0);
   const [diaryText,setDiaryText]=useState('');
   const [vaccine,setVaccine]=useState('');
+  const [reactionReady,setReactionReady]=useState(false);
+  const [reactionArmedAt,setReactionArmedAt]=useState<number|null>(null);
+  const reactionTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+  useEffect(()=>()=>{ if(reactionTimer.current) clearTimeout(reactionTimer.current); },[]);
+  const startReactionTest=()=>{
+    setReactionResult(null);
+    setReactionReady(false);
+    setReactionArmedAt(null);
+    setExercisePhase('running');
+    const delay=1200+Math.floor(Math.random()*1800);
+    reactionTimer.current=setTimeout(()=>{
+      setReactionArmedAt(Date.now());
+      setReactionReady(true);
+    },delay);
+  };
+  const tapReactionTest=()=>{
+    if(!reactionReady||reactionArmedAt===null)return;
+    setReactionResult(Date.now()-reactionArmedAt);
+    setReactionReady(false);
+    setExercisePhase('result');
+  };
   const meta=moduleMeta[module];
   const intro=moduleIntroById[module];
   const heatmapHasHistory=false;
@@ -79,13 +102,13 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
         instructions={t('overlay.reactionInstructions')}
         duration={t('overlay.reactionDuration')}
         startLabel={t('overlay.reactionStart')}
-        onStart={()=>setExercisePhase('running')}
+        onStart={startReactionTest}
       />:null}
 
-      {exercisePhase==='running'?<TouchableOpacity style={s.reaction} onPress={()=>{setReactionResult(284);setExercisePhase('result')}}>
+      {exercisePhase==='running'?<TouchableOpacity style={s.reaction} onPress={tapReactionTest}>
         <Label>{t('overlay.reactionTest')}</Label>
-        <Serif style={s.reactionValue}>{t('overlay.ready')}</Serif>
-        <AppText style={s.body}>{t('overlay.tapToStart')}</AppText>
+        <Serif style={s.reactionValue}>{t(reactionReady?'overlay.ready':'overlay.wait')}</Serif>
+        <AppText style={s.body}>{t(reactionReady?'overlay.tapToStart':'overlay.waitBody')}</AppText>
       </TouchableOpacity>:null}
 
       {exercisePhase==='result'?<View style={s.reactionResultPanel}>
@@ -182,43 +205,90 @@ export function BreakOverlay({ close }: { close:()=>void }) {
   </SafeAreaView></View>;
 }
 
+function QuickScore({label,value,onChange}:{label:string;value:number;onChange:(v:number)=>void}) {
+  return <View style={s.scaleBlock}><View style={s.rowBetween}><Label>{label}</Label><AppText style={s.goldText}>{value}/10</AppText></View>
+    <View style={s.scoreGrid}>{[0,2,4,6,8,10].map(n=><TouchableOpacity key={n} onPress={()=>onChange(n)} style={[s.scoreCell,value===n&&s.chipActive]}><AppText style={[s.chipText,value===n&&s.chipTextActive]}>{n}</AppText></TouchableOpacity>)}</View>
+  </View>;
+}
+
 export function CheckinOverlay({ close }: { close:()=>void }) {
   const { t } = useI18n();
+  const { addRuntimeCheckin,activeSession }=usePerformance();
   const [state,setState]=useState<GameState>('B');
-  const [trigger,setTrigger]=useState<WarRoomTriggerId|''>('');
+  const [focus,setFocus]=useState(activeSession?.pre.mentalDrive??6);
+  const [tension,setTension]=useState(activeSession?.pre.tension??4);
+  const [impulse,setImpulse]=useState(activeSession?.pre.impulse??3);
+  const [fatigue,setFatigue]=useState(activeSession?.pre.fatigue??4);
+  const [trigger,setTrigger]=useState<TiltTrigger|''>('');
+
+  const save=()=>{
+    addRuntimeCheckin({focus,tension,impulse,fatigue,state,trigger:trigger||undefined});
+    close();
+  };
 
   return <View style={s.overlay}><SafeAreaView style={s.checkinSafe}>
-    <View style={s.rowBetween}><View><Label>{t('checkin.label')}</Label><Serif style={s.overlayTitle}>{t('checkin.currentState')}</Serif></View><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
-    <View style={s.panel}><Label>{t('checkin.game')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
-    <View style={s.panel}><Label>{t('checkin.triggerState')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>setTrigger(x.id)} style={[s.chip,trigger===x.id&&s.chipActive]}><AppText style={[s.chipText,trigger===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
-    <PremiumButton label={t('checkin.save')} onPress={close}/>
+    <View style={s.rowBetween}><View><Label>{t('checkin.label')}</Label><Serif style={s.overlayTitle}>{t('session.realCheckin')}</Serif></View><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
+    <AppText style={s.body}>{t('checkin.quickBody')}</AppText>
+    <ScrollView contentContainerStyle={s.moduleContent}>
+      <View style={s.panel}>
+        <QuickScore label={t('checkin.focus')} value={focus} onChange={setFocus}/>
+        <QuickScore label={t('checkin.tension')} value={tension} onChange={setTension}/>
+        <QuickScore label={t('checkin.impulse')} value={impulse} onChange={setImpulse}/>
+        <QuickScore label={t('checkin.fatigue')} value={fatigue} onChange={setFatigue}/>
+      </View>
+      <View style={s.panel}><Label>{t('checkin.game')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+      <View style={s.panel}><Label>{t('checkin.triggerState')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>setTrigger(x.id as TiltTrigger)} style={[s.chip,trigger===x.id&&s.chipActive]}><AppText style={[s.chipText,trigger===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
+    </ScrollView>
+    <PremiumButton label={t('checkin.save')} onPress={save}/>
   </SafeAreaView></View>;
 }
 
+const protocolTitleKey={
+  reanchor:'sos.protocol.reanchor.title',
+  'ego-reset':'sos.protocol.ego-reset.title',
+  'sit-out':'sos.protocol.sit-out.title',
+  containment:'sos.protocol.containment.title',
+  'slow-down':'sos.protocol.slow-down.title',
+  'personal-reset':'sos.protocol.personal-reset.title',
+} as const satisfies Record<ReturnType<typeof getSOSProtocol>['id'],TranslationKey>;
+
+const protocolBodyKey={
+  reanchor:'sos.protocol.reanchor.body',
+  'ego-reset':'sos.protocol.ego-reset.body',
+  'sit-out':'sos.protocol.sit-out.body',
+  containment:'sos.protocol.containment.body',
+  'slow-down':'sos.protocol.slow-down.body',
+  'personal-reset':'sos.protocol.personal-reset.body',
+} as const satisfies Record<ReturnType<typeof getSOSProtocol>['id'],TranslationKey>;
+
 export function SOSOverlay({ close, goCoach }: { close:()=>void; goCoach:()=>void }) {
   const { t } = useI18n();
-  const [step,setStep]=useState(0);
-  const [trigger,setTrigger]=useState<WarRoomTriggerId|''>('');
-  const steps = [
-    { titleKey:'sos.step1.title', bodyKey:'sos.step1.body' },
-    { titleKey:'sos.step2.title', bodyKey:'sos.step2.body' },
-    { titleKey:'sos.step3.title', bodyKey:'sos.step3.body' },
-    { titleKey:'sos.step4.title', bodyKey:'sos.step4.body' },
-  ] as const satisfies readonly { titleKey:TranslationKey; bodyKey:TranslationKey }[];
-  const current=steps[step];
+  const { activeSession,recordSOS }=usePerformance();
+  const [trigger,setTrigger]=useState<TiltTrigger|''>('');
+  const protocol=trigger?getSOSProtocol(trigger,activeSession?.plan.mode??'cash'):null;
+
+  const choose=(next:TiltTrigger)=>{
+    setTrigger(next);
+    recordSOS(next);
+  };
 
   return <View style={s.sos}><SafeAreaView style={s.sosSafe}>
     <View style={s.rowBetween}><Label>{t('sos.label')}</Label><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
-    <View style={s.sosCenter}>
+    {!protocol?<View style={s.sosCenter}>
+      <Label>{t('sos.symptom')}</Label>
+      <Serif style={s.sosTitle}>{t('sos.whatHappened')}</Serif>
+      <AppText style={s.sosCopy}>{t('sos.selectSymptom')}</AppText>
+      <View style={s.sosTriggerWrap}><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>choose(x.id as TiltTrigger)} style={s.chip}><AppText style={s.chipText}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
+    </View>:<View style={s.sosCenter}>
+      <Label>{t('sos.protocol')}</Label>
       <View style={s.breathe}><View style={s.breatheInner}/></View>
-      <Serif style={s.sosTitle}>{t(current.titleKey)}</Serif>
-      <AppText style={s.sosCopy}>{t(current.bodyKey)}</AppText>
-      <AppText style={s.sosTimer}>01:00</AppText>
-      {step>=2?<View style={s.sosTriggerWrap}><Label>{t('sos.whatHappened')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>setTrigger(x.id)} style={[s.chip,trigger===x.id&&s.chipActive]}><AppText style={[s.chipText,trigger===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>:null}
-    </View>
+      <Serif style={s.sosTitle}>{t(protocolTitleKey[protocol.id])}</Serif>
+      <AppText style={s.sosCopy}>{t(protocolBodyKey[protocol.id])}</AppText>
+      <AppText style={s.sosTimer}>{protocol.seconds}</AppText>
+    </View>}
     <View style={s.sosActions}>
-      <PremiumButton label={step===3?t('sos.return'):t('sos.continue')} onPress={()=>step===3?close():setStep(step+1)}/>
-      <PremiumButton label={t('sos.talkCoach')} secondary icon="mic-outline" onPress={goCoach}/>
+      {protocol?<PremiumButton label={t('sos.return')} onPress={close}/>:null}
+      <PremiumButton label={t('sos.talkCoach')} secondary icon="chatbubble-outline" onPress={goCoach}/>
     </View>
   </SafeAreaView></View>;
 }
