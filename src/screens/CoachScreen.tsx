@@ -7,6 +7,8 @@ import { AppText, AppTextInput, Backdrop, Header, Label, Serif } from '../ui';
 import { s } from '../styles';
 import { useI18n, type Locale, type TranslationKey } from '../i18n';
 import type { Phase } from '../types';
+import { calculateReadiness, classifyTiltRisk, getSessionAction, type SessionAction, type TiltTrigger } from '../performanceEngine';
+import { usePerformance } from '../performanceStore';
 
 type ChatMessage = { role:'you'|'ai'; text:string; locale?:Locale };
 
@@ -17,8 +19,19 @@ const primaryQuickPromptKeys: TranslationKey[] = [
   'coach.quick.reset',
 ];
 
+const triggerKeys:Record<TiltTrigger,TranslationKey>={
+  'bad-beat':'trigger.badBeat','own-error':'trigger.ownError',anger:'trigger.anger',rush:'trigger.rush',
+  fear:'trigger.fear',euphoria:'trigger.euphoria',fatigue:'trigger.fatigue',autopilot:'trigger.autopilot',
+  revenge:'trigger.revenge',personal:'trigger.personal',
+};
+const actionKeys:Record<SessionAction,TranslationKey>={
+  continue:'action.continue','check-in':'action.check-in','break-4':'action.break-4',
+  contain:'action.contain','stop-session':'action.stop-session',
+};
+
 export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
   const { t, locale } = useI18n();
+  const { latestCheckin,activeSession,baseline}=usePerformance();
   const [input,setInput]=useState('');
   const [messages,setMessages]=useState<ChatMessage[]>([]);
   const [contextExpanded,setContextExpanded]=useState(false);
@@ -30,7 +43,21 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
     setInput('');
   };
 
-  const phaseKey:TranslationKey=phase==='active'?'coach.phaseActive':phase==='debrief'?'coach.phaseDebrief':'coach.phaseReady';
+  const phaseKey:TranslationKey=phase==='active'?'coach.phaseActive':phase==='debrief'?'coach.phaseDebrief':phase==='recovery'?'recovery.title':'coach.phaseReady';
+  const readiness=latestCheckin?calculateReadiness(latestCheckin):null;
+  const last=activeSession?.checkins[activeSession.checkins.length-1];
+  const currentRisk=latestCheckin?classifyTiltRisk({
+    tension:last?.tension??latestCheckin.tension,
+    fatigue:last?.fatigue??latestCheckin.fatigue,
+    impulse:last?.impulse??latestCheckin.impulse,
+    emotion:latestCheckin.emotion,
+  }):null;
+  const currentAction=currentRisk?getSessionAction({
+    mode:activeSession?.plan.mode??'cash',
+    canLeave:activeSession?.plan.canLeave??true,
+    tiltRisk:currentRisk,
+    fatigue:last?.fatigue??latestCheckin?.fatigue??0,
+  }):null;
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.87}>
@@ -42,7 +69,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
             <Serif style={s.contextTitle}>{t('coach.contextTitle')}</Serif>
             <AppText style={s.body}>{t('coach.contextNoHistory')}</AppText>
             <View style={s.coachPhaseRow}>
-              <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{readiness===null?t('coach.contextUnavailable'):readiness}</AppText></View>
               <View style={s.contextRow}><Label>{t('coach.contextPhase')}</Label><AppText style={s.contextValue}>{t(phaseKey)}</AppText></View>
             </View>
             <TouchableOpacity style={s.coachContextToggle} onPress={()=>setContextExpanded(v=>!v)}>
@@ -50,10 +77,10 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
               <Ionicons name={contextExpanded?'chevron-up':'chevron-down'} size={18} color={C.goldLight}/>
             </TouchableOpacity>
             {contextExpanded?<View style={s.contextList}>
-              <View style={s.contextRow}><Label>{t('coach.contextCheckins')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
-              <View style={s.contextRow}><Label>{t('coach.contextTrigger')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextCheckins')}</Label><AppText style={s.contextValue}>{activeSession?activeSession.checkins.length:t('coach.contextUnavailable')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextTrigger')}</Label><AppText style={s.contextValue}>{baseline.topTrigger?t(triggerKeys[baseline.topTrigger]):t('coach.contextUnavailable')}</AppText></View>
               <View style={s.contextRow}><Label>{t('coach.contextTraining')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
-              <View style={s.contextRow}><Label>{t('coach.contextHomeRecommendation')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
+              <View style={s.contextRow}><Label>{t('coach.contextHomeRecommendation')}</Label><AppText style={s.contextValue}>{currentAction?t(actionKeys[currentAction]):t('coach.contextUnavailable')}</AppText></View>
             </View>:null}
           </View>
           <View style={s.coachQuickPanel}>
