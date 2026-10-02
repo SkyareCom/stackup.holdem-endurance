@@ -50,18 +50,26 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
               <View style={s.contextRow}><Label>{t('coach.contextHomeRecommendation')}</Label><AppText style={s.contextValue}>{t('coach.contextUnavailable')}</AppText></View>
             </View>
           </View>
-          <View style={s.chips}>
-            {quickPromptKeys.map((key)=>
-              <TouchableOpacity key={key} style={s.chip} onPress={()=>setInput(t(key))}>
-                <AppText style={s.chipText}>{t(key).toUpperCase()}</AppText>
-              </TouchableOpacity>
-            )}
-          </View>
-          {messages.map((m,i)=>
-            <View key={i} style={[s.bubble,m.role==='you'?s.bubbleYou:s.bubbleAi]}>
-              <AppText style={s.chatText}>{m.text}</AppText>
+          <View style={s.coachQuickPanel}>
+            <Label>{t('coach.quickActions')}</Label>
+            <View style={s.coachQuickGrid}>
+              {quickPromptKeys.map((key,index)=>
+                <TouchableOpacity key={key} style={[s.coachQuickAction,index===quickPromptKeys.length-1&&s.coachQuickActionWide]} onPress={()=>setInput(t(key))}>
+                  <AppText style={s.chipText}>{t(key).toUpperCase()}</AppText>
+                </TouchableOpacity>
+              )}
             </View>
-          )}
+          </View>
+          {messages.length===0
+            ?<View style={s.coachEmptyState}>
+              <Ionicons name="chatbubble-ellipses-outline" size={22} color={C.goldLight}/>
+              <AppText style={s.coachEmptyText}>{t('coach.emptyPrompt')}</AppText>
+            </View>
+            :messages.map((m,i)=>
+              <View key={i} style={[s.bubble,m.role==='you'?s.bubbleYou:s.bubbleAi]}>
+                <AppText style={s.chatText}>{m.text}</AppText>
+              </View>
+            )}
         </ScrollView>
         <View style={s.composer}>
           <TouchableOpacity style={s.voice}>

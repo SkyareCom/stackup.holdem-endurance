@@ -116,6 +116,8 @@ export const es: TranslationCatalog = {
   'coach.contextTitle': 'Tu estado forma parte de la mano.',
   'coach.contextBody': 'B-Game detectado. Energía en descenso. Irritación registrada hace 19 minutos. Reduce la urgencia antes de ajustar la estrategia.',
   'coach.contextNoHistory': 'la fase actual de la sesión está disponible, pero todavía no hay suficiente historial persistente para afirmar tendencias, disparadores o caídas de rendimiento.',
+  'coach.quickActions': 'ATAJOS DEL COACH',
+  'coach.emptyPrompt': 'elige un atajo arriba o describe lo que está pasando para iniciar la conversación.',
   'coach.contextUnavailable': 'aún no disponible con los datos actuales.',
   'coach.quick.tilted': 'Estoy tiltado',
   'coach.quick.tired': 'Estoy cansado',

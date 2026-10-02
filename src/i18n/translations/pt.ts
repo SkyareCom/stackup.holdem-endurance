@@ -114,6 +114,8 @@ export const pt = {
   'coach.contextTitle': 'Seu estado faz parte da mão.',
   'coach.contextBody': 'B-Game detectado. Energia em queda. Irritação registrada há 19 minutos. Reduza urgência antes de ajustar estratégia.',
   'coach.contextNoHistory': 'a fase atual da sessão está disponível, mas ainda não há histórico persistido suficiente para afirmar tendências, gatilhos ou quedas de performance.',
+  'coach.quickActions': 'ATALHOS DO COACH',
+  'coach.emptyPrompt': 'escolha um atalho acima ou descreva o que está acontecendo para iniciar a conversa.',
   'coach.contextUnavailable': 'ainda não disponível com os dados atuais.',
   'coach.quick.tilted': 'Estou tiltado',
   'coach.quick.tired': 'Estou cansado',

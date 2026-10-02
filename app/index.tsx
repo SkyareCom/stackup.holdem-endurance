@@ -52,14 +52,14 @@ function Landing({ enter }: { enter:()=>void }) {
 
 function BottomNav({ tab,setTab,openSOS }: { tab:Tab; setTab:(t:Tab)=>void; openSOS:()=>void }) {
   const { t } = useI18n();
-  const items:{key:Tab;icon:keyof typeof Ionicons.glyphMap;labelKey:TranslationKey}[]=[
-    {key:'home',icon:'home-outline',labelKey:'nav.home'},
-    {key:'session',icon:'timer-outline',labelKey:'nav.session'},
-    {key:'train',icon:'barbell-outline',labelKey:'nav.train'},
-    {key:'coach',icon:'chatbubble-ellipses-outline',labelKey:'nav.coach'},
-    {key:'profile',icon:'person-outline',labelKey:'nav.profile'},
+  const items:{key:Tab;icon:keyof typeof Ionicons.glyphMap;activeIcon:keyof typeof Ionicons.glyphMap;labelKey:TranslationKey}[]=[
+    {key:'home',icon:'home-outline',activeIcon:'home',labelKey:'nav.home'},
+    {key:'session',icon:'stopwatch-outline',activeIcon:'stopwatch',labelKey:'nav.session'},
+    {key:'train',icon:'barbell-outline',activeIcon:'barbell',labelKey:'nav.train'},
+    {key:'coach',icon:'chatbubbles-outline',activeIcon:'chatbubbles',labelKey:'nav.coach'},
+    {key:'profile',icon:'person-circle-outline',activeIcon:'person-circle',labelKey:'nav.profile'},
   ];
-  return <View style={s.nav}>{items.map(i=><TouchableOpacity key={i.key} style={s.navItem} onPress={()=>setTab(i.key)}><Ionicons name={i.icon} size={20} color={tab===i.key?C.goldLight:C.dim}/><AppText style={[s.navText,tab===i.key&&s.navTextActive]}>{t(i.labelKey)}</AppText></TouchableOpacity>)}<TouchableOpacity style={s.navSOS} onPress={openSOS}><AppText style={s.sosSmall}>SOS</AppText></TouchableOpacity></View>;
+  return <View style={s.nav}>{items.map(i=><TouchableOpacity key={i.key} style={s.navItem} onPress={()=>setTab(i.key)}><View style={[s.navIconWrap,tab===i.key&&s.navIconWrapActive]}><Ionicons name={tab===i.key?i.activeIcon:i.icon} size={21} color={tab===i.key?C.goldLight:C.dim}/></View><AppText style={[s.navText,tab===i.key&&s.navTextActive]}>{t(i.labelKey)}</AppText></TouchableOpacity>)}<TouchableOpacity style={s.navSOS} onPress={openSOS}><AppText style={s.sosSmall}>SOS</AppText></TouchableOpacity></View>;
 }
 
 export default function Index() {

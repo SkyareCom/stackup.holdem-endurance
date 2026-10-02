@@ -27,11 +27,13 @@ function Ready({ onStart, openBreak }: { onStart:()=>void; openBreak:()=>void })
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={1} total={3} label={t('session.preparation')}/>
     <View style={s.lead}><Label>{t('session.readyCheck')}</Label><Serif style={s.leadTitle}>{t('session.readyTitle').toUpperCase()}</Serif><AppText style={s.body}>{t('session.readyBody')}</AppText></View>
-    <View style={s.guidedBlock}><Label>{t('common.whatItIs')}</Label><AppText style={s.body}>{t('session.readyWhat')}</AppText></View>
-    <View style={s.guidedBlock}><Label>{t('session.whyItMatters')}</Label><AppText style={s.body}>{t('session.readyWhy')}</AppText></View>
-    <View style={s.guidedBlock}><Label>{t('common.howToUse')}</Label><AppText style={s.body}>{t('session.readyHow')}</AppText></View>
+    <View style={s.sessionGuideCard}>
+      <View style={s.sessionGuideItem}><Label>{t('common.whatItIs')}</Label><AppText style={s.body}>{t('session.readyWhat')}</AppText></View>
+      <View style={s.sessionGuideItem}><Label>{t('session.whyItMatters')}</Label><AppText style={s.body}>{t('session.readyWhy')}</AppText></View>
+      <View style={s.sessionGuideItem}><Label>{t('common.howToUse')}</Label><AppText style={s.body}>{t('session.readyHow')}</AppText></View>
+    </View>
     <View style={s.panel}><Scale label={t('home.energy')} value={energy} setValue={setEnergy}/><Scale label={t('home.focus')} value={focus} setValue={setFocus}/><Scale label={t('home.tension')} value={tension} setValue={setTension}/></View>
-    <View style={s.guidedBlock}>
+    <View style={s.readingCard}>
       <Label>{t('common.yourReading')}</Label>
       <Serif style={s.actionTitle}>{t(readiness.titleKey).toUpperCase()}</Serif>
       <AppText style={s.body}>{t(readiness.bodyKey)}</AppText>
@@ -40,7 +42,7 @@ function Ready({ onStart, openBreak }: { onStart:()=>void; openBreak:()=>void })
     </View>
     <View style={s.panel}>
       <Label>{t('session.processGoal')}</Label>
-      <View style={s.chips}>{processGoals.map(x=><TouchableOpacity key={x.id} onPress={()=>setGoal(x.id)} style={[s.chip,goal===x.id&&s.chipActive]}><AppText style={[s.chipText,goal===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View>
+      <View style={s.processGrid}>{processGoals.map(x=><TouchableOpacity key={x.id} onPress={()=>setGoal(x.id)} style={[s.processChip,goal===x.id&&s.chipActive]}><AppText style={[s.chipText,goal===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View>
       <Serif style={s.actionTitle}>{t(selectedGoal.labelKey).toUpperCase()}</Serif>
       <AppText style={s.body}>{t(selectedGoal.descriptionKey)}</AppText>
       <AppText style={s.body}>{t('session.currentIntention')} <AppText style={s.goldText}>{t(selectedGoal.labelKey)}</AppText>. {t('session.intentionHelp')}</AppText>
