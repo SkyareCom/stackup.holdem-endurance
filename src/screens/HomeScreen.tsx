@@ -1,29 +1,72 @@
 import React from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { PHOTO, C } from '../theme';
-import { AppText, Backdrop, GoldRule, Header, Label, PremiumButton, Serif } from '../ui';
+import { PHOTO } from '../theme';
+import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { GuidedSection } from '../components/GuidedSection';
-import { getHistoryGuidance, getReadinessGuidance } from '../guidance';
+import {
+  calculateReadiness,
+  classifyTiltRisk,
+  deriveMentalState,
+  getSessionAction,
+  type MentalState,
+  type SessionAction,
+  type TiltRisk,
+} from '../performanceEngine';
+import { usePerformance } from '../performanceStore';
 import { s } from '../styles';
 import { Module } from '../types';
-import { useI18n } from '../i18n';
+import { useI18n, type TranslationKey } from '../i18n';
 
-function Metric({ label, value }: { label: string; value: number }) {
-  return <View style={s.metric}><View style={s.rowBetween}><Label>{label}</Label><AppText style={s.metricValue}>{value}/5</AppText></View><View style={s.track}><View style={[s.fill,{width:`${value*20}%`}]} /></View></View>;
-}
+const riskKey:Record<TiltRisk,TranslationKey>={
+  low:'risk.low',medium:'risk.medium',critical:'risk.critical',
+};
+const stateKey:Record<MentalState,TranslationKey>={
+  ready:'mentalState.ready',vulnerable:'mentalState.vulnerable',fatigued:'mentalState.fatigued',
+  'tilt-risk':'mentalState.tilt-risk',recovery:'mentalState.recovery',
+};
+const actionKey:Record<SessionAction,TranslationKey>={
+  continue:'action.continue','check-in':'action.check-in','break-4':'action.break-4',
+  contain:'action.contain','stop-session':'action.stop-session',
+};
 
-export function HomeScreen({ startSession, openModule }: { startSession: () => void; openModule: (m: Module) => void }) {
+export function HomeScreen({ startSession, openModule: _openModule }: { startSession: () => void; openModule: (m: Module) => void }) {
   const { t } = useI18n();
-  const snapshot = { energy: 4, focus: 4, tension: 2 };
-  const readiness = getReadinessGuidance(snapshot);
-  const hasHistory = false;
-  const history = getHistoryGuidance({ hasHistory, thirdBlockDrop: false });
-  const focus = history ?? readiness;
-  const hasHistoricalBreak = focus.actionId==='break-4';
-  const actionTitle = hasHistoricalBreak ? t('home.prepareBreak') : t('home.startSession');
-  const actionBody = hasHistoricalBreak ? t('home.recommendedActionBody') : t('home.startSessionBody');
+  const { latestCheckin,activeSession,sessions,baseline } = usePerformance();
+
+  if(!latestCheckin){
+    return <Backdrop uri={PHOTO.focus}>
+      <SafeAreaView style={s.flex}>
+        <Header title="ENDURANCE" subtitle={t('home.subtitle')} />
+        <ScrollView contentContainerStyle={s.scroll}>
+          <GuidedSection
+            subtitle={t('home.stateToday')}
+            title={t('home.noCheckinTitle')}
+            description={t('home.noCheckinBody')}
+          >
+            <PremiumButton label={t('home.checkinNow')} onPress={startSession}/>
+          </GuidedSection>
+          <View style={s.panel}>
+            <Label>{t('home.historySummary')}</Label>
+            <Serif style={s.actionTitle}>{sessions.length}</Serif>
+            <AppText style={s.body}>{sessions.length?t('profile.developmentBody'):t('common.insufficientData')}</AppText>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </Backdrop>;
+  }
+
+  const readinessIndex=calculateReadiness(latestCheckin);
+  const tiltRisk=classifyTiltRisk(latestCheckin);
+  const minutes=activeSession?Math.max(0,Math.floor((Date.now()-activeSession.startedAt)/60000)):0;
+  const mentalState=deriveMentalState({readinessIndex,tiltRisk,sessionMinutes:minutes});
+  const lastRuntime=activeSession?.checkins[activeSession.checkins.length-1];
+  const action=getSessionAction({
+    mode:activeSession?.plan.mode??'cash',
+    canLeave:activeSession?.plan.canLeave??true,
+    tiltRisk,
+    fatigue:lastRuntime?.fatigue??latestCheckin.fatigue,
+  });
 
   return (
     <Backdrop uri={PHOTO.focus}>
@@ -31,84 +74,37 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
         <Header title="ENDURANCE" subtitle={t('home.subtitle')} />
         <ScrollView contentContainerStyle={s.scroll}>
           <GuidedSection
-            subtitle={t('home.stateToday')}
+            subtitle={t('home.latestCheckin')}
             title={t('home.readinessTitle')}
-            description={t('home.readinessBody')}
           >
             <View style={s.heroPanel}>
-              <View style={s.rowBetweenTop}>
-                <View style={s.flex}><Label>{t('home.readiness')}</Label><Serif style={s.heroNumber}>82</Serif></View>
-                <View style={s.ring}><Serif style={s.grade}>A-</Serif><AppText style={s.ringLabel}>{t('home.baseline')}</AppText></View>
+              <View style={s.rowBetween}>
+                <View><Label>{t('pregrind.readiness')}</Label><Serif style={s.heroNumber}>{readinessIndex}</Serif></View>
+                <View><Label>{t('home.risk')}</Label><Serif style={s.actionTitle}>{t(riskKey[tiltRisk])}</Serif></View>
               </View>
-              <GoldRule />
-              <Metric label={t('home.energy')} value={snapshot.energy}/>
-              <Metric label={t('home.focus')} value={snapshot.focus}/>
-              <Metric label={t('home.tension')} value={snapshot.tension}/>
+              <View style={s.rule}/>
+              <View style={s.rowBetween}>
+                <View><Label>{t('home.mentalState')}</Label><AppText style={s.body}>{t(stateKey[mentalState])}</AppText></View>
+                <View><Label>{t('profile.confidence')}</Label><AppText style={s.body}>{t(({
+                  none:'confidence.none',low:'confidence.low',moderate:'confidence.moderate',high:'confidence.high',
+                } as const)[baseline.confidence])}</AppText></View>
+              </View>
             </View>
           </GuidedSection>
 
           <GuidedSection
-            subtitle={t('home.meaning')}
-            title={t('home.meaningTitle')}
-            description={t(readiness.reasonKey)}
-            result={t(readiness.bodyKey)}
-          />
-
-          <GuidedSection
-            subtitle={t('home.focusOfDay')}
-            title={t(focus.titleKey)}
-            description={t(focus.bodyKey)}
+            subtitle={t('home.nextAction')}
+            title={activeSession?t(actionKey[action]):t('pregrind.title')}
+            description={activeSession?t('session.protectTempoBody'):t('pregrind.reframeBody')}
           >
-            {hasHistory?<>
-              <View style={s.guidedInline}>
-                <Label>{t('home.intelligence')}</Label>
-                <AppText style={s.goldText}>{t('home.historyWindow')}</AppText>
-              </View>
-              <AppText style={s.body}>{t(focus.reasonKey)}</AppText>
-            </>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
-          </GuidedSection>
-
-          <GuidedSection
-            subtitle={t('home.recommendedAction')}
-            title={actionTitle}
-            description={actionBody}
-          >
-            <AppText style={s.goldText}>{t('home.primaryAction')}</AppText>
-            <PremiumButton label={t('home.startWithPlan')} onPress={startSession}/>
-          </GuidedSection>
-
-          <GuidedSection
-            subtitle={t('home.toolsForThis')}
-            title={t('home.toolsTitle')}
-            description={t('home.toolsBody')}
-          >
-            {focus.actionId==='break-4'?<TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('audio')}>
-              <Ionicons name="pause-circle-outline" size={24} color={C.goldLight}/>
-              <View style={s.flex}>
-                <Label>{t('home.break4Tool')}</Label>
-                <Serif style={s.guidedToolTitle}>{t('home.break4Title')}</Serif>
-                <AppText style={s.guidedToolBody}>{t('home.break4Body')}</AppText>
-              </View>
-              <Ionicons name="chevron-forward" size={18} color={C.goldLight}/>
-            </TouchableOpacity>:null}
-            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('audio')}>
-              <Ionicons name="headset-outline" size={24} color={C.goldLight}/>
-              <View style={s.flex}>
-                <Label>{t('home.mentalAudio')}</Label>
-                <Serif style={s.guidedToolTitle}>{t('home.lockIn')}</Serif>
-                <AppText style={s.guidedToolBody}>{t('home.lockInBody')}</AppText>
-              </View>
-              <Ionicons name="chevron-forward" size={18} color={C.goldLight}/>
-            </TouchableOpacity>
+            <PremiumButton label={activeSession?t('nav.session'):t('home.checkinNow')} onPress={startSession}/>
           </GuidedSection>
 
           <GuidedSection
             subtitle={t('home.decisionCue')}
             title={t('home.decisionCueTitle')}
             description={t('home.decisionCueText')}
-          >
-            <AppText style={s.body}>{t('home.decisionCueWhy')}</AppText>
-          </GuidedSection>
+          />
         </ScrollView>
       </SafeAreaView>
     </Backdrop>
