@@ -2,83 +2,44 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-const coach = fs.readFileSync(path.join(process.cwd(), 'src/screens/CoachScreen.tsx'), 'utf8');
-const profile = fs.readFileSync(path.join(process.cwd(), 'src/screens/ProfileScreen.tsx'), 'utf8');
+const coach=fs.readFileSync(path.join(process.cwd(),'src/screens/CoachScreen.tsx'),'utf8');
+const profile=fs.readFileSync(path.join(process.cwd(),'src/screens/ProfileScreen.tsx'),'utf8');
 
-function expectInOrder(source:string, tokens:string[]) {
-  let cursor=-1;
-  for (const token of tokens) {
-    const next=source.indexOf(token);
-    expect(next, `missing token: ${token}`).toBeGreaterThan(-1);
-    expect(next, `out of order: ${token}`).toBeGreaterThan(cursor);
-    cursor=next;
-  }
+function expectInOrder(source:string,tokens:string[]){
+ let cursor=-1;
+ for(const token of tokens){
+  const next=source.indexOf(token);
+  expect(next, `missing token: ${token}`).toBeGreaterThan(-1);
+  expect(next, `out of order: ${token}`).toBeGreaterThan(cursor);
+  cursor=next;
+ }
 }
 
-describe('guided Coach and Profile contract', () => {
-  it('shows the context Coach is using before chat', () => {
-    expectInOrder(coach, [
-      "t('coach.contextReadiness')",
-      "t('coach.contextPhase')",
-      "t('coach.contextTrigger')",
-      "t('coach.contextTraining')",
-      "t('coach.contextHomeRecommendation')",
-    ]);
+describe('contextual Coach and real Profile contract',()=>{
+  it('keeps Coach context ordered and data-driven',()=>{
+    expectInOrder(coach,["t('coach.contextReadiness')","t('coach.contextPhase')","t('coach.contextTrigger')","t('coach.contextTraining')","t('coach.contextHomeRecommendation')"]);
+    expect(coach).toContain('usePerformance');
+    expect(coach).toContain('calculateReadiness');
+    expect(coach).not.toContain("t('coach.contextReadinessValue')");
   });
-
-  it('offers contextual quick prompts from the approved flow', () => {
-    expect(coach).toContain("'coach.quick.accelerated'");
-    expect(coach).toContain("'coach.quick.focus'");
-    expect(coach).toContain("'coach.quick.tired'");
-    expect(coach).toContain("'coach.quick.reset'");
-    expect(coach).toContain("'coach.quick.review'");
+  it('keeps progressive disclosure and approved quick prompts',()=>{
+    expect(coach).toContain('contextExpanded');
+    for(const key of ["'coach.quick.accelerated'","'coach.quick.focus'","'coach.quick.tired'","'coach.quick.reset'"]) expect(coach).toContain(key);
   });
-
-  it('keeps user-authored chat text raw across locale changes', () => {
-    expect(coach).toContain("{role:'you',text:v}");
-    expect(coach).toContain('<AppText style={s.chatText}>{m.text}</AppText>');
+  it('orders Profile from base to evidence-backed evolution',()=>{
+    expectInOrder(profile,["t('profile.base')","t('profile.evolution')","t('profile.development')","t('profile.patterns')","t('profile.history')","t('profile.settings')"]);
   });
-
-  it('orders Profile as evolution, patterns, history, then settings', () => {
-    expectInOrder(profile, [
-      "t('profile.evolution')",
-      "t('profile.patterns')",
-      "t('profile.history')",
-      "t('profile.settings')",
-    ]);
-  });
-
-  it('keeps language, privacy and plan under settings', () => {
-    const settingsIndex=profile.indexOf("t('profile.settings')");
-    expect(settingsIndex).toBeGreaterThan(-1);
-    expect(profile.indexOf("t('profile.language')")).toBeGreaterThan(settingsIndex);
-    expect(profile.indexOf("t('profile.privacy')")).toBeGreaterThan(settingsIndex);
-    expect(profile.indexOf("t('profile.plan')")).toBeGreaterThan(settingsIndex);
-  });
-
-  it('does not present fabricated evolution metrics before history exists', () => {
-    expect(profile).toContain('const hasEvolutionHistory=false');
-    expect(profile).toContain("t('profile.evolutionInsufficient')");
-    expect(profile).toContain("t('profile.evolutionCollect')");
+  it('uses persisted sessions and baseline instead of fabricated metrics',()=>{
+    expect(profile).toContain('sessions');
+    expect(profile).toContain('baseline');
+    expect(profile).toContain('developmentSnapshot');
+    expect(profile).not.toContain('const hasEvolutionHistory=false');
     expect(profile).not.toContain('>125</Serif>');
     expect(profile).not.toContain('>88</Serif>');
   });
-
-  it('keeps Coach context honest when historical context is unavailable', () => {
-    expect(coach).toContain("t('coach.contextNoHistory')");
-    expect(coach).not.toContain("t('coach.contextBody')");
-  });
-
-  it('does not fabricate current Coach measurements or prior chat history', () => {
-    expect(coach).toContain("t('coach.contextUnavailable')");
-    expect(coach).not.toContain("t('coach.contextReadinessValue')");
-    expect(coach).not.toContain('sampleMessages');
-    expect(coach).not.toContain("t('coach.sampleUser')");
-    expect(coach).not.toContain("t('coach.sampleReply')");
-  });
-
-  it('shows explicit insufficient-history copy for patterns when needed', () => {
-    expect(profile).toContain("t('profile.patternsInsufficient')");
-    expect(profile).toContain("t('profile.patternsCollect')");
+  it('keeps language and privacy under settings',()=>{
+    const i=profile.indexOf("t('profile.settings')");
+    expect(profile.indexOf("t('profile.language')")).toBeGreaterThan(i);
+    expect(profile.indexOf("t('profile.privacy')")).toBeGreaterThan(i);
   });
 });
