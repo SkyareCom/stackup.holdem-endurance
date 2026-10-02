@@ -8,8 +8,11 @@ const fail = (message) => {
 };
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-if (!pkg.dependencies?.['@expo-google-fonts/kulim-park']) {
-  fail('Kulim Park package is not installed.');
+if (!pkg.dependencies?.['@expo-google-fonts/titillium-web']) {
+  fail('Titillium Web package is not installed.');
+}
+if (pkg.dependencies?.['@expo-google-fonts/kulim-park']) {
+  fail('Legacy Kulim Park package must be removed.');
 }
 if (!pkg.dependencies?.['expo-font']) {
   fail('expo-font is not installed.');
@@ -18,9 +21,9 @@ if (!pkg.dependencies?.['expo-font']) {
 const layout = fs.readFileSync(path.join(root, 'app/_layout.tsx'), 'utf8');
 for (const token of [
   'useFonts',
-  'KulimPark_400Regular_Italic',
-  'KulimPark_600SemiBold_Italic',
-  'KulimPark_700Bold_Italic',
+  'TitilliumWeb_400Regular_Italic',
+  'TitilliumWeb_600SemiBold_Italic',
+  'TitilliumWeb_700Bold_Italic',
 ]) {
   if (!layout.includes(token)) fail(`app/_layout.tsx is missing ${token}.`);
 }
@@ -29,9 +32,9 @@ const ui = fs.readFileSync(path.join(root, 'src/ui.tsx'), 'utf8');
 for (const token of [
   'export function AppText',
   'export function AppTextInput',
-  'KulimPark_400Regular_Italic',
-  'KulimPark_600SemiBold_Italic',
-  'KulimPark_700Bold_Italic',
+  'TitilliumWeb_400Regular_Italic',
+  'TitilliumWeb_600SemiBold_Italic',
+  'TitilliumWeb_700Bold_Italic',
 ]) {
   if (!ui.includes(token)) fail(`src/ui.tsx is missing ${token}.`);
 }
@@ -65,4 +68,4 @@ for (const file of sourceFiles) {
   }
 }
 
-console.log('Typography check passed: all app text is routed through Kulim Park italic components.');
+console.log('Typography check passed: all app text is routed through Titillium Web italic components.');
