@@ -82,6 +82,7 @@ const invariantStrings = new Set([
   'B',
   'C',
   'A-',
+  '-GAME',
 ]);
 
 const userFacingAttributes = new Set([
