@@ -34,6 +34,10 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
 
   if(module==='war') {
     body=<View style={s.moduleContent}>
+      <View style={s.guidedSection}>
+        <View style={s.guidedBlock}><Label>{t('common.whatItIs')}</Label><AppText style={s.body}>{t('overlay.warRoomWhat')}</AppText></View>
+        <View style={s.guidedBlock}><Label>{t('common.whenToUse')}</Label><AppText style={s.body}>{t('overlay.warRoomWhen')}</AppText></View>
+      </View>
       <View style={s.panel}>
         <Label>{t('overlay.heatmap')}</Label>
         <Serif style={s.overlayHeadline}>{t('overlay.whereCGameStarts')}</Serif>
@@ -59,6 +63,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
       </View>
       <View style={s.moduleAction}><View><Label>{t('overlay.battleDiary')}</Label><Serif style={s.actionTitle}>{t('overlay.auditExecution')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
       <View style={s.moduleAction}><View><Label>{t('overlay.psychVaccines')}</Label><Serif style={s.actionTitle}>{t('overlay.desensitizeVariance')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
+      <View style={s.moduleAction}><View><Label>{t('overlay.sosTilt')}</Label><Serif style={s.actionTitle}>{t('overlay.sosTiltBody')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
     </View>;
   } else if(module==='behavior') {
     body=<View style={s.moduleContent}>
@@ -107,10 +112,12 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     body=<View style={s.moduleContent}>{mentalPlaylists.map(p=><TouchableOpacity key={p.id} onPress={()=>setPlaylist(p.id)} style={[s.playlist,playlist===p.id&&s.playlistActive]}>
       <View style={[s.playCircle,playlist===p.id&&s.playCircleActive]}><Ionicons name={playlist===p.id?'pause':'play'} size={17} color={playlist===p.id?C.ink:C.goldLight}/></View>
       <View style={s.flex}>
-        <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(p.titleKey)}</Serif><AppText style={s.goldText}>{p.duration}</AppText></View>
-        <Label>{t(p.modeKey)}</Label>
-        <AppText style={s.playlistBody}>{t(p.descriptionKey)}</AppText>
-        {playlist===p.id?<Serif style={s.nowCue}>“{t(p.cueKey)}”</Serif>:null}
+        <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(p.titleKey)}</Serif><Label>{t(p.modeKey)}</Label></View>
+        <View style={s.playlistDetail}><Label>{t('overlay.audioObjective')}</Label><AppText style={s.playlistBody}>{t(p.objectiveKey)}</AppText></View>
+        <View style={s.playlistDetail}><Label>{t('overlay.audioBestMoment')}</Label><AppText style={s.playlistBody}>{t(p.bestMomentKey)}</AppText></View>
+        <View style={s.rowBetween}><Label>{t('overlay.audioDuration')}</Label><AppText style={s.goldText}>{p.duration}</AppText></View>
+        <View style={s.playlistDetail}><Label>{t('overlay.audioExpectedEffect')}</Label><AppText style={s.playlistBody}>{t(p.descriptionKey)}</AppText></View>
+        <View style={s.playlistDetail}><Label>{t('overlay.audioCue')}</Label><Serif style={s.nowCue}>“{t(p.cueKey)}”</Serif></View>
       </View>
     </TouchableOpacity>)}</View>;
   } else if(module==='diary') {
