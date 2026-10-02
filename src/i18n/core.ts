@@ -1,4 +1,4 @@
-export type Locale = 'pt' | 'en' | 'es';
+import type { Locale } from './types';
 
 export const DEFAULT_LOCALE: Locale = 'pt';
 export const SUPPORTED_LOCALES: readonly Locale[] = ['pt', 'en', 'es'] as const;

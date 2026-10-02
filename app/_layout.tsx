@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { I18nProvider } from '../src/i18n';
 import {
   useFonts,
   TitilliumWeb_400Regular_Italic,
@@ -17,9 +18,9 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <>
+    <I18nProvider>
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false }} />
-    </>
+    </I18nProvider>
   );
 }
