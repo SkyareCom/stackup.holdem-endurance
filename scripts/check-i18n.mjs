@@ -68,7 +68,6 @@ for (const [locale, catalog] of Object.entries(catalogs)) {
 }
 
 const LEGACY_I18N_FILES = new Set([
-  'src/screens/SessionScreen.tsx',
   'src/screens/TrainScreen.tsx',
   'src/screens/CoachScreen.tsx',
   'src/screens/ProfileScreen.tsx',

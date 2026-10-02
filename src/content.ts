@@ -1,3 +1,5 @@
+import type { TranslationKey } from './i18n';
+
 export const mentalPlaylists = [
   { id: 'lock-in', title: 'LOCK IN', duration: '38 MIN', mode: 'FOCUS', description: 'Atenção estreita. Baixa interferência. Execução limpa.', cue: 'Volte para a decisão presente.' },
   { id: 'a-game', title: 'A-GAME', duration: '45 MIN', mode: 'DECISION CUES', description: 'Processo, tempo e disciplina entre decisões.', cue: 'Resultado anterior não participa desta decisão.' },
@@ -9,15 +11,26 @@ export const mentalPlaylists = [
   { id: 'break-4', title: 'BREAK 4', duration: '04:00', mode: 'RESET', description: 'Respiração, mobilidade, água e reorientação.', cue: 'Quatro minutos para recuperar o processo.' },
 ];
 
-export const decisionCues = [
-  'Uma decisão por vez.',
-  'Mais rápido não significa melhor.',
-  'Não procure ação. Espere a situação correta.',
-  'Nova mão. Novo problema.',
-  'Euforia também altera decisões. Volte ao baseline.',
-  'Jogue contra o range. Não contra o ego.',
-  'Paciência também é uma ação estratégica.',
-  'Seu trabalho é decidir. O baralho cuida do resultado.',
+export const processGoals = [
+  { id: 'process', labelKey: 'session.goal.process' },
+  { id: 'patience', labelKey: 'session.goal.patience' },
+  { id: 'tempo', labelKey: 'session.goal.tempo' },
+  { id: 'ranges', labelKey: 'session.goal.ranges' },
+  { id: 'breaks', labelKey: 'session.goal.breaks' },
+  { id: 'discipline', labelKey: 'session.goal.discipline' },
+] as const satisfies readonly { id: string; labelKey: TranslationKey }[];
+
+export type ProcessGoalId = (typeof processGoals)[number]['id'];
+
+export const decisionCues: TranslationKey[] = [
+  'cue.1',
+  'cue.2',
+  'cue.3',
+  'cue.4',
+  'cue.5',
+  'cue.6',
+  'cue.7',
+  'cue.8',
 ];
 
 export const diaryQuestions = [
@@ -78,4 +91,15 @@ export const stoicPrinciples = [
   { title: 'PROCESSO', body: 'Não transforme uma mão ruim em uma sessão ruim por insistir em reagir ao que já acabou.' },
 ];
 
-export const warRoomTriggers = ['BAD BEAT', 'ERRO PRÓPRIO', 'RAIVA', 'PRESSA', 'MEDO', 'EUFORIA', 'FADIGA', 'AUTOPILOT'];
+export const warRoomTriggers = [
+  { id: 'bad-beat', labelKey: 'trigger.badBeat' },
+  { id: 'own-error', labelKey: 'trigger.ownError' },
+  { id: 'anger', labelKey: 'trigger.anger' },
+  { id: 'rush', labelKey: 'trigger.rush' },
+  { id: 'fear', labelKey: 'trigger.fear' },
+  { id: 'euphoria', labelKey: 'trigger.euphoria' },
+  { id: 'fatigue', labelKey: 'trigger.fatigue' },
+  { id: 'autopilot', labelKey: 'trigger.autopilot' },
+] as const satisfies readonly { id: string; labelKey: TranslationKey }[];
+
+export type WarRoomTriggerId = (typeof warRoomTriggers)[number]['id'];
