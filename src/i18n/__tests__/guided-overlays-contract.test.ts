@@ -26,6 +26,11 @@ describe('guided module and exercise contract', () => {
     expect(overlays).toContain("t('overlay.reactionNext')");
   });
 
+  it('localizes the reaction result unit instead of hard-coding functional copy', () => {
+    expect(overlays).toContain("t('common.milliseconds')");
+    expect(overlays).not.toContain('reactionResult} ms');
+  });
+
   it('shows module context before module-specific content', () => {
     expect(overlays).toContain("t('moduleIntro.whatTrain')");
     expect(overlays).toContain("t('moduleIntro.whenUse')");
