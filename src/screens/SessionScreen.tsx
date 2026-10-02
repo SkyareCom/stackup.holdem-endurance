@@ -206,6 +206,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const durationExceeded=minutes>=profile.stopRules.maxDurationMinutes;
   let action=getSessionAction({mode:activeSession.plan.mode,canLeave:activeSession.plan.canLeave,tiltRisk,fatigue});
   if(durationExceeded) action=activeSession.plan.mode==='tournament'&&!activeSession.plan.canLeave?'contain':'stop-session';
+  const decisionLock=action==='contain'||action==='stop-session';
   const readiness=calculateReadiness(activeSession.pre);
   const mentalState=deriveMentalState({readinessIndex:readiness,tiltRisk,sessionMinutes:minutes});
 
@@ -219,9 +220,9 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
       } as const)[mentalState])}</AppText></View>
     </View>
 
-    <View style={s.panel}><Label>{t('session.executionState')}</Label><Serif style={s.gameState}>{state}-GAME</Serif><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+    {!decisionLock?<><View style={s.panel}><Label>{t('session.executionState')}</Label><Serif style={s.gameState}>{state}-GAME</Serif><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
 
-    <TouchableOpacity style={s.cueBlock} onPress={()=>setCue((cue+1)%decisionCues.length)}><Label>{t('session.tapCue')}</Label><Serif style={s.cueText}>“{t(decisionCues[cue])}”</Serif></TouchableOpacity>
+    <TouchableOpacity style={s.cueBlock} onPress={()=>setCue((cue+1)%decisionCues.length)}><Label>{t('session.tapCue')}</Label><Serif style={s.cueText}>“{t(decisionCues[cue])}”</Serif></TouchableOpacity></>:null}
 
     <View style={s.readingCard}>
       <Label>{t('session.currentAction')}</Label>
@@ -233,7 +234,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
       <PremiumButton label={t('session.realCheckin')} secondary onPress={openCheckin} icon="pulse-outline"/>
       <PremiumButton label={t('session.break4')} secondary onPress={openBreak} icon="pause-outline"/>
     </View>
-    <TouchableOpacity style={s.audioBar} onPress={openAudio}><View style={s.flex}><Label>{t('session.mentalPlaylist')}</Label><AppText style={s.body}>{t('session.noAudioProgress')}</AppText></View></TouchableOpacity>
+    {!decisionLock?<TouchableOpacity style={s.audioBar} onPress={openAudio}><View style={s.flex}><Label>{t('session.mentalPlaylist')}</Label><AppText style={s.body}>{t('session.noAudioProgress')}</AppText></View></TouchableOpacity>:null}
     <PremiumButton label={t('session.end')} secondary onPress={endSession} icon="stop-circle-outline"/>
   </ScrollView>;
 }
@@ -241,6 +242,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
 function Debrief({ save }: { save:()=>void }) {
   const { t } = useI18n();
   const { activeSession,finishSession }=usePerformance();
+  const [debriefStep,setDebriefStep]=useState(0);
   const [financialResult,setFinancialResult]=useState('');
   const [resultHidden,setResultHidden]=useState(false);
   const [gameQuality,setGameQuality]=useState(6);
@@ -269,40 +271,53 @@ function Debrief({ save }: { save:()=>void }) {
     save();
   };
 
-  return <ScrollView contentContainerStyle={s.scroll}>
-    <FlowProgress current={3} total={4} label={t('session.postSession')}/>
-    <View style={s.lead}><Label>{t('session.debrief')}</Label><Serif style={s.leadTitle}>{t('debrief.resultVsExecution')}</Serif><AppText style={s.body}>{t('debrief.resultBody')}</AppText></View>
+  const next=()=>setDebriefStep(v=>Math.min(4,v+1));
+  const back=()=>setDebriefStep(v=>Math.max(0,v-1));
 
-    <View style={s.panel}>
+  return <ScrollView contentContainerStyle={s.scroll}>
+    <FlowProgress current={debriefStep+1} total={5} label={t('session.postSession')}/>
+
+    {debriefStep===0?<View style={s.panel}>
       <Label>{t('debrief.financial')}</Label>
+      <AppText style={s.body}>{t('debrief.resultBody')}</AppText>
       <TouchableOpacity style={[s.option,resultHidden&&s.optionActive]} onPress={()=>setResultHidden(v=>!v)}><AppText style={[s.optionText,resultHidden&&s.optionTextActive]}>{t('debrief.hideResult')}</AppText></TouchableOpacity>
       {!resultHidden?<AppTextInput value={financialResult} onChangeText={setFinancialResult} keyboardType="numeric" placeholder={t('debrief.financialPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/>:null}
-    </View>
+    </View>:null}
 
-    <View style={s.panel}>
+    {debriefStep===1?<View style={s.panel}>
       <Label>{t('debrief.execution')}</Label>
       <Score10 oneToTen label={t('debrief.gameQuality')} value={gameQuality} setValue={setGameQuality}/>
       <Score10 oneToTen label={t('debrief.foldDiscipline')} value={foldDiscipline} setValue={setFoldDiscipline}/>
       <Score10 oneToTen label={t('debrief.patience')} value={patience} setValue={setPatience}/>
+      <View style={s.guidedBlock}><Label>{t('session.howEnded')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+    </View>:null}
+
+    {debriefStep===2?<View style={s.panel}>
+      <Label>{t('profile.development')}</Label>
       <Score10 oneToTen label={t('debrief.decisionConfidence')} value={decisionConfidence} setValue={setDecisionConfidence}/>
       <Score10 oneToTen label={t('debrief.professionalConduct')} value={professionalConduct} setValue={setProfessionalConduct}/>
       <Score10 oneToTen label={t('debrief.attitude')} value={attitude} setValue={setAttitude}/>
       <Score10 oneToTen label={t('debrief.gameUnderstanding')} value={gameUnderstanding} setValue={setGameUnderstanding}/>
       <Score10 oneToTen label={t('debrief.logic')} value={logic} setValue={setLogic}/>
-    </View>
-
-    <View style={s.readingCard}><Label>{t('debrief.mentalEv')}</Label><Serif style={s.heroNumber}>{mentalEv.toFixed(1)}</Serif><AppText style={s.body}>{t('debrief.mentalEvBody')}</AppText></View>
-
-    <View style={s.panel}><Label>{t('session.howEnded')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
-
-    <View style={s.panel}><Label>{t('session.triggers')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>toggle(x.id)} style={[s.chip,triggers.includes(x.id)&&s.chipActive]}><AppText style={[s.chipText,triggers.includes(x.id)&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
-
-    {activeSession?.plan.mode==='tournament'?<View style={s.panel}>
-      <TouchableOpacity style={[s.option,busted&&s.optionActive]} onPress={()=>setBusted(v=>!v)}><AppText style={[s.optionText,busted&&s.optionTextActive]}>{t('debrief.busted')}</AppText></TouchableOpacity>
-      {busted?<><Label>{t('debrief.reentry')}</Label><ChoiceGrid items={[{id:'stop' as const,label:t('debrief.stop')},{id:'reenter' as const,label:t('debrief.reenter')}]} value={reentryDecision==='none'?'stop':reentryDecision} onChange={setReentryDecision}/></>:null}
     </View>:null}
 
-    <PremiumButton label={t('debrief.disconnect')} onPress={persist}/>
+    {debriefStep===3?<>
+      <View style={s.panel}><Label>{t('session.triggers')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>toggle(x.id)} style={[s.chip,triggers.includes(x.id)&&s.chipActive]}><AppText style={[s.chipText,triggers.includes(x.id)&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
+      {activeSession?.plan.mode==='tournament'?<View style={s.panel}>
+        <TouchableOpacity style={[s.option,busted&&s.optionActive]} onPress={()=>setBusted(v=>!v)}><AppText style={[s.optionText,busted&&s.optionTextActive]}>{t('debrief.busted')}</AppText></TouchableOpacity>
+        {busted?<><Label>{t('debrief.reentry')}</Label><ChoiceGrid items={[{id:'stop' as const,label:t('debrief.stop')},{id:'reenter' as const,label:t('debrief.reenter')}]} value={reentryDecision==='none'?'stop':reentryDecision} onChange={setReentryDecision}/></>:null}
+      </View>:null}
+    </>:null}
+
+    {debriefStep===4?<>
+      <View style={s.readingCard}><Label>{t('debrief.mentalEv')}</Label><Serif style={s.heroNumber}>{mentalEv.toFixed(1)}</Serif><AppText style={s.body}>{t('debrief.mentalEvBody')}</AppText></View>
+      <View style={s.panel}><Label>{t('debrief.resultVsExecution')}</Label><AppText style={s.body}>{t('debrief.resultBody')}</AppText></View>
+    </>:null}
+
+    <View style={s.wizardActions}>
+      {debriefStep>0?<PremiumButton label={t('pregrind.back')} secondary onPress={back}/>:<View style={s.flex}/>}
+      <PremiumButton label={debriefStep===4?t('debrief.disconnect'):t('pregrind.next')} onPress={debriefStep===4?persist:next}/>
+    </View>
   </ScrollView>;
 }
 
