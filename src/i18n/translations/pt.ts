@@ -822,6 +822,7 @@ export const pt = {
   'overlay.audioBand.betaUse': "FOCO E ESTUDO EM ESTADO ALERTA.",
   'overlay.audioBand.gamma': "GAMMA · 30 HZ",
   'overlay.audioBand.gammaUse': "BLOCOS CURTOS DE ATENÇÃO INTENSA.",
+  'privacy.systemSpeechBody': "os micro-áudios guiados e a limpeza mental usam o mecanismo de texto-para-fala configurado no dispositivo. o aplicativo não envia esses roteiros para um backend próprio; o processamento do provedor de voz do sistema depende das configurações e políticas do dispositivo.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
