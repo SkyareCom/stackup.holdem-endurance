@@ -439,7 +439,7 @@ export const pt = {
   'overlay.audioObjective': 'OBJETIVO',
   'overlay.audioBestMoment': 'MELHOR MOMENTO',
   'overlay.audioDuration': 'DURAÇÃO',
-  'overlay.audioExpectedEffect': 'EFEITO ESPERADO',
+  'overlay.audioExpectedEffect': 'FUNÇÃO DO PROTOCOLO',
   'overlay.audioCue': 'CUE PRINCIPAL',
   'playlist.lockIn.objective': 'preparar foco antes da sessão e reduzir ruído mental.',
   'playlist.lockIn.bestMoment': '5–10 minutos antes de jogar.',
@@ -777,6 +777,9 @@ export const pt = {
   'recovery.plan.cooldown': "REDUZA A ATIVAÇÃO ANTES DE ANALISAR MAIS. USE O COOLDOWN E EVITE REABRIR A SESSÃO MENTALMENTE AGORA.",
   'recovery.plan.sleep': "FADIGA FOI UM FATOR DOMINANTE. PRIORIZE DESACELERAÇÃO E PREPARAÇÃO PARA RECUPERAÇÃO/SONO.",
   'recovery.plan.personal': "A SESSÃO TERMINOU EM ESTADO ESTÁVEL. FAÇA UMA TRANSIÇÃO CURTA E VOLTE À VIDA PESSOAL SEM CARREGAR O RESULTADO.",
+  'overlay.audioFrequency': "CAMADA ESTÉREO",
+  'overlay.audioHertz': "HZ",
+  'overlay.audioFrequencyNote': "A CAMADA DE FREQUÊNCIA É OPCIONAL. A EVIDÊNCIA SOBRE BINAURAL BEATS É MISTA; USE EM VOLUME CONFORTÁVEL COMO APOIO DE ROTINA, NÃO COMO TRATAMENTO.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
