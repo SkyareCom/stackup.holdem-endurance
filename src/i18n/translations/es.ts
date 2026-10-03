@@ -441,7 +441,7 @@ export const es: TranslationCatalog = {
   'overlay.audioObjective': 'OBJETIVO',
   'overlay.audioBestMoment': 'MEJOR MOMENTO',
   'overlay.audioDuration': 'DURACIÓN',
-  'overlay.audioExpectedEffect': 'EFECTO ESPERADO',
+  'overlay.audioExpectedEffect': 'FUNCIÓN DEL PROTOCOLO',
   'overlay.audioCue': 'CUE PRINCIPAL',
   'playlist.lockIn.objective': 'preparar el enfoque antes de la sesión y reducir el ruido mental.',
   'playlist.lockIn.bestMoment': '5–10 minutos antes de jugar.',
@@ -780,4 +780,7 @@ export const es: TranslationCatalog = {
   'recovery.plan.cooldown': "BAJA LA ACTIVACIÓN ANTES DE ANALIZAR MÁS. USA EL COOLDOWN Y EVITA REABRIR LA SESIÓN MENTALMENTE AHORA.",
   'recovery.plan.sleep': "LA FATIGA FUE UN FACTOR DOMINANTE. PRIORIZA DESACELERAR Y PREPARAR LA RECUPERACIÓN/SUEÑO.",
   'recovery.plan.personal': "LA SESIÓN TERMINÓ EN UN ESTADO ESTABLE. HAZ UNA TRANSICIÓN CORTA A LA VIDA PERSONAL SIN CARGAR EL RESULTADO.",
+  'overlay.audioFrequency': "CAPA ESTÉREO",
+  'overlay.audioHertz': "HZ",
+  'overlay.audioFrequencyNote': "LA CAPA DE FRECUENCIA ES OPCIONAL. LA EVIDENCIA SOBRE BINAURAL BEATS ES MIXTA; ÚSALA A VOLUMEN CÓMODO COMO APOYO DE RUTINA, NO COMO TRATAMIENTO.",
 };
