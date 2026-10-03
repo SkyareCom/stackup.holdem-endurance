@@ -63,8 +63,8 @@ export function HomeScreen({ startSession, openModule: _openModule }: { startSes
   const readinessIndex=calculateReadiness(latestCheckin);
   const tiltRisk=classifyTiltRisk(latestCheckin);
   const minutes=activeSession?Math.max(0,Math.floor((Date.now()-activeSession.startedAt)/60000)):0;
-  const mentalState=deriveMentalState({readinessIndex,tiltRisk,sessionMinutes:minutes,focus:lastRuntime?.focus??latestCheckin.mentalDrive,tension:lastRuntime?.tension??latestCheckin.tension,impulse:lastRuntime?.impulse??latestCheckin.impulse,fatigue:lastRuntime?.fatigue??latestCheckin.fatigue});
   const lastRuntime=activeSession?.checkins[activeSession.checkins.length-1];
+  const mentalState=deriveMentalState({readinessIndex,tiltRisk,sessionMinutes:minutes,focus:lastRuntime?.focus??latestCheckin.mentalDrive,tension:lastRuntime?.tension??latestCheckin.tension,impulse:lastRuntime?.impulse??latestCheckin.impulse,fatigue:lastRuntime?.fatigue??latestCheckin.fatigue});
   const action=getSessionAction({
     mode:activeSession?.plan.mode??'cash',
     canLeave:activeSession?.plan.canLeave??true,
