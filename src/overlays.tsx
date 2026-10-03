@@ -40,6 +40,8 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const [moduleStarted,setModuleStarted]=useState(false);
   const [playlist,setPlaylist]=useState('a-game');
   const [loadedPlaylist,setLoadedPlaylist]=useState<string|null>(null);
+  const [audioIntent,setAudioIntent]=useState<'play'|'pause'>('pause');
+  const [audioReloadToken,setAudioReloadToken]=useState(0);
   const [frequencyPreset,setFrequencyPreset]=useState<FrequencyPresetId>('alpha');
   const audioPlayer=useAudioPlayer(null,{updateInterval:250});
   const audioStatus=useAudioPlayerStatus(audioPlayer);
@@ -56,7 +58,11 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const reactionTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
   useEffect(()=>()=>{ if(reactionTimer.current) clearTimeout(reactionTimer.current); },[]);
 
-  useEffect(()=>()=>{ void Speech.stop(); },[]);
+  useEffect(()=>()=>{ void Speech.stop(); audioPlayer.pause(); },[audioPlayer]);
+  useEffect(()=>{
+    if(!loadedPlaylist||audioIntent!=='play'||!audioStatus.isLoaded)return;
+    audioPlayer.play();
+  },[audioIntent,audioReloadToken,audioStatus.isLoaded,loadedPlaylist,audioPlayer]);
   const startReactionTest=()=>{
     setReactionResult(null);
     setReactionReady(false);
@@ -77,37 +83,46 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const currentFrequency=frequencyPresets.find(item=>item.id===frequencyPreset)??frequencyPresets[1];
   const selectFrequencyPreset=(next:FrequencyPresetId)=>{
     const preset=frequencyPresets.find(item=>item.id===next)??frequencyPresets[1];
-    const wasPlaying=audioStatus.playing;
+    const shouldResume=audioStatus.playing||audioIntent==='play';
     setFrequencyPreset(next);
     if(loadedPlaylist){
+      setAudioIntent(shouldResume?'play':'pause');
       audioPlayer.pause();
       audioPlayer.replace(preset.source);
       audioPlayer.loop=true;
       audioPlayer.shouldCorrectPitch=false;
       audioPlayer.playbackRate=1;
       audioPlayer.volume=0.18;
-      if(wasPlaying) audioPlayer.play();
+      setAudioReloadToken(token=>token+1);
     }
   };
   const toggleMentalAudio=(id:string)=>{
     if(loadedPlaylist===id){
-      if(audioStatus.playing) audioPlayer.pause();
-      else audioPlayer.play();
+      if(audioStatus.playing||audioIntent==='play'){
+        setAudioIntent('pause');
+        audioPlayer.pause();
+      } else {
+        setAudioIntent('play');
+        if(audioStatus.isLoaded) audioPlayer.play();
+      }
       return;
     }
     setPlaylist(id);
     setLoadedPlaylist(id);
+    setAudioIntent('play');
+    audioPlayer.pause();
     audioPlayer.replace(currentFrequency.source);
     audioPlayer.loop=true;
     audioPlayer.shouldCorrectPitch=false;
     audioPlayer.playbackRate=1;
     audioPlayer.volume=0.18;
-    audioPlayer.play();
+    setAudioReloadToken(token=>token+1);
   };
 
 
   const playMicroAudio=()=>{
     const script=microAudios[microAudioIndex];
+    setAudioIntent('pause');
     audioPlayer.pause();
     void Speech.stop();
     setSpeakingMicroAudio(true);
