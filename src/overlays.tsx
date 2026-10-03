@@ -24,6 +24,16 @@ const frequencyRateByPlaylist:Record<string,number>={
   cooldown:4/12,
   'break-4':1,
 };
+const frequencyBeatByPlaylist:Record<string,number>={
+  'lock-in':20,
+  'a-game':12,
+  discipline:20,
+  'long-grind':12,
+  pressure:12,
+  'mental-fortress':12,
+  cooldown:4,
+  'break-4':12,
+};
 
 const vaccineAnswers = [
   { id:'answer1', key:'overlay.vaccineAnswer1' },
@@ -177,20 +187,27 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   } else if(module==='lifestyle') {
     body=<View style={s.moduleContent}>{lifestyleSections.map(x=><View key={x.id} style={s.lifestyle}><Label>{t(x.titleKey)}</Label><Serif style={s.actionTitle}>{t(x.subtitleKey)}</Serif><AppText style={s.lessonBody}>{t(x.bodyKey)}</AppText></View>)}</View>;
   } else if(module==='audio') {
-    body=<View style={s.moduleContent}>{mentalPlaylists.map(p=>{
-      const playing=loadedPlaylist===p.id&&audioStatus.playing;
-      return <TouchableOpacity key={p.id} onPress={()=>toggleMentalAudio(p.id)} style={[s.playlist,playlist===p.id&&s.playlistActive]}>
-        <View style={[s.playCircle,playing&&s.playCircleActive]}><Ionicons name={playing?'pause':'play'} size={17} color={playing?C.ink:C.goldLight}/></View>
-        <View style={s.flex}>
-          <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(p.titleKey)}</Serif><Label>{t(p.modeKey)}</Label></View>
-          <View style={s.playlistDetail}><Label>{t('overlay.audioObjective')}</Label><AppText style={s.playlistBody}>{t(p.objectiveKey)}</AppText></View>
-          <View style={s.playlistDetail}><Label>{t('overlay.audioBestMoment')}</Label><AppText style={s.playlistBody}>{t(p.bestMomentKey)}</AppText></View>
-          <View style={s.rowBetween}><Label>{t('overlay.audioDuration')}</Label><AppText style={s.goldText}>{p.duration}</AppText></View>
-          <View style={s.playlistDetail}><Label>{t('overlay.audioExpectedEffect')}</Label><AppText style={s.playlistBody}>{t(p.descriptionKey)}</AppText></View>
-          <View style={s.playlistDetail}><Label>{t('overlay.audioCue')}</Label><Serif style={s.nowCue}>“{t(p.cueKey)}”</Serif></View>
-        </View>
-      </TouchableOpacity>;
-    })}</View>;
+    body=<View style={s.moduleContent}>
+      <View style={s.guidedBlock}>
+        <Label>{t('overlay.audioFrequency')}</Label>
+        <AppText style={s.body}>{t('overlay.audioFrequencyNote')}</AppText>
+      </View>
+      {mentalPlaylists.map(p=>{
+        const playing=loadedPlaylist===p.id&&audioStatus.playing;
+        return <TouchableOpacity key={p.id} onPress={()=>toggleMentalAudio(p.id)} style={[s.playlist,playlist===p.id&&s.playlistActive]}>
+          <View style={[s.playCircle,playing&&s.playCircleActive]}><Ionicons name={playing?'pause':'play'} size={17} color={playing?C.ink:C.goldLight}/></View>
+          <View style={s.flex}>
+            <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(p.titleKey)}</Serif><Label>{t(p.modeKey)}</Label></View>
+            <View style={s.playlistDetail}><Label>{t('overlay.audioObjective')}</Label><AppText style={s.playlistBody}>{t(p.objectiveKey)}</AppText></View>
+            <View style={s.playlistDetail}><Label>{t('overlay.audioBestMoment')}</Label><AppText style={s.playlistBody}>{t(p.bestMomentKey)}</AppText></View>
+            <View style={s.rowBetween}><Label>{t('overlay.audioDuration')}</Label><AppText style={s.goldText}>{p.duration}</AppText></View>
+            <View style={s.rowBetween}><Label>{t('overlay.audioFrequency')}</Label><AppText style={s.goldText}>{frequencyBeatByPlaylist[p.id]} {t('overlay.audioHertz')}</AppText></View>
+            <View style={s.playlistDetail}><Label>{t('overlay.audioExpectedEffect')}</Label><AppText style={s.playlistBody}>{t(p.descriptionKey)}</AppText></View>
+            <View style={s.playlistDetail}><Label>{t('overlay.audioCue')}</Label><Serif style={s.nowCue}>“{t(p.cueKey)}”</Serif></View>
+          </View>
+        </TouchableOpacity>;
+      })}
+    </View>;
   } else if(module==='diary') {
     const question=diaryQuestions[diaryIndex];
     body=<View style={s.moduleContent}><View style={s.panel}>
