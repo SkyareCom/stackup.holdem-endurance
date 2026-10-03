@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Speech from 'expo-speech';
 import { C, PHOTO } from '../theme';
 import { decisionCues, processGoals, warRoomTriggers, type ProcessGoalId, type WarRoomTriggerId } from '../content';
 import { AppText, AppTextInput, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
@@ -25,7 +26,7 @@ import {
 import { usePerformance } from '../performanceStore';
 import { s } from '../styles';
 import { GameState, Module, Phase } from '../types';
-import { useI18n, type TranslationKey } from '../i18n';
+import { useI18n, type Locale, type TranslationKey } from '../i18n';
 
 const scoreValues=[0,1,2,3,4,5,6,7,8,9,10];
 const scoreValuesOne=[1,2,3,4,5,6,7,8,9,10];
@@ -48,6 +49,12 @@ const riskKey:Record<TiltRisk,TranslationKey>={low:'risk.low',medium:'risk.mediu
 const actionKey:Record<SessionAction,TranslationKey>={
   continue:'action.continue','check-in':'action.check-in','break-4':'action.break-4',
   contain:'action.contain','stop-session':'action.stop-session',
+};
+
+const recoverySpeechLanguage:Record<Locale,string>={
+  pt:'pt-BR',
+  en:'en-US',
+  es:'es-ES',
 };
 
 function Score10({label,value,setValue,oneToTen=false}:{label:string;value:number;setValue:(v:number)=>void;oneToTen?:boolean}) {
@@ -373,8 +380,9 @@ function Debrief({ save }: { save:()=>void }) {
 }
 
 function Recovery({ finish,openAudio }: { finish:()=>void;openAudio:()=>void }) {
-  const { t }=useI18n();
+  const { t,locale }=useI18n();
   const { sessions }=usePerformance();
+  const [disconnectRemaining,setDisconnectRemaining]=useState(120);
   const plan=getRecoveryPlan(sessions[0]??null);
   const titleKey:Record<RecoveryPlan,TranslationKey>={
     cooldown:'recovery.cooldown',
@@ -386,9 +394,33 @@ function Recovery({ finish,openAudio }: { finish:()=>void;openAudio:()=>void }) 
     sleep:'recovery.plan.sleep',
     personal:'recovery.plan.personal',
   };
+
+  useEffect(()=>{
+    setDisconnectRemaining(120);
+    void Speech.stop();
+    Speech.speak(t('recovery.disconnectScript'),{
+      language:recoverySpeechLanguage[locale],
+      rate:0.78,
+      pitch:1,
+      volume:0.9,
+    });
+    const id=setInterval(()=>setDisconnectRemaining(v=>Math.max(0,v-1)),1000);
+    return()=>{
+      clearInterval(id);
+      void Speech.stop();
+    };
+  },[locale,t]);
+
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={4} total={4} label={t('recovery.subtitle')}/>
     <View style={s.lead}><Label>{t('recovery.subtitle')}</Label><Serif style={s.leadTitle}>{t('recovery.title')}</Serif><AppText style={s.body}>{t('recovery.body')}</AppText></View>
+
+    <View style={s.readingCard}>
+      <Label>{t(disconnectRemaining>0?'recovery.disconnectRunning':'recovery.disconnectComplete')}</Label>
+      <Serif style={s.heroNumber}>{disconnectRemaining}</Serif>
+      <AppText style={s.body}>{t('recovery.disconnectScript')}</AppText>
+    </View>
+
     <View style={s.readingCard}>
       <Label>{t('recovery.recommended')}</Label>
       <Serif style={s.actionTitle}>{t(titleKey[plan])}</Serif>
