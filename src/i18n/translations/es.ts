@@ -825,4 +825,5 @@ export const es: TranslationCatalog = {
   'overlay.audioBand.betaUse': "ENFOQUE Y ESTUDIO EN ESTADO ALERTA.",
   'overlay.audioBand.gamma': "GAMMA · 30 HZ",
   'overlay.audioBand.gammaUse': "BLOQUES CORTOS DE ATENCIÓN INTENSA.",
+  'privacy.systemSpeechBody': "los micro-audios guiados y la limpieza mental usan el motor de texto a voz configurado en el dispositivo. la app no envía estos guiones a un backend propio; el procesamiento del proveedor de voz del sistema depende de la configuración y políticas del dispositivo.",
 };
