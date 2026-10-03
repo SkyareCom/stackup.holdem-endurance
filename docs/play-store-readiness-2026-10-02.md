@@ -45,7 +45,7 @@ Official references:
 | Performance data | CURRENTLY LOCAL | Performance profile, pre-grind check-ins, runtime check-ins, stop rules, triggers, debrief scores and session history persist in local AsyncStorage. Optional financial result is stored only when the user chooses to record it. No backend transmission is implemented. |
 | Coach data | CURRENTLY LOCAL | No external AI integration; typed messages remain in local component state for this release. |
 | Microphone / voice | CURRENTLY INACTIVE | Mic control is visual only; no recording/upload and no mic permission requested by product code. |
-| Mental Audio | CURRENTLY UI-ONLY | No remote audio service integrated in current release. |
+| Mental Audio | LOCAL PLAYBACK IMPLEMENTED | Bundled offline stereo tone playback uses `expo-audio`; play/pause is functional, no microphone/recording is enabled, and no remote audio service is used. |
 | Content rating | PLAY CONSOLE ACTION | Complete IARC accurately. App is training/performance software and does not provide real-money wagering or gameplay. |
 | Target audience | PLAY CONSOLE ACTION | Declare intended age group accurately; do not include children unless Families requirements are intentionally supported. |
 | Store listing PT / EN / ES | PREPARED | See `docs/play-store-listing-pt-en-es.md`. |
@@ -73,6 +73,7 @@ Current product behavior:
 - no payment SDK is installed;
 - no external AI is called;
 - no microphone recording is implemented;
+- mental audio uses a bundled local stereo asset through `expo-audio` and does not require network access;
 - background photographs are requested from Pexels over HTTPS.
 
 Before Play submission:
