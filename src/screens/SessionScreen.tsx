@@ -64,7 +64,7 @@ function ChoiceGrid<T extends string>({items,value,onChange}:{items:{id:T;label:
   </TouchableOpacity>)}</View>;
 }
 
-function Ready({ onStart }: { onStart:()=>void }) {
+function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=>void;openReset:()=>void }) {
   const { t } = useI18n();
   const { profile,startSession,updateExtraGrind }=usePerformance();
   const [wizardStep,setWizardStep]=useState(0);
@@ -80,6 +80,7 @@ function Ready({ onStart }: { onStart:()=>void }) {
   const [reason,setReason]=useState<PlayReason>('planned');
   const [mode,setMode]=useState<GameMode>('tournament');
   const [goal,setGoal]=useState<ProcessGoalId>('process');
+  const [activationUsed,setActivationUsed]=useState(false);
 
   const impulse=reason==='recover-loss'||reason==='ego'||reason==='fomo'?8:emotion==='anger'||emotion==='euphoria'?7:3;
   const pre:PreGrindCheckin={
@@ -92,7 +93,7 @@ function Ready({ onStart }: { onStart:()=>void }) {
   const ritual=getRitualMinutes(readinessIndex,tiltRisk);
   const canLeave=mode==='cash';
 
-  const next=()=>setWizardStep(v=>Math.min(5,v+1));
+  const next=()=>setWizardStep(v=>Math.min(6,v+1));
   const back=()=>setWizardStep(v=>Math.max(0,v-1));
   const begin=()=>{
     updateExtraGrind({sleep,nutrition,hydration,physicalActivity});
@@ -104,14 +105,14 @@ function Ready({ onStart }: { onStart:()=>void }) {
   };
 
   const titles:TranslationKey[]=[
-    'pregrind.sensations','pregrind.lifestyle','pregrind.feeling','pregrind.emotion','pregrind.reason','pregrind.reframe',
+    'pregrind.sensations','pregrind.lifestyle','pregrind.feeling','pregrind.emotion','pregrind.reason','pregrind.reframe','pregrind.activation',
   ];
   const bodies:TranslationKey[]=[
-    'pregrind.sensationsBody','pregrind.lifestyleBody','pregrind.feelingBody','pregrind.emotionBody','pregrind.reasonBody','pregrind.reframeBody',
+    'pregrind.sensationsBody','pregrind.lifestyleBody','pregrind.feelingBody','pregrind.emotionBody','pregrind.reasonBody','pregrind.reframeBody','pregrind.activationBody',
   ];
 
   return <ScrollView contentContainerStyle={s.scroll}>
-    <FlowProgress current={wizardStep+1} total={6} label={t('pregrind.title')}/>
+    <FlowProgress current={wizardStep+1} total={7} label={t('pregrind.title')}/>
     <View style={s.lead}><Label>{t('pregrind.title')}</Label><Serif style={s.leadTitle}>{t(titles[wizardStep]).toUpperCase()}</Serif><AppText style={s.body}>{t(bodies[wizardStep])}</AppText></View>
 
     {wizardStep===0?<View style={s.panel}>
@@ -169,9 +170,21 @@ function Ready({ onStart }: { onStart:()=>void }) {
       </View>
     </>:null}
 
+    {wizardStep===6?<View style={s.panel}>
+      <Label>{t('pregrind.ritual')}</Label>
+      <Serif style={s.actionTitle}>{t(ritual===3?'pregrind.ritual3':ritual===7?'pregrind.ritual7':'pregrind.ritual12')}</Serif>
+      <AppText style={s.body}>{t('pregrind.activationBody')}</AppText>
+      <PremiumButton label={t('pregrind.openAudio')} secondary icon="headset-outline" onPress={()=>{setActivationUsed(true);openAudio();}}/>
+      <PremiumButton label={t('pregrind.openBreathing')} secondary icon="pulse-outline" onPress={()=>{setActivationUsed(true);openReset();}}/>
+    </View>:null}
+
     <View style={s.wizardActions}>
       {wizardStep>0?<PremiumButton label={t('pregrind.back')} secondary onPress={back}/>:<View style={s.flex}/>}
-      <PremiumButton label={wizardStep===5?t('pregrind.start'):t('pregrind.next')} onPress={wizardStep===5?begin:next}/>
+      <PremiumButton
+        label={wizardStep===6?t('pregrind.activationComplete'):t('pregrind.next')}
+        disabled={wizardStep===6&&!activationUsed}
+        onPress={wizardStep===6?begin:next}
+      />
     </View>
   </ScrollView>;
 }
@@ -352,7 +365,7 @@ export function SessionScreen({ phase,setPhase,openModule,openBreak,openCheckin 
   const subtitle=phase==='ready'?t('session.preparation'):phase==='active'?t('session.livePerformance'):phase==='debrief'?t('session.postSession'):t('recovery.subtitle');
   return <Backdrop uri={PHOTO.session} blur={7} overlay={0.8}><SafeAreaView style={s.flex}>
     <Header title={t('session.title')} subtitle={subtitle}/>
-    {phase==='ready'?<Ready onStart={()=>setPhase('active')}/>:
+    {phase==='ready'?<Ready onStart={()=>setPhase('active')} openAudio={()=>openModule('audio')} openReset={openBreak}/>:
       phase==='active'?<Active endSession={()=>setPhase('debrief')} openAudio={()=>openModule('audio')} openBreak={openBreak} openCheckin={openCheckin}/>:
       phase==='debrief'?<Debrief save={()=>setPhase('recovery')}/>:
       <Recovery finish={()=>setPhase('ready')} openAudio={()=>openModule('audio')}/>}
