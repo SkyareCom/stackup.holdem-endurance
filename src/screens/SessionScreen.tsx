@@ -273,6 +273,15 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
 
     <TouchableOpacity style={s.cueBlock} onPress={()=>setCue((cue+1)%decisionCues.length)}><Label>{t('session.tapCue')}</Label><Serif style={s.cueText}>“{t(decisionCues[cue])}”</Serif></TouchableOpacity></>:null}
 
+    {decisionLock?<View style={s.guidedBlock}>
+      <Label>{t('coachJourney.interrupt')}</Label>
+      <Serif style={s.actionTitle}>{t('coachJourney.eventPassed')}</Serif>
+      <AppText style={s.body}>{t('coachJourney.eventPassedBody')}</AppText>
+      <View style={s.rule}/>
+      <Label>{t('coachJourney.anchor')}</Label>
+      <AppText style={s.body}>{t('coachJourney.noRecoveryBody')}</AppText>
+    </View>:null}
+
     <View style={s.readingCard}>
       <Label>{t('session.currentAction')}</Label>
       <Serif style={s.actionTitle}>{t(actionKey[action])}</Serif>
@@ -345,6 +354,11 @@ function Debrief({ save }: { save:()=>void }) {
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={debriefStep+1} total={5} label={t('session.postSession')}/>
+    {debriefStep===0?<View style={s.guidedBlock}>
+      <Label>{t('coachJourney.accept')}</Label>
+      <Serif style={s.actionTitle}>{t('coachJourney.sessionClose')}</Serif>
+      <AppText style={s.body}>{t('coachJourney.sessionCloseBody')}</AppText>
+    </View>:null}
 
     {debriefStep===0?<View style={s.panel}>
       <Label>{t('debrief.financial')}</Label>
