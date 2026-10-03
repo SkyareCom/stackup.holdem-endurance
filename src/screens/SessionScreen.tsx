@@ -258,7 +258,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const decisionLock=action==='contain'||action==='stop-session';
   const reentryLimitReached=activeSession.reentriesUsed>=activeSession.plan.maxReentries;
   const readiness=calculateReadiness(activeSession.pre);
-  const mentalState=deriveMentalState({readinessIndex:readiness,tiltRisk,sessionMinutes:minutes});
+  const mentalState=deriveMentalState({readinessIndex:readiness,tiltRisk,sessionMinutes:minutes,focus:last?.focus??activeSession.pre.mentalDrive,tension:last?.tension??activeSession.pre.tension,impulse:last?.impulse??activeSession.pre.impulse,fatigue:last?.fatigue??activeSession.pre.fatigue});
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={2} total={4} label={t('session.activeStage')}/>
@@ -266,7 +266,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
       <View style={s.rowBetween}><Label>{t('session.elapsed')}</Label><Label>{t(activeSession.plan.mode==='cash'?'mode.cash':'mode.tournament')}</Label></View>
       <Serif style={s.clock}>{formatElapsed(now-activeSession.startedAt)}</Serif>
       <View style={s.rowBetween}><Label>{t('home.mentalState')}</Label><AppText style={s.goldText}>{t(({
-        ready:'mentalState.ready',vulnerable:'mentalState.vulnerable',fatigued:'mentalState.fatigued','tilt-risk':'mentalState.tilt-risk',recovery:'mentalState.recovery',
+        centered:'mentalState.centered',alert:'mentalState.alert',vulnerable:'mentalState.vulnerable',dysregulated:'mentalState.dysregulated',tilt:'mentalState.tilt',
       } as const)[mentalState])}</AppText></View>
     </View>
 
