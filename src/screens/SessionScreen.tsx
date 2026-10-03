@@ -90,7 +90,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const [reason,setReason]=useState<PlayReason>('planned');
   const [mode,setMode]=useState<GameMode>('tournament');
   const [goal,setGoal]=useState<ProcessGoalId>('process');
-  const [expectedMinutes,setExpectedMinutes]=useState(120);
+  const [expectedMinutes,setExpectedMinutes]=useState(Math.min(120,profile.stopRules.maxDurationMinutes));
   const [stakesLabel,setStakesLabel]=useState('');
   const [planExpanded,setPlanExpanded]=useState(false);
   const [activationUsed,setActivationUsed]=useState(false);
@@ -105,6 +105,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const tiltRisk=classifyTiltRisk(pre);
   const ritual=getRitualMinutes(readinessIndex,tiltRisk);
   const canLeave=mode==='cash';
+  const durationOptions=[60,90,120,180].filter(value=>value<=profile.stopRules.maxDurationMinutes);
 
   const next=()=>setWizardStep(v=>Math.min(6,v+1));
   const back=()=>setWizardStep(v=>Math.max(0,v-1));
@@ -186,7 +187,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
         </TouchableOpacity>
         {planExpanded?<View style={s.contextList}>
           <Label>{t('pregrind.expectedDuration')}</Label>
-          <ChoiceGrid items={[60,90,120,180].map(value=>({id:String(value),label:String(value)}))} value={String(expectedMinutes)} onChange={value=>setExpectedMinutes(Number(value))}/>
+          <ChoiceGrid items={durationOptions.map(value=>({id:String(value),label:String(value)}))} value={String(expectedMinutes)} onChange={value=>setExpectedMinutes(Number(value))}/>
           <Label>{t('pregrind.stakes')}</Label>
           <AppTextInput
             value={stakesLabel}
@@ -322,6 +323,7 @@ function Debrief({ save }: { save:()=>void }) {
 
   const readinessIndex=activeSession?calculateReadiness(activeSession.pre):0;
   const reentryLimitReached=activeSession?activeSession.reentriesUsed>=activeSession.plan.maxReentries:true;
+  const reentryDecisionRequired=Boolean(activeSession?.plan.mode==='tournament'&&busted&&!reentryLimitReached&&reentryDecision==='none');
   const actualDurationMinutes=activeSession?Math.max(0,Math.floor((Date.now()-activeSession.startedAt)/60000)):0;
   const plannedGoal=processGoals.find(item=>item.id===activeSession?.plan.processGoal);
   const mentalEv=calculateMentalEv({gameQuality,foldDiscipline,readinessIndex});
@@ -332,7 +334,8 @@ function Debrief({ save }: { save:()=>void }) {
     finishSession({
       financialResult:resultHidden||!financialResult.trim()?null:Number(financialResult.replace(',','.')),
       resultHidden,gameQuality,foldDiscipline,patience,decisionConfidence,professionalConduct,
-      attitude,resilience,gameUnderstanding,logic,endState:state,triggers,busted,reentryDecision,
+      attitude,resilience,gameUnderstanding,logic,endState:state,triggers,busted,
+      reentryDecision:busted&&reentryLimitReached?'stop':reentryDecision,
     });
     save();
   };
@@ -404,7 +407,11 @@ function Debrief({ save }: { save:()=>void }) {
 
     <View style={s.wizardActions}>
       {debriefStep>0?<PremiumButton label={t('pregrind.back')} secondary onPress={back}/>:<View style={s.flex}/>}
-      <PremiumButton label={debriefStep===4?t('debrief.disconnect'):t('pregrind.next')} onPress={debriefStep===4?persist:next}/>
+      <PremiumButton
+        label={debriefStep===4?t('debrief.disconnect'):t('pregrind.next')}
+        disabled={debriefStep===3&&reentryDecisionRequired}
+        onPress={debriefStep===4?persist:next}
+      />
     </View>
   </ScrollView>;
 }
@@ -441,6 +448,12 @@ function Recovery({ finish,openAudio }: { finish:()=>void;openAudio:()=>void }) 
     };
   },[locale,t]);
 
+  const openRecoveryAudio=()=>{
+    void Speech.stop();
+    setDisconnectRemaining(0);
+    openAudio();
+  };
+
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={4} total={4} label={t('recovery.subtitle')}/>
     <View style={s.lead}><Label>{t('recovery.subtitle')}</Label><Serif style={s.leadTitle}>{t('recovery.title')}</Serif><AppText style={s.body}>{t('recovery.body')}</AppText></View>
@@ -459,7 +472,7 @@ function Recovery({ finish,openAudio }: { finish:()=>void;openAudio:()=>void }) 
     {plan==='personal'
       ?<PremiumButton label={t('recovery.finish')} onPress={finish}/>
       :<>
-        <PremiumButton label={t(titleKey[plan])} onPress={openAudio} icon="headset-outline"/>
+        <PremiumButton label={t(titleKey[plan])} onPress={openRecoveryAudio} icon="headset-outline"/>
         <PremiumButton label={t('recovery.finish')} secondary onPress={finish}/>
       </>
     }
