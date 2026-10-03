@@ -418,7 +418,7 @@ function Recovery({ finish,openAudio }: { finish:()=>void;openAudio:()=>void }) 
     <View style={s.readingCard}>
       <Label>{t(disconnectRemaining>0?'recovery.disconnectRunning':'recovery.disconnectComplete')}</Label>
       <Serif style={s.heroNumber}>{disconnectRemaining}</Serif>
-      <AppText style={s.body}>{t('recovery.disconnectScript')}</AppText>
+      <AppText style={s.body}>{t('recovery.disconnectBody')}</AppText>
     </View>
 
     <View style={s.readingCard}>
