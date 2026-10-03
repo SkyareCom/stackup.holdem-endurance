@@ -5,9 +5,12 @@ import { describe, expect, it } from 'vitest';
 const source=fs.readFileSync(path.join(process.cwd(),'src/screens/SessionScreen.tsx'),'utf8');
 
 describe('sequential Session contract',()=>{
-  it('uses a six-step pre-grind wizard and four journey stages',()=>{
+  it('uses a seven-step pre-grind wizard with mandatory activation and four journey stages',()=>{
     expect(source).toContain('wizardStep');
-    expect(source).toContain('total={6}');
+    expect(source).toContain('total={7}');
+    expect(source).toContain("'pregrind.activation'");
+    expect(source).toContain('activationUsed');
+    expect(source).toContain('disabled={wizardStep===6&&!activationUsed}');
     expect(source).toContain('current={2}');
     expect(source).toContain('current={debriefStep+1}');
     expect(source).toContain('current={4}');
