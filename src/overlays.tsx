@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { C } from './theme';
 import { diaryQuestions, heatmapIntensityLegend, lifestyleSections, mentalPlaylists, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
 import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
@@ -11,6 +12,18 @@ import { ExercisePhase, GameState, Module, moduleMeta } from './types';
 import { useI18n, type TranslationKey } from './i18n';
 import { buildHeatmap, getSOSProtocol, type HeatmapIntensity, type HeatmapWindowId, type TiltTrigger } from './performanceEngine';
 import { usePerformance } from './performanceStore';
+
+const bundledMentalTone=require('../assets/audio/mental-tone.wav');
+const frequencyRateByPlaylist:Record<string,number>={
+  'lock-in':20/12,
+  'a-game':1,
+  discipline:20/12,
+  'long-grind':1,
+  pressure:1,
+  'mental-fortress':1,
+  cooldown:4/12,
+  'break-4':1,
+};
 
 const vaccineAnswers = [
   { id:'answer1', key:'overlay.vaccineAnswer1' },
@@ -23,6 +36,9 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const { t } = useI18n();
   const [moduleStarted,setModuleStarted]=useState(false);
   const [playlist,setPlaylist]=useState('a-game');
+  const [loadedPlaylist,setLoadedPlaylist]=useState<string|null>(null);
+  const audioPlayer=useAudioPlayer(null,{updateInterval:250});
+  const audioStatus=useAudioPlayerStatus(audioPlayer);
   const [exercisePhase,setExercisePhase]=useState<ExercisePhase>('intro');
   const [reactionResult,setReactionResult]=useState<number|null>(null);
   const [diaryIndex,setDiaryIndex]=useState(0);
@@ -49,6 +65,22 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     setReactionReady(false);
     setExercisePhase('result');
   };
+  const toggleMentalAudio=(id:string)=>{
+    if(loadedPlaylist===id){
+      if(audioStatus.playing) audioPlayer.pause();
+      else audioPlayer.play();
+      return;
+    }
+    setPlaylist(id);
+    setLoadedPlaylist(id);
+    audioPlayer.replace(bundledMentalTone);
+    audioPlayer.loop=true;
+    audioPlayer.shouldCorrectPitch=false;
+    audioPlayer.playbackRate=frequencyRateByPlaylist[id]??1;
+    audioPlayer.volume=0.18;
+    audioPlayer.play();
+  };
+
   const meta=moduleMeta[module];
   const intro=moduleIntroById[module];
   const { sessions }=usePerformance();
@@ -144,17 +176,20 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   } else if(module==='lifestyle') {
     body=<View style={s.moduleContent}>{lifestyleSections.map(x=><View key={x.id} style={s.lifestyle}><Label>{t(x.titleKey)}</Label><Serif style={s.actionTitle}>{t(x.subtitleKey)}</Serif><AppText style={s.lessonBody}>{t(x.bodyKey)}</AppText></View>)}</View>;
   } else if(module==='audio') {
-    body=<View style={s.moduleContent}>{mentalPlaylists.map(p=><TouchableOpacity key={p.id} onPress={()=>setPlaylist(p.id)} style={[s.playlist,playlist===p.id&&s.playlistActive]}>
-      <View style={[s.playCircle,playlist===p.id&&s.playCircleActive]}><Ionicons name={playlist===p.id?'pause':'play'} size={17} color={playlist===p.id?C.ink:C.goldLight}/></View>
-      <View style={s.flex}>
-        <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(p.titleKey)}</Serif><Label>{t(p.modeKey)}</Label></View>
-        <View style={s.playlistDetail}><Label>{t('overlay.audioObjective')}</Label><AppText style={s.playlistBody}>{t(p.objectiveKey)}</AppText></View>
-        <View style={s.playlistDetail}><Label>{t('overlay.audioBestMoment')}</Label><AppText style={s.playlistBody}>{t(p.bestMomentKey)}</AppText></View>
-        <View style={s.rowBetween}><Label>{t('overlay.audioDuration')}</Label><AppText style={s.goldText}>{p.duration}</AppText></View>
-        <View style={s.playlistDetail}><Label>{t('overlay.audioExpectedEffect')}</Label><AppText style={s.playlistBody}>{t(p.descriptionKey)}</AppText></View>
-        <View style={s.playlistDetail}><Label>{t('overlay.audioCue')}</Label><Serif style={s.nowCue}>“{t(p.cueKey)}”</Serif></View>
-      </View>
-    </TouchableOpacity>)}</View>;
+    body=<View style={s.moduleContent}>{mentalPlaylists.map(p=>{
+      const playing=loadedPlaylist===p.id&&audioStatus.playing;
+      return <TouchableOpacity key={p.id} onPress={()=>toggleMentalAudio(p.id)} style={[s.playlist,playlist===p.id&&s.playlistActive]}>
+        <View style={[s.playCircle,playing&&s.playCircleActive]}><Ionicons name={playing?'pause':'play'} size={17} color={playing?C.ink:C.goldLight}/></View>
+        <View style={s.flex}>
+          <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(p.titleKey)}</Serif><Label>{t(p.modeKey)}</Label></View>
+          <View style={s.playlistDetail}><Label>{t('overlay.audioObjective')}</Label><AppText style={s.playlistBody}>{t(p.objectiveKey)}</AppText></View>
+          <View style={s.playlistDetail}><Label>{t('overlay.audioBestMoment')}</Label><AppText style={s.playlistBody}>{t(p.bestMomentKey)}</AppText></View>
+          <View style={s.rowBetween}><Label>{t('overlay.audioDuration')}</Label><AppText style={s.goldText}>{p.duration}</AppText></View>
+          <View style={s.playlistDetail}><Label>{t('overlay.audioExpectedEffect')}</Label><AppText style={s.playlistBody}>{t(p.descriptionKey)}</AppText></View>
+          <View style={s.playlistDetail}><Label>{t('overlay.audioCue')}</Label><Serif style={s.nowCue}>“{t(p.cueKey)}”</Serif></View>
+        </View>
+      </TouchableOpacity>;
+    })}</View>;
   } else if(module==='diary') {
     const question=diaryQuestions[diaryIndex];
     body=<View style={s.moduleContent}><View style={s.panel}>
