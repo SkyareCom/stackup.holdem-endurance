@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { C } from './theme';
-import { diaryQuestions, heatmapIntensityLegend, lifestyleSections, mentalPlaylists, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
+import { diaryQuestions, heatmapIntensityLegend, lifestyleSections, mentalPlaylists, mindfulnessTechniques, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
 import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
 import { TestIntro } from './components/TestIntro';
 import { s } from './styles';
@@ -44,6 +44,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const [diaryIndex,setDiaryIndex]=useState(0);
   const [diaryText,setDiaryText]=useState('');
   const [vaccine,setVaccine]=useState('');
+  const [mindsetIndex,setMindsetIndex]=useState(0);
   const [reactionReady,setReactionReady]=useState(false);
   const [reactionArmedAt,setReactionArmedAt]=useState<number|null>(null);
   const reactionTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
@@ -207,6 +208,25 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
         <AppText style={s.body}>{t('overlay.vaccineBody')}</AppText>
       </View>
       {vaccineAnswers.map(x=><TouchableOpacity key={x.id} onPress={()=>setVaccine(x.id)} style={[s.option,vaccine===x.id&&s.optionActive]}><AppText style={[s.optionText,vaccine===x.id&&s.optionTextActive]}>{t(x.key)}</AppText></TouchableOpacity>)}
+    </View>;
+  } else if(module==='mindset') {
+    const technique=mindfulnessTechniques[mindsetIndex];
+    body=<View style={s.moduleContent}>
+      <View style={s.panel}>
+        <View style={s.rowBetween}>
+          <TouchableOpacity style={s.close} onPress={()=>setMindsetIndex(i=>(i-1+mindfulnessTechniques.length)%mindfulnessTechniques.length)}><Ionicons name="chevron-back" size={22} color={C.goldLight}/></TouchableOpacity>
+          <AppText style={s.goldText}>{mindsetIndex+1} / {mindfulnessTechniques.length}</AppText>
+          <TouchableOpacity style={s.close} onPress={()=>setMindsetIndex(i=>(i+1)%mindfulnessTechniques.length)}><Ionicons name="chevron-forward" size={22} color={C.goldLight}/></TouchableOpacity>
+        </View>
+        <Label>{t(technique.titleKey)}</Label>
+        <AppText style={s.body}>{t(technique.whenKey)}</AppText>
+        <View style={s.rule}/>
+        <Serif style={s.stoicText}>{t(technique.bodyKey)}</Serif>
+      </View>
+      <View style={s.guidedBlock}>
+        <Label>{t('evidence.title')}</Label>
+        <AppText style={s.body}>{t('evidence.body')}</AppText>
+      </View>
     </View>;
   } else {
     body=<View style={s.moduleContent}>{stoicPrinciples.map(x=><View key={x.id} style={s.stoic}><Label>{t(x.titleKey)}</Label><Serif style={s.stoicText}>{t(x.bodyKey)}</Serif></View>)}</View>;
