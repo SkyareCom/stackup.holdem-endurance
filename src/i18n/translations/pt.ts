@@ -753,6 +753,10 @@ export const pt = {
   'coach.advice.contain': "VOCÊ ESTÁ EM CONTEXTO DE CONTENÇÃO. NÃO TENTE RECUPERAR, NÃO AUMENTE O RITMO E ELIMINE DECISÕES MARGINAIS DESNECESSÁRIAS ATÉ O ESTADO BAIXAR.",
   'coach.advice.stop': "A CONDIÇÃO ATUAL CRUZOU O LIMITE DEFINIDO PARA CONTINUAR. SE PUDER SAIR, ENCERRAR A SESSÃO É A AÇÃO PREVISTA PELAS SUAS PRÓPRIAS REGRAS.",
   'coach.advice.noContext': "AINDA NÃO HÁ CONTEXTO ATUAL SUFICIENTE PARA UMA RECOMENDAÇÃO ESPECÍFICA. FAÇA UM CHECK-IN OU INICIE A JORNADA PRÉ-SESSÃO.",
+  'sos.breathe.inhale1': "INSPIRE PELO NARIZ",
+  'sos.breathe.inhale2': "SEGUNDA INSPIRAÇÃO CURTA",
+  'sos.breathe.exhale': "EXPIRE LENTAMENTE PELA BOCA",
+  'sos.breathe.complete': "RESET CONCLUÍDO",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
