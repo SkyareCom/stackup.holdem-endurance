@@ -44,6 +44,16 @@ export const en: TranslationCatalog = {
   'resilience.recoveryTime': 'RECOVERY TIME',
   'resilience.recoveryBody': 'Resilience also means returning to a functional state after an impact. Earlier awareness and re-anchoring reduce contamination of the next decisions.',
 
+  'sportPsych.title': 'PSYCHOLOGICAL PERFORMANCE',
+  'sportPsych.body': 'sport-psychology-informed indicators calculated only from your real session records.',
+  'sportPsych.attention': 'ATTENTIONAL STABILITY',
+  'sportPsych.impulse': 'IMPULSE REGULATION',
+  'sportPsych.pressure': 'PRESSURE REGULATION',
+  'sportPsych.process': 'PROCESS ADHERENCE',
+  'sportPsych.fatigue': 'MENTAL FATIGUE LOAD',
+  'sportPsych.adversity': 'ADVERSITY RESPONSE',
+  'sportPsych.caution': 'these indicators describe performance patterns observed in the app. they are not a psychological diagnosis, do not measure personal worth, and do not guarantee financial results.',
+
   'coachJourney.notice': 'NOTICE',
   'coachJourney.noticeBody': 'Before trying to fix anything, understand how you arrived. There is no right answer: there is the state you are actually bringing to the table today.',
   'coachJourney.interrupt': 'INTERRUPT',
