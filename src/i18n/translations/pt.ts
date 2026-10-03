@@ -757,6 +757,21 @@ export const pt = {
   'sos.breathe.inhale2': "SEGUNDA INSPIRAÇÃO CURTA",
   'sos.breathe.exhale': "EXPIRE LENTAMENTE PELA BOCA",
   'sos.breathe.complete': "RESET CONCLUÍDO",
+  'mindfulness.54321.title': "GROUNDING 5-4-3-2-1",
+  'mindfulness.54321.when': "USE QUANDO A ATENÇÃO ESTIVER PRESA EM RESULTADO, MEDO OU RUMINAÇÃO.",
+  'mindfulness.54321.body': "NOMEIE 5 COISAS QUE VÊ, 4 QUE SENTE NO CORPO, 3 QUE OUVE, 2 QUE CHEIRA E 1 QUE SABOREIA. O OBJETIVO É TRAZER A ATENÇÃO DE VOLTA AO PRESENTE.",
+  'mindfulness.labeling.title': "ROTULAÇÃO MENTAL",
+  'mindfulness.labeling.when': "USE QUANDO UMA EMOÇÃO ESTIVER TOMANDO A NARRATIVA DA SESSÃO.",
+  'mindfulness.labeling.body': "NOMEIE O EVENTO SEM DISCUTIR COM ELE: RAIVA, MEDO, PRESSA, FRUSTRAÇÃO, EGO. DEPOIS VOLTE À PRÓXIMA AÇÃO OBSERVÁVEL.",
+  'mindfulness.mountain.title': "MONTANHA E CLIMA",
+  'mindfulness.mountain.when': "USE QUANDO O ESTADO INTERNO ESTIVER MUDANDO RÁPIDO.",
+  'mindfulness.mountain.body': "TRATE VOCÊ COMO A MONTANHA E PENSAMENTOS/EMOÇÕES COMO CLIMA PASSAGEIRO. O CLIMA MUDA; A REGRA DE PROCESSO PERMANECE.",
+  'mindfulness.leaves.title': "FOLHAS NO RIO",
+  'mindfulness.leaves.when': "USE PARA DESCOLAR DE PENSAMENTOS REPETITIVOS.",
+  'mindfulness.leaves.body': "IMAGINE CADA PENSAMENTO SOBRE UMA FOLHA DESCENDO UM RIO. NÃO EMPURRE NEM SEGURE. OBSERVE PASSAR E VOLTE AO PRESENTE.",
+  'mindfulness.cinema.title': "TELA DE CINEMA",
+  'mindfulness.cinema.when': "USE QUANDO UMA MÃO, ERRO OU BAD BEAT CONTINUAR SENDO REPLAYADO MENTALMENTE.",
+  'mindfulness.cinema.body': "VISUALIZE A CENA EM UMA TELA DISTANTE, SEM ENTRAR NELA. REDUZA O VOLUME, A COR E A PROXIMIDADE; DEPOIS ENCERRA A CENA E RETORNE À PRÓXIMA DECISÃO.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
