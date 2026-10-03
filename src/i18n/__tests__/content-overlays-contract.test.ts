@@ -31,7 +31,7 @@ describe('Train, content libraries, and overlays localization contract', () => {
     const overlays = read('src/overlays.tsx');
     expect(train).toContain("t('train.title')");
     expect(train).toContain("t('train.reserveInsufficient')");
-    expect(overlays).toContain('t(p.titleKey)');
+    expect(overlays).toContain('t(preset.labelKey)');
     expect(overlays).toContain("t('overlay.heatmap')");
     expect(overlays).toContain("t('break.label')");
     expect(overlays).toContain("t('checkin.label')");
@@ -43,8 +43,8 @@ describe('Train, content libraries, and overlays localization contract', () => {
 
   it('keeps overlay state on stable ids or indexes', () => {
     const overlays = read('src/overlays.tsx');
-    expect(overlays).toContain("useState('a-game')");
-    expect(overlays).toContain('toggleMentalAudio(p.id)');
+    expect(overlays).toContain("useState<FrequencyPresetId|null>(null)");
+    expect(overlays).toContain('toggleFrequencyAudio(preset.id)');
     expect(overlays).toContain('choose(x.id as TiltTrigger)');
     expect(overlays).toContain('recordSOS(next)');
     expect(overlays).toContain('diaryIndex');
