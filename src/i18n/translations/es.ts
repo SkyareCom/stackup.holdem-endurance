@@ -783,4 +783,9 @@ export const es: TranslationCatalog = {
   'overlay.audioFrequency': "CAPA ESTÉREO",
   'overlay.audioHertz': "HZ",
   'overlay.audioFrequencyNote': "LA CAPA DE FRECUENCIA ES OPCIONAL. LA EVIDENCIA SOBRE BINAURAL BEATS ES MIXTA; ÚSALA A VOLUMEN CÓMODO COMO APOYO DE RUTINA, NO COMO TRATAMIENTO.",
+  'session.reentriesUsed': "REENTRIES USADOS",
+  'session.registerReentry': "REGISTRAR REENTRY",
+  'session.reentryLimit': "LÍMITE DE REENTRY",
+  'debrief.reentryLimitReached': "LÍMITE DE REENTRY ALCANZADO",
+  'debrief.reentryLimitBody': "LA REGLA DEFINIDA ANTES DE LA SESIÓN NO PERMITE OTRA REENTRADA.",
 };
