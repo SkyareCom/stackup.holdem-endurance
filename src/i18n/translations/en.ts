@@ -441,7 +441,7 @@ export const en: TranslationCatalog = {
   'overlay.audioObjective': 'OBJECTIVE',
   'overlay.audioBestMoment': 'BEST MOMENT',
   'overlay.audioDuration': 'DURATION',
-  'overlay.audioExpectedEffect': 'EXPECTED EFFECT',
+  'overlay.audioExpectedEffect': 'PROTOCOL PURPOSE',
   'overlay.audioCue': 'MAIN CUE',
   'playlist.lockIn.objective': 'prepare focus before the session and reduce mental noise.',
   'playlist.lockIn.bestMoment': '5–10 minutes before playing.',
@@ -780,4 +780,7 @@ export const en: TranslationCatalog = {
   'recovery.plan.cooldown': "LOWER ACTIVATION BEFORE ANALYZING MORE. USE THE COOLDOWN AND AVOID REOPENING THE SESSION MENTALLY RIGHT NOW.",
   'recovery.plan.sleep': "FATIGUE WAS A DOMINANT FACTOR. PRIORITIZE DOWNSHIFTING AND PREPARATION FOR RECOVERY/SLEEP.",
   'recovery.plan.personal': "THE SESSION ENDED IN A STABLE STATE. MAKE A SHORT TRANSITION BACK TO PERSONAL LIFE WITHOUT CARRYING THE RESULT.",
+  'overlay.audioFrequency': "STEREO LAYER",
+  'overlay.audioHertz': "HZ",
+  'overlay.audioFrequencyNote': "THE FREQUENCY LAYER IS OPTIONAL. EVIDENCE FOR BINAURAL BEATS IS MIXED; USE AT A COMFORTABLE VOLUME AS A ROUTINE AID, NOT AS TREATMENT.",
 };
