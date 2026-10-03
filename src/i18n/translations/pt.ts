@@ -798,6 +798,10 @@ export const pt = {
   'recovery.disconnectRunning': "DESCONECTANDO DA SESSÃO",
   'recovery.disconnectComplete': "DESCONECTADO",
   'recovery.disconnectScript': "A sessão terminou. O resultado não precisa continuar acontecendo dentro de você. Solte os ombros, descruze as mãos e faça uma expiração longa. Agora separe três coisas: resultado, execução e estado. O resultado já aconteceu e não pode ser corrigido nesta pausa. A execução será revisada depois, com dados e distância. O estado atual precisa apenas descer de intensidade. Não refaça mãos agora. Não procure justificativas. Não tente decidir se jogou bem ou mal a partir do dinheiro ganho ou perdido. Diga mentalmente: a sessão acabou, a próxima decisão não existe neste momento. Perceba três pontos de contato do corpo com a cadeira ou o chão. Faça outra expiração lenta. Se houver uma mão insistindo em voltar, imagine-a em uma tela distante e deixe a imagem apagar. Escolha uma única frase para levar ao estudo posterior e deixe o restante aqui. Seu trabalho agora é sair do modo competição. Respire normalmente. Volte ao ambiente ao seu redor. Quando o cronômetro terminar, encerre o app e retome a vida fora da mesa.",
+  'micro.downswing.summary': "Reancore o processo quando uma sequência ruim começa a contaminar identidade, ritmo ou tomada de decisão.",
+  'micro.lossAversion.summary': "Reconheça urgência de recuperar e separe perda passada da decisão que está diante de você.",
+  'micro.personalStress.summary': "Crie uma fronteira prática entre problemas fora da mesa e as informações relevantes para o próximo spot.",
+  'recovery.disconnectBody': "Siga apenas a voz e a respiração. Não revise mãos nem resultado durante estes dois minutos.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
