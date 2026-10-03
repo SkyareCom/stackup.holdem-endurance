@@ -28,6 +28,7 @@ type ActiveSession = {
   pre:PreGrindCheckin;
   plan:SessionPlan;
   checkins:RuntimeCheckin[];
+  reentriesUsed:number;
 };
 
 type PersistedState = {
@@ -46,6 +47,7 @@ type PerformanceContextValue = PersistedState & {
   startSession:(pre:PreGrindCheckin,plan:SessionPlan)=>void;
   addRuntimeCheckin:(checkin:Omit<RuntimeCheckin,'createdAt'|'minute'>)=>void;
   recordSOS:(trigger:TiltTrigger)=>void;
+  incrementReentry:()=>void;
   finishSession:(debrief:DebriefData)=>SessionRecord|null;
   clearHistory:()=>void;
 };
@@ -116,6 +118,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
       pre,
       plan,
       checkins:[],
+      reentriesUsed:0,
     }}));
   },[]);
 
@@ -148,6 +151,15 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
     });
   },[]);
 
+
+  const incrementReentry=useCallback(()=>{
+    setState(s=>{
+      if(!s.activeSession||s.activeSession.plan.mode!=='tournament')return s;
+      if(s.activeSession.reentriesUsed>=s.activeSession.plan.maxReentries)return s;
+      return {...s,activeSession:{...s.activeSession,reentriesUsed:s.activeSession.reentriesUsed+1}};
+    });
+  },[]);
+
   const finishSession=useCallback((debrief:DebriefData)=>{
     let created:SessionRecord|null=null;
     setState(s=>{
@@ -161,6 +173,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
         pre:s.activeSession.pre,
         plan:s.activeSession.plan,
         checkins:s.activeSession.checkins,
+        reentriesUsed:s.activeSession.reentriesUsed,
         debrief,
         readinessIndex,
         mentalEv:calculateMentalEv({gameQuality:debrief.gameQuality,foldDiscipline:debrief.foldDiscipline,readinessIndex}),
@@ -175,8 +188,8 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
   const baseline=useMemo(()=>buildBaseline(state.sessions),[state.sessions]);
   const value=useMemo<PerformanceContextValue>(()=>({
     ...state,ready,baseline,updateProfile,updateExtraGrind,updateStopRules,startSession,
-    addRuntimeCheckin,recordSOS,finishSession,clearHistory,
-  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateStopRules,startSession,addRuntimeCheckin,recordSOS,finishSession,clearHistory]);
+    addRuntimeCheckin,recordSOS,incrementReentry,finishSession,clearHistory,
+  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,finishSession,clearHistory]);
 
   if(!ready)return null;
   return <PerformanceContext.Provider value={value}>{children}</PerformanceContext.Provider>;
