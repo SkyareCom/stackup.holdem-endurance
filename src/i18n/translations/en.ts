@@ -783,4 +783,9 @@ export const en: TranslationCatalog = {
   'overlay.audioFrequency': "STEREO LAYER",
   'overlay.audioHertz': "HZ",
   'overlay.audioFrequencyNote': "THE FREQUENCY LAYER IS OPTIONAL. EVIDENCE FOR BINAURAL BEATS IS MIXED; USE AT A COMFORTABLE VOLUME AS A ROUTINE AID, NOT AS TREATMENT.",
+  'session.reentriesUsed': "REENTRIES USED",
+  'session.registerReentry': "RECORD REENTRY",
+  'session.reentryLimit': "REENTRY LIMIT",
+  'debrief.reentryLimitReached': "REENTRY LIMIT REACHED",
+  'debrief.reentryLimitBody': "THE RULE SET BEFORE THE SESSION DOES NOT ALLOW ANOTHER REENTRY.",
 };
