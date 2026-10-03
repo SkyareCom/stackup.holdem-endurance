@@ -457,15 +457,24 @@ export function SOSOverlay({ close, goCoach }: { close:()=>void; goCoach:()=>voi
       <AppText style={s.sosCopy}>{t('sos.selectSymptom')}</AppText>
       <View style={s.sosTriggerWrap}><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>choose(x.id as TiltTrigger)} style={s.chip}><AppText style={s.chipText}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
     </View>:<View style={s.sosCenter}>
+      <Label>{t('coachJourney.interrupt')}</Label>
+      <Serif style={s.sosTitle}>{t('coachJourney.eventPassed')}</Serif>
+      <AppText style={s.sosCopy}>{t('coachJourney.eventPassedBody')}</AppText>
+      <View style={s.rule}/>
       <Label>{t('sos.protocol')}</Label>
       <View style={s.breathe}><View style={s.breatheInner}/></View>
       <AppText style={s.goldText}>{t(sosRemaining>0?sosBreathPhaseKey[sosBreathPhase]:'sos.breathe.complete')}</AppText>
       <Serif style={s.sosTitle}>{t(protocolTitleKey[protocol.id])}</Serif>
       <AppText style={s.sosCopy}>{t(protocolBodyKey[protocol.id])}</AppText>
       <AppText style={s.sosTimer}>{sosRemaining}</AppText>
+      {sosRemaining===0?<View style={s.guidedBlock}>
+        <Label>{t('coachJourney.anchor')}</Label>
+        <Serif style={s.actionTitle}>{t('coachJourney.nextDecision')}</Serif>
+        <AppText style={s.body}>{t('coachJourney.noRecoveryBody')}</AppText>
+      </View>:null}
     </View>}
     <View style={s.sosActions}>
-      {protocol?<PremiumButton label={t('sos.return')} onPress={close}/>:null}
+      {protocol?<PremiumButton label={sosRemaining>0?t('sos.continue'):t('sos.return')} disabled={sosRemaining>0} onPress={close}/>:null}
       <PremiumButton label={t('sos.talkCoach')} secondary icon="chatbubble-outline" onPress={goCoach}/>
     </View>
   </SafeAreaView></View>;
