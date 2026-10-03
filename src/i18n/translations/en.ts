@@ -54,6 +54,7 @@ export const en: TranslationCatalog = {
   'sportPsych.adversity': 'ADVERSITY RESPONSE',
   'sportPsych.caution': 'these indicators describe performance patterns observed in the app. they are not a psychological diagnosis, do not measure personal worth, and do not guarantee financial results.',
 
+  'home.historySummary': 'SESSION HISTORY',
   'coachJourney.notice': 'NOTICE',
   'coachJourney.noticeBody': 'Before trying to fix anything, understand how you arrived. There is no right answer: there is the state you are actually bringing to the table today.',
   'coachJourney.interrupt': 'INTERRUPT',
