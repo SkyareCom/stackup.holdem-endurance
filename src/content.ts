@@ -52,6 +52,10 @@ export const diaryQuestions = [
 ] as const satisfies readonly { id: string; textKey: TranslationKey }[];
 
 export const lifestyleSections = [
+  { id: 'sleep', titleKey: 'lifestyle.sleep.title', subtitleKey: 'lifestyle.sleep.subtitle', bodyKey: 'lifestyle.sleep.body' },
+  { id: 'nutrition', titleKey: 'lifestyle.nutrition.title', subtitleKey: 'lifestyle.nutrition.subtitle', bodyKey: 'lifestyle.nutrition.body' },
+  { id: 'hydration', titleKey: 'lifestyle.hydration.title', subtitleKey: 'lifestyle.hydration.subtitle', bodyKey: 'lifestyle.hydration.body' },
+  { id: 'activity', titleKey: 'lifestyle.activity.title', subtitleKey: 'lifestyle.activity.subtitle', bodyKey: 'lifestyle.activity.body' },
   { id: 'energy', titleKey: 'lifestyle.energy.title', subtitleKey: 'lifestyle.energy.subtitle', bodyKey: 'lifestyle.energy.body' },
   { id: 'body', titleKey: 'lifestyle.body.title', subtitleKey: 'lifestyle.body.subtitle', bodyKey: 'lifestyle.body.body' },
   { id: 'recovery', titleKey: 'lifestyle.recovery.title', subtitleKey: 'lifestyle.recovery.subtitle', bodyKey: 'lifestyle.recovery.body' },

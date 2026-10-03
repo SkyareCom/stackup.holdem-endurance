@@ -359,7 +359,7 @@ export const es: TranslationCatalog = {
   'session.nextTrainingBody': 'entrena estabilidad de atención antes de la próxima sesión larga y compárala con tu siguiente check-in.',
 
   'train.guidedIntro': 'elige el objetivo que necesitas mejorar ahora; cada grupo explica qué entrena, cuándo usarlo y cuánto tiempo lleva.',
-  'train.reserveMeaning': 'buena capacidad para sostener rendimiento, con atención especial a sesiones largas sin pausa anticipada.',
+  'train.reserveMeaning': 'una estimación basada en tu preparación media registrada; usa la tendencia, no un valor aislado, para ajustar rutina y pausas.',
   'train.group.control.title': 'CONTROL',
   'train.group.control.description': 'reconoce tilt, varianza y disparadores antes de que controlen la próxima decisión.',
   'train.group.reading.title': 'LECTURA',
@@ -736,4 +736,18 @@ export const es: TranslationCatalog = {
   'pregrind.openAudio': 'ABRIR AUDIO MENTAL',
   'pregrind.openBreathing': 'ABRIR RESET GUIADO',
   'pregrind.activationComplete': 'PREPARACIÓN COMPLETA · INICIAR SESIÓN',
+  'debrief.resilience': 'RESILIENCIA',
+  'lifestyle.sleep.title': 'SUEÑO',
+  'lifestyle.sleep.subtitle': 'RECUPERACIÓN NOCTURNA',
+  'lifestyle.sleep.body': 'prioriza horarios de sueño consistentes y suficiente recuperación. observa cómo noches mejores o peores se relacionan con enfoque y ejecución en tu propio historial.',
+  'lifestyle.nutrition.title': 'ALIMENTACIÓN',
+  'lifestyle.nutrition.subtitle': 'COMBUSTIBLE ESTABLE',
+  'lifestyle.nutrition.body': 'prioriza comidas equilibradas compatibles con sesiones largas y evita depender de picos rápidos de energía. este módulo orienta rutinas de rendimiento, no prescripción nutricional.',
+  'lifestyle.hydration.title': 'HIDRATACIÓN',
+  'lifestyle.hydration.subtitle': 'AGUA ANTES DE LA SED',
+  'lifestyle.hydration.body': 'incluye la hidratación en el plan antes y durante el grind. usa las pausas para beber agua y reevaluar señales de fatiga.',
+  'lifestyle.activity.title': 'ACTIVIDAD FÍSICA',
+  'lifestyle.activity.subtitle': 'UN CUERPO QUE SOSTIENE EL GRIND',
+  'lifestyle.activity.body': 'actividad física regular, movilidad y menos tiempo continuo sentado pueden apoyar rutina y recuperación. adapta volumen e intensidad a tu condición.',
+
 };

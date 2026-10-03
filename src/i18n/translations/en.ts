@@ -359,7 +359,7 @@ export const en: TranslationCatalog = {
   'session.nextTrainingBody': 'train attention stability before the next long session and compare it with your next check-in.',
 
   'train.guidedIntro': 'choose the objective you need to improve now; each group explains what it trains, when to use it, and how long it takes.',
-  'train.reserveMeaning': 'good capacity to sustain performance, with special attention to long sessions without an early break.',
+  'train.reserveMeaning': 'an estimate based on your recorded average readiness; use the trend, not an isolated value, to adjust routine and breaks.',
   'train.group.control.title': 'CONTROL',
   'train.group.control.description': 'recognize tilt, variance, and triggers before they control the next decision.',
   'train.group.reading.title': 'READING',
@@ -736,4 +736,18 @@ export const en: TranslationCatalog = {
   'pregrind.openAudio': 'OPEN MENTAL AUDIO',
   'pregrind.openBreathing': 'OPEN GUIDED RESET',
   'pregrind.activationComplete': 'PREPARATION COMPLETE · START SESSION',
+  'debrief.resilience': 'RESILIENCE',
+  'lifestyle.sleep.title': 'SLEEP',
+  'lifestyle.sleep.subtitle': 'NIGHT RECOVERY',
+  'lifestyle.sleep.body': 'prioritize consistent sleep times and enough recovery. observe how better or worse nights relate to focus and execution across your own history.',
+  'lifestyle.nutrition.title': 'NUTRITION',
+  'lifestyle.nutrition.subtitle': 'STEADY FUEL',
+  'lifestyle.nutrition.body': 'favor balanced meals that fit long sessions and avoid relying on rapid energy spikes. this module supports performance routines, not nutritional prescriptions.',
+  'lifestyle.hydration.title': 'HYDRATION',
+  'lifestyle.hydration.subtitle': 'WATER BEFORE THIRST',
+  'lifestyle.hydration.body': 'make hydration part of the plan before and during the grind. use breaks to drink water and reassess fatigue signals.',
+  'lifestyle.activity.title': 'PHYSICAL ACTIVITY',
+  'lifestyle.activity.subtitle': 'A BODY THAT SUPPORTS THE GRIND',
+  'lifestyle.activity.body': 'regular physical activity, mobility, and less uninterrupted sitting can support routine and recovery. adapt volume and intensity to your condition.',
+
 };

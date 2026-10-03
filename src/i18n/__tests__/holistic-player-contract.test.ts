@@ -24,10 +24,11 @@ describe('holistic player development contract',()=>{
     expect(session).toContain("pregrind.nutrition");
     expect(session).toContain("pregrind.hydration");
     expect(session).toContain("pregrind.activity");
+    for(const id of ["id: 'sleep'","id: 'nutrition'","id: 'hydration'","id: 'activity'"]) expect(contentSource).toContain(id);
   });
 
   it('captures process quality beyond financial result',()=>{
-    for(const token of ['patience','decisionConfidence','professionalConduct','attitude','gameUnderstanding','logic']) {
+    for(const token of ['patience','decisionConfidence','professionalConduct','attitude','resilience','gameUnderstanding','logic']) {
       expect(engine).toContain(token);
       expect(session).toContain(token);
     }

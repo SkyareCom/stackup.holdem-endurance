@@ -357,7 +357,7 @@ export const pt = {
   'session.nextTrainingBody': 'treine estabilidade de atenção antes da próxima sessão longa e compare com seu próximo check-in.',
 
   'train.guidedIntro': 'escolha o objetivo que precisa melhorar agora; cada grupo explica o que treina, quando usar e quanto tempo leva.',
-  'train.reserveMeaning': 'boa capacidade de sustentação, com atenção especial a sessões longas sem pausa antecipada.',
+  'train.reserveMeaning': 'estimativa baseada na sua prontidão média registrada; use a tendência, não um valor isolado, para ajustar rotina e pausas.',
   'train.group.control.title': 'CONTROLE',
   'train.group.control.description': 'reconheça tilt, variância e gatilhos antes que eles controlem a próxima decisão.',
   'train.group.reading.title': 'LEITURA',
@@ -733,6 +733,20 @@ export const pt = {
   'pregrind.openAudio': 'ABRIR ÁUDIO MENTAL',
   'pregrind.openBreathing': 'ABRIR RESET GUIADO',
   'pregrind.activationComplete': 'PREPARAÇÃO CONCLUÍDA · INICIAR SESSÃO',
+  'debrief.resilience': 'RESILIÊNCIA',
+  'lifestyle.sleep.title': 'SONO',
+  'lifestyle.sleep.subtitle': 'RECUPERAÇÃO NOTURNA',
+  'lifestyle.sleep.body': 'priorize horários consistentes e tempo suficiente de recuperação. observe como noites melhores ou piores se relacionam com foco e execução ao longo do seu próprio histórico.',
+  'lifestyle.nutrition.title': 'ALIMENTAÇÃO',
+  'lifestyle.nutrition.subtitle': 'COMBUSTÍVEL ESTÁVEL',
+  'lifestyle.nutrition.body': 'prefira refeições equilibradas e compatíveis com sessões longas, evitando depender de picos rápidos de energia. este módulo orienta rotina de performance, não prescrição nutricional.',
+  'lifestyle.hydration.title': 'HIDRATAÇÃO',
+  'lifestyle.hydration.subtitle': 'ÁGUA ANTES DA SEDE',
+  'lifestyle.hydration.body': 'inclua hidratação no plano antes e durante o grind. use pausas para beber água e reavaliar sinais de fadiga.',
+  'lifestyle.activity.title': 'ATIVIDADE FÍSICA',
+  'lifestyle.activity.subtitle': 'CORPO QUE SUSTENTA O GRIND',
+  'lifestyle.activity.body': 'atividade física regular, mobilidade e menos tempo contínuo sentado ajudam a sustentar rotina e recuperação. adapte volume e intensidade à sua condição.',
+
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };

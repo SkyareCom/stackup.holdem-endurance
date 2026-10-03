@@ -22,7 +22,7 @@ describe('need-driven Train contract',()=>{
     expect(source).toContain('developmentGroups[selectedDevelopmentGroup]');
   });
   it('does not fabricate mental reserve',()=>{
-    expect(source).toContain('baseline.averageMentalEv');
+    expect(source).toContain('baseline.averageReadiness');
     expect(source).not.toContain('title="74%"');
     expect(source).not.toContain("width:'74%'");
   });

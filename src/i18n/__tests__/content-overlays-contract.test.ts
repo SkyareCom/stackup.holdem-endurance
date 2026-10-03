@@ -13,6 +13,10 @@ describe('Train, content libraries, and overlays localization contract', () => {
     expect(content).toContain("cueKey: 'playlist.lockIn.cue'");
     expect(content).toContain("id: 'q1'");
     expect(content).toContain("textKey: 'diary.q1'");
+    expect(content).toContain("id: 'sleep'");
+    expect(content).toContain("id: 'nutrition'");
+    expect(content).toContain("id: 'hydration'");
+    expect(content).toContain("id: 'activity'");
     expect(content).toContain("id: 'energy'");
     expect(content).toContain("titleKey: 'lifestyle.energy.title'");
     expect(content).toContain("id: 'baseline'");
@@ -26,7 +30,7 @@ describe('Train, content libraries, and overlays localization contract', () => {
     const train = read('src/screens/TrainScreen.tsx');
     const overlays = read('src/overlays.tsx');
     expect(train).toContain("t('train.title')");
-    expect(train).toContain("t('train.reserveBody')");
+    expect(train).toContain("t('train.reserveInsufficient')");
     expect(overlays).toContain('t(p.titleKey)');
     expect(overlays).toContain("t('overlay.heatmap')");
     expect(overlays).toContain("t('break.label')");
