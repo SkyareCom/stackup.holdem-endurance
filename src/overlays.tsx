@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import * as Speech from 'expo-speech';
 import { C } from './theme';
-import { diaryQuestions, heatmapIntensityLegend, lifestyleSections, mentalPlaylists, microAudios, mindfulnessTechniques, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
+import { diaryQuestions, heatmapIntensityLegend, lifestyleSections, microAudios, mindfulnessTechniques, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
 import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
 import { TestIntro } from './components/TestIntro';
 import { s } from './styles';
@@ -38,8 +38,7 @@ const vaccineAnswers = [
 export function ModuleOverlay({ module, close }: { module:Module; close:()=>void }) {
   const { t,locale } = useI18n();
   const [moduleStarted,setModuleStarted]=useState(false);
-  const [playlist,setPlaylist]=useState('a-game');
-  const [loadedPlaylist,setLoadedPlaylist]=useState<string|null>(null);
+  const [loadedFrequency,setLoadedFrequency]=useState<FrequencyPresetId|null>(null);
   const [audioIntent,setAudioIntent]=useState<'play'|'pause'>('pause');
   const [audioReloadToken,setAudioReloadToken]=useState(0);
   const [frequencyPreset,setFrequencyPreset]=useState<FrequencyPresetId>('alpha');
@@ -60,9 +59,9 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
 
   useEffect(()=>()=>{ void Speech.stop(); audioPlayer.pause(); },[audioPlayer]);
   useEffect(()=>{
-    if(!loadedPlaylist||audioIntent!=='play'||!audioStatus.isLoaded)return;
+    if(!loadedFrequency||audioIntent!=='play'||!audioStatus.isLoaded)return;
     audioPlayer.play();
-  },[audioIntent,audioReloadToken,audioStatus.isLoaded,loadedPlaylist,audioPlayer]);
+  },[audioIntent,audioReloadToken,audioStatus.isLoaded,loadedFrequency,audioPlayer]);
   const startReactionTest=()=>{
     setReactionResult(null);
     setReactionReady(false);
@@ -81,23 +80,11 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     setExercisePhase('result');
   };
   const currentFrequency=frequencyPresets.find(item=>item.id===frequencyPreset)??frequencyPresets[1];
-  const selectFrequencyPreset=(next:FrequencyPresetId)=>{
+  const toggleFrequencyAudio=(next:FrequencyPresetId)=>{
     const preset=frequencyPresets.find(item=>item.id===next)??frequencyPresets[1];
-    const shouldResume=audioStatus.playing||audioIntent==='play';
+    const sameSource=loadedFrequency===next;
     setFrequencyPreset(next);
-    if(loadedPlaylist){
-      setAudioIntent(shouldResume?'play':'pause');
-      audioPlayer.pause();
-      audioPlayer.replace(preset.source);
-      audioPlayer.loop=true;
-      audioPlayer.shouldCorrectPitch=false;
-      audioPlayer.playbackRate=1;
-      audioPlayer.volume=0.18;
-      setAudioReloadToken(token=>token+1);
-    }
-  };
-  const toggleMentalAudio=(id:string)=>{
-    if(loadedPlaylist===id){
+    if(sameSource){
       if(audioStatus.playing||audioIntent==='play'){
         setAudioIntent('pause');
         audioPlayer.pause();
@@ -107,16 +94,19 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
       }
       return;
     }
-    setPlaylist(id);
-    setLoadedPlaylist(id);
     setAudioIntent('play');
+    setLoadedFrequency(next);
     audioPlayer.pause();
-    audioPlayer.replace(currentFrequency.source);
+    audioPlayer.replace(preset.source);
     audioPlayer.loop=true;
     audioPlayer.shouldCorrectPitch=false;
     audioPlayer.playbackRate=1;
     audioPlayer.volume=0.18;
     setAudioReloadToken(token=>token+1);
+  };
+  const stopFrequencyAudio=()=>{
+    setAudioIntent('pause');
+    audioPlayer.pause();
   };
 
 
@@ -239,30 +229,20 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     body=<View style={s.moduleContent}>
       <View style={s.panel}>
         <Label>{t('overlay.audioBand')}</Label>
-        <View style={s.processGrid}>{frequencyPresets.map(preset=><TouchableOpacity key={preset.id} onPress={()=>selectFrequencyPreset(preset.id)} style={[s.processChip,frequencyPreset===preset.id&&s.chipActive]}>
-          <AppText style={[s.chipText,frequencyPreset===preset.id&&s.chipTextActive]}>{t(preset.labelKey)}</AppText>
-        </TouchableOpacity>)}</View>
-        <View style={s.guidedBlock}>
-          <Label>{t('overlay.audioBandUse')}</Label>
-          <AppText style={s.body}>{t(currentFrequency.useKey)}</AppText>
-        </View>
         <AppText style={s.body}>{t('overlay.audioFrequencyNote')}</AppText>
       </View>
-      {mentalPlaylists.map(p=>{
-        const playing=loadedPlaylist===p.id&&audioStatus.playing;
-        return <TouchableOpacity key={p.id} onPress={()=>toggleMentalAudio(p.id)} style={[s.playlist,playlist===p.id&&s.playlistActive]}>
+      {frequencyPresets.map(preset=>{
+        const selected=frequencyPreset===preset.id;
+        const playing=loadedFrequency===preset.id&&audioStatus.playing;
+        return <TouchableOpacity key={preset.id} onPress={()=>toggleFrequencyAudio(preset.id)} style={[s.playlist,selected&&s.playlistActive]}>
           <View style={[s.playCircle,playing&&s.playCircleActive]}><Ionicons name={playing?'pause':'play'} size={17} color={playing?C.ink:C.goldLight}/></View>
           <View style={s.flex}>
-            <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(p.titleKey)}</Serif><Label>{t(p.modeKey)}</Label></View>
-            <View style={s.playlistDetail}><Label>{t('overlay.audioObjective')}</Label><AppText style={s.playlistBody}>{t(p.objectiveKey)}</AppText></View>
-            <View style={s.playlistDetail}><Label>{t('overlay.audioBestMoment')}</Label><AppText style={s.playlistBody}>{t(p.bestMomentKey)}</AppText></View>
-            <View style={s.rowBetween}><Label>{t('overlay.audioDuration')}</Label><AppText style={s.goldText}>{p.duration}</AppText></View>
-            <View style={s.rowBetween}><Label>{t('overlay.audioFrequency')}</Label><AppText style={s.goldText}>{currentFrequency.hz} {t('overlay.audioHertz')}</AppText></View>
-            <View style={s.playlistDetail}><Label>{t('overlay.audioExpectedEffect')}</Label><AppText style={s.playlistBody}>{t(p.descriptionKey)}</AppText></View>
-            <View style={s.playlistDetail}><Label>{t('overlay.audioCue')}</Label><Serif style={s.nowCue}>“{t(p.cueKey)}”</Serif></View>
+            <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(preset.labelKey)}</Serif><Label>{preset.hz} {t('overlay.audioHertz')}</Label></View>
+            <View style={s.playlistDetail}><Label>{t('overlay.audioBandUse')}</Label><AppText style={s.playlistBody}>{t(preset.useKey)}</AppText></View>
           </View>
         </TouchableOpacity>;
       })}
+      {loadedFrequency?<PremiumButton label={t('micro.stop')} secondary icon="stop-circle-outline" onPress={stopFrequencyAudio}/>:null}
     </View>;
   } else if(module==='diary') {
     const question=diaryQuestions[diaryIndex];
