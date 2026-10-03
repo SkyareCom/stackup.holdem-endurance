@@ -47,6 +47,7 @@ export default function PrivacyScreen() {
               <Label>{t('privacy.coachAndVoice')}</Label>
               <AppText style={s.body}>{t('privacy.noRemoteAiBody')}</AppText>
               <AppText style={s.body}>{t('privacy.noMicBody')}</AppText>
+              <AppText style={s.body}>{t('privacy.systemSpeechBody')}</AppText>
             </View>
 
             <View style={s.guidedBlock}>
