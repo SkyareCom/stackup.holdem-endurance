@@ -3,13 +3,14 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
+import * as Speech from 'expo-speech';
 import { C } from './theme';
-import { diaryQuestions, heatmapIntensityLegend, lifestyleSections, mentalPlaylists, mindfulnessTechniques, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
+import { diaryQuestions, heatmapIntensityLegend, lifestyleSections, mentalPlaylists, microAudios, mindfulnessTechniques, moduleIntroById, stoicPrinciples, tellLessons, warRoomTriggers, type WarRoomTriggerId } from './content';
 import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
 import { TestIntro } from './components/TestIntro';
 import { s } from './styles';
 import { ExercisePhase, GameState, Module, moduleMeta } from './types';
-import { useI18n, type TranslationKey } from './i18n';
+import { useI18n, type Locale, type TranslationKey } from './i18n';
 import { buildHeatmap, getSOSProtocol, type HeatmapIntensity, type HeatmapWindowId, type TiltTrigger } from './performanceEngine';
 import { usePerformance } from './performanceStore';
 
@@ -35,6 +36,12 @@ const frequencyBeatByPlaylist:Record<string,number>={
   'break-4':12,
 };
 
+const speechLanguage:Record<Locale,string>={
+  pt:'pt-BR',
+  en:'en-US',
+  es:'es-ES',
+};
+
 const vaccineAnswers = [
   { id:'answer1', key:'overlay.vaccineAnswer1' },
   { id:'answer2', key:'overlay.vaccineAnswer2' },
@@ -43,7 +50,7 @@ const vaccineAnswers = [
 ] as const satisfies readonly { id:string; key:TranslationKey }[];
 
 export function ModuleOverlay({ module, close }: { module:Module; close:()=>void }) {
-  const { t } = useI18n();
+  const { t,locale } = useI18n();
   const [moduleStarted,setModuleStarted]=useState(false);
   const [playlist,setPlaylist]=useState('a-game');
   const [loadedPlaylist,setLoadedPlaylist]=useState<string|null>(null);
@@ -55,10 +62,14 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const [diaryText,setDiaryText]=useState('');
   const [vaccine,setVaccine]=useState('');
   const [mindsetIndex,setMindsetIndex]=useState(0);
+  const [microAudioIndex,setMicroAudioIndex]=useState(0);
+  const [speakingMicroAudio,setSpeakingMicroAudio]=useState(false);
   const [reactionReady,setReactionReady]=useState(false);
   const [reactionArmedAt,setReactionArmedAt]=useState<number|null>(null);
   const reactionTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
   useEffect(()=>()=>{ if(reactionTimer.current) clearTimeout(reactionTimer.current); },[]);
+
+  useEffect(()=>()=>{ void Speech.stop(); },[]);
   const startReactionTest=()=>{
     setReactionResult(null);
     setReactionReady(false);
@@ -90,6 +101,27 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     audioPlayer.playbackRate=frequencyRateByPlaylist[id]??1;
     audioPlayer.volume=0.18;
     audioPlayer.play();
+  };
+
+
+  const playMicroAudio=()=>{
+    const script=microAudios[microAudioIndex];
+    audioPlayer.pause();
+    void Speech.stop();
+    setSpeakingMicroAudio(true);
+    Speech.speak(t(script.scriptKey),{
+      language:speechLanguage[locale],
+      rate:0.72,
+      pitch:1,
+      volume:0.9,
+      onDone:()=>setSpeakingMicroAudio(false),
+      onStopped:()=>setSpeakingMicroAudio(false),
+      onError:()=>setSpeakingMicroAudio(false),
+    });
+  };
+  const stopMicroAudio=()=>{
+    void Speech.stop();
+    setSpeakingMicroAudio(false);
   };
 
   const meta=moduleMeta[module];
@@ -228,6 +260,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     </View>;
   } else if(module==='mindset') {
     const technique=mindfulnessTechniques[mindsetIndex];
+    const microAudio=microAudios[microAudioIndex];
     body=<View style={s.moduleContent}>
       <View style={s.panel}>
         <View style={s.rowBetween}>
@@ -240,6 +273,25 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
         <View style={s.rule}/>
         <Serif style={s.stoicText}>{t(technique.bodyKey)}</Serif>
       </View>
+
+      <View style={s.panel}>
+        <Label>{t('micro.section')}</Label>
+        <View style={s.rowBetween}>
+          <TouchableOpacity style={s.close} onPress={()=>{stopMicroAudio();setMicroAudioIndex(i=>(i-1+microAudios.length)%microAudios.length);}}><Ionicons name="chevron-back" size={22} color={C.goldLight}/></TouchableOpacity>
+          <AppText style={s.goldText}>{microAudioIndex+1} / {microAudios.length}</AppText>
+          <TouchableOpacity style={s.close} onPress={()=>{stopMicroAudio();setMicroAudioIndex(i=>(i+1)%microAudios.length);}}><Ionicons name="chevron-forward" size={22} color={C.goldLight}/></TouchableOpacity>
+        </View>
+        <Serif style={s.actionTitle}>{t(microAudio.titleKey)}</Serif>
+        <Label>{t(microAudio.durationKey)}</Label>
+        <AppText style={s.body}>{t(microAudio.scriptKey)}</AppText>
+        <PremiumButton
+          label={t(speakingMicroAudio?'micro.stop':'micro.play')}
+          secondary={speakingMicroAudio}
+          icon={speakingMicroAudio?'stop-circle-outline':'volume-high-outline'}
+          onPress={speakingMicroAudio?stopMicroAudio:playMicroAudio}
+        />
+      </View>
+
       <View style={s.guidedBlock}>
         <Label>{t('evidence.title')}</Label>
         <AppText style={s.body}>{t('evidence.body')}</AppText>
