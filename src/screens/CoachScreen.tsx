@@ -28,6 +28,13 @@ const actionKeys:Record<SessionAction,TranslationKey>={
   continue:'action.continue','check-in':'action.check-in','break-4':'action.break-4',
   contain:'action.contain','stop-session':'action.stop-session',
 };
+const coachAdviceKeys:Record<SessionAction,TranslationKey>={
+  continue:'coach.advice.continue',
+  'check-in':'coach.advice.checkin',
+  'break-4':'coach.advice.break',
+  contain:'coach.advice.contain',
+  'stop-session':'coach.advice.stop',
+};
 
 export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
   const { t, locale } = useI18n();
@@ -35,13 +42,6 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
   const [input,setInput]=useState('');
   const [messages,setMessages]=useState<ChatMessage[]>([]);
   const [contextExpanded,setContextExpanded]=useState(false);
-
-  const send=()=>{
-    const v=input.trim();
-    if(!v)return;
-    setMessages(m=>[...m,{role:'you',text:v},{role:'ai',text:t('coach.reply'),locale}]);
-    setInput('');
-  };
 
   const phaseKey:TranslationKey=phase==='active'?'coach.phaseActive':phase==='debrief'?'coach.phaseDebrief':phase==='recovery'?'recovery.title':'coach.phaseReady';
   const readiness=latestCheckin?calculateReadiness(latestCheckin):null;
@@ -62,6 +62,15 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
     minFocus:profile.stopRules.minFocus,
     maxTension:profile.stopRules.maxTension,
   }):null;
+
+
+  const send=()=>{
+    const v=input.trim();
+    if(!v)return;
+    const reply=currentAction?t(coachAdviceKeys[currentAction]):t('coach.advice.noContext');
+    setMessages(m=>[...m,{role:'you',text:v},{role:'ai',text:reply,locale}]);
+    setInput('');
+  };
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.87}>
