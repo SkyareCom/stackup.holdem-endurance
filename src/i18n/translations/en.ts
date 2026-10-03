@@ -801,4 +801,8 @@ export const en: TranslationCatalog = {
   'recovery.disconnectRunning': "DISCONNECTING FROM THE SESSION",
   'recovery.disconnectComplete': "DISCONNECTED",
   'recovery.disconnectScript': "The session is over. The result does not need to keep happening inside you. Drop your shoulders, release your hands, and make one long exhale. Now separate three things: outcome, execution, and state. The outcome has already happened and cannot be repaired during this pause. Execution can be reviewed later, with data and distance. Your current state only needs to come down in intensity. Do not replay hands now. Do not search for explanations. Do not decide whether you played well or badly from the money won or lost. Say silently: the session is over, there is no next decision right now. Notice three points where your body meets the chair or the floor. Make another slow exhale. If one hand keeps returning, imagine it on a distant screen and let the image fade. Choose one sentence to carry into later study and leave the rest here. Your task now is to leave competition mode. Breathe normally. Return attention to the room around you. When the timer ends, close the session and return to life away from the table.",
+  'micro.downswing.summary': "Reanchor the process when a bad run starts contaminating identity, pace, or decision-making.",
+  'micro.lossAversion.summary': "Recognize the urge to recover and separate past loss from the decision in front of you.",
+  'micro.personalStress.summary': "Create a practical boundary between problems away from the table and information relevant to the next spot.",
+  'recovery.disconnectBody': "Follow only the voice and your breathing. Do not review hands or results during these two minutes.",
 };
