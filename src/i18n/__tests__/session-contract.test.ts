@@ -24,7 +24,9 @@ describe('Session localization and stable-state contract',()=>{
     const source=read('src/screens/SessionScreen.tsx');
     expect(source).toContain("t('pregrind.title')");
     expect(source).toContain("t('session.executionState')");
-    expect(source).toContain("t('session.debrief')");
+    expect(source).toContain("t('session.postSession')");
+    expect(source).toContain('current={debriefStep+1}');
+    expect(source).toContain('total={5}');
     expect(source).toContain("t('recovery.title')");
     expect(source).toContain('t(decisionCues[cue])');
   });
