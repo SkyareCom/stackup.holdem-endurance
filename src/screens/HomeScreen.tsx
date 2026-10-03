@@ -44,6 +44,10 @@ export function HomeScreen({ startSession, openModule: _openModule }: { startSes
             title={t('home.noCheckinTitle')}
             description={t('home.noCheckinBody')}
           >
+            <View style={s.guidedBlock}>
+              <Label>{t('coachJourney.notice')}</Label>
+              <AppText style={s.body}>{t('coachJourney.noticeBody')}</AppText>
+            </View>
             <PremiumButton label={t('home.checkinNow')} onPress={startSession}/>
           </GuidedSection>
           <View style={s.panel}>
@@ -95,6 +99,12 @@ export function HomeScreen({ startSession, openModule: _openModule }: { startSes
               </View>
             </View>
           </GuidedSection>
+
+          <GuidedSection
+            subtitle={t('coachJourney.decide')}
+            title={t('coachJourney.nextDecision')}
+            description={t('coachJourney.nextDecisionBody')}
+          />
 
           <GuidedSection
             subtitle={t('home.nextAction')}
