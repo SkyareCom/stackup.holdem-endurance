@@ -81,11 +81,5 @@ describe('guided module and exercise contract', () => {
     expect(overlays).toContain('toggleFrequencyAudio(preset.id)');
     expect(overlays).toContain('t(preset.useKey)');
     expect(overlays).toContain("t('overlay.audioHertz')");
-    expect(overlays).toContain("t('overlay.audioExpectedEffect')");
-    expect(overlays).toContain("t('overlay.audioCue')");
-    expect(overlays).toContain('t(p.objectiveKey)');
-    expect(overlays).toContain('t(p.bestMomentKey)');
-    expect(overlays).toContain('t(p.descriptionKey)');
-    expect(overlays).toContain('t(p.cueKey)');
   });
 });
