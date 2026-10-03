@@ -302,6 +302,8 @@ function Debrief({ save }: { save:()=>void }) {
 
   const readinessIndex=activeSession?calculateReadiness(activeSession.pre):0;
   const reentryLimitReached=activeSession?activeSession.reentriesUsed>=activeSession.plan.maxReentries:true;
+  const actualDurationMinutes=activeSession?Math.max(0,Math.floor((Date.now()-activeSession.startedAt)/60000)):0;
+  const plannedGoal=processGoals.find(item=>item.id===activeSession?.plan.processGoal);
   const mentalEv=calculateMentalEv({gameQuality,foldDiscipline,readinessIndex});
   const evComponents=mentalEvComponents({gameQuality,foldDiscipline,readinessIndex,attitude,logic,patience});
   const toggle=(id:WarRoomTriggerId)=>setTriggers(v=>v.includes(id)?v.filter(t=>t!==id):[...v,id]);
@@ -369,6 +371,13 @@ function Debrief({ save }: { save:()=>void }) {
         <View style={s.rowBetween}><Label>{t('debrief.disciplineComponent')}</Label><AppText style={s.goldText}>{evComponents.discipline.toFixed(1)}</AppText></View>
         <View style={s.rowBetween}><Label>{t('debrief.emotionalComponent')}</Label><AppText style={s.goldText}>{evComponents.emotionalControl.toFixed(1)}</AppText></View>
       </View>
+      {activeSession?<View style={s.panel}>
+        <Label>{t('debrief.planVsExecution')}</Label>
+        <View style={s.rowBetween}><AppText style={s.body}>{t('debrief.plannedGoal')}</AppText><AppText style={s.goldText}>{plannedGoal?t(plannedGoal.labelKey):'—'}</AppText></View>
+        <View style={s.rowBetween}><AppText style={s.body}>{t('debrief.plannedLimit')}</AppText><AppText style={s.goldText}>{activeSession.plan.expectedMinutes}</AppText></View>
+        <View style={s.rowBetween}><AppText style={s.body}>{t('debrief.actualDuration')}</AppText><AppText style={s.goldText}>{actualDurationMinutes}</AppText></View>
+        {activeSession.plan.mode==='tournament'?<View style={s.rowBetween}><AppText style={s.body}>{t('session.reentriesUsed')}</AppText><AppText style={s.goldText}>{activeSession.reentriesUsed} / {activeSession.plan.maxReentries}</AppText></View>:null}
+      </View>:null}
       <View style={s.panel}><Label>{t('debrief.resultVsExecution')}</Label><AppText style={s.body}>{t('debrief.resultBody')}</AppText></View>
     </>:null}
 
