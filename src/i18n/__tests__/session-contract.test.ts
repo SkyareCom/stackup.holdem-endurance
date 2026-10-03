@@ -23,7 +23,7 @@ describe('Session localization and stable-state contract',()=>{
   it('renders sequential pre-grind, live, debrief and recovery from translation keys',()=>{
     const source=read('src/screens/SessionScreen.tsx');
     expect(source).toContain("t('pregrind.title')");
-    expect(source).toContain("t('session.executionState')");
+    expect(source).toContain("t('session.executionQuality')");
     expect(source).toContain("t('session.postSession')");
     expect(source).toContain('current={debriefStep+1}');
     expect(source).toContain('total={5}');
