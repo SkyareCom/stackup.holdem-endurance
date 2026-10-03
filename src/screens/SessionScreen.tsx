@@ -16,7 +16,9 @@ import {
   getSessionAction,
   getRecoveryPlan,
   mentalEvComponents,
+  deriveExecutionQuality,
   type Emotion,
+  type ExecutionQuality,
   type GameMode,
   type PlayReason,
   type PreGrindCheckin,
@@ -26,7 +28,7 @@ import {
 } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
 import { s } from '../styles';
-import { GameState, Module, Phase } from '../types';
+import { Module, Phase } from '../types';
 import { useI18n, type Locale, type TranslationKey } from '../i18n';
 
 const scoreValues=[0,1,2,3,4,5,6,7,8,9,10];
@@ -230,7 +232,7 @@ function formatElapsed(ms:number){
 function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:()=>void; openAudio:()=>void; openBreak:()=>void; openCheckin:()=>void }) {
   const { t } = useI18n();
   const { activeSession,profile,incrementReentry }=usePerformance();
-  const [state,setState]=useState<GameState>('B');
+  const [executionQuality,setExecutionQuality]=useState<ExecutionQuality>('stable');
   const [cue,setCue]=useState(0);
   const [now,setNow]=useState(Date.now());
 
@@ -269,7 +271,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
       } as const)[mentalState])}</AppText></View>
     </View>
 
-    {!decisionLock?<><View style={s.panel}><Label>{t('session.executionState')}</Label><Serif style={s.gameState}>{state}-GAME</Serif><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+    {!decisionLock?<><View style={s.panel}><Label>{t('session.executionQuality')}</Label><Serif style={s.gameState}>{t(({'strong':'execution.strong','stable':'execution.stable','oscillating':'execution.oscillating','compromised':'execution.compromised'} as const)[executionQuality])}</Serif><AppText style={s.body}>{t('session.executionQualityBody')}</AppText></View>
 
     <TouchableOpacity style={s.cueBlock} onPress={()=>setCue((cue+1)%decisionCues.length)}><Label>{t('session.tapCue')}</Label><Serif style={s.cueText}>“{t(decisionCues[cue])}”</Serif></TouchableOpacity></>:null}
 
@@ -325,7 +327,7 @@ function Debrief({ save }: { save:()=>void }) {
   const [resilience,setResilience]=useState(6);
   const [gameUnderstanding,setGameUnderstanding]=useState(6);
   const [logic,setLogic]=useState(6);
-  const [state,setState]=useState<GameState>('B');
+  const [executionQuality,setExecutionQuality]=useState<ExecutionQuality>('stable');
   const [triggers,setTriggers]=useState<WarRoomTriggerId[]>([]);
   const [busted,setBusted]=useState(false);
   const [reentryDecision,setReentryDecision]=useState<'none'|'stop'|'reenter'>('none');
@@ -343,7 +345,7 @@ function Debrief({ save }: { save:()=>void }) {
     finishSession({
       financialResult:resultHidden||!financialResult.trim()?null:Number(financialResult.replace(',','.')),
       resultHidden,gameQuality,foldDiscipline,patience,decisionConfidence,professionalConduct,
-      attitude,resilience,gameUnderstanding,logic,endState:state,triggers,busted,
+      attitude,resilience,gameUnderstanding,logic,endMentalState:activeSession?.checkins[activeSession.checkins.length-1]?.mentalState??'centered',endExecutionQuality:executionQuality,triggers,busted,
       reentryDecision:busted&&reentryLimitReached?'stop':reentryDecision,
     });
     save();
@@ -372,7 +374,7 @@ function Debrief({ save }: { save:()=>void }) {
       <Score10 oneToTen label={t('debrief.gameQuality')} value={gameQuality} setValue={setGameQuality}/>
       <Score10 oneToTen label={t('debrief.foldDiscipline')} value={foldDiscipline} setValue={setFoldDiscipline}/>
       <Score10 oneToTen label={t('debrief.patience')} value={patience} setValue={setPatience}/>
-      <View style={s.guidedBlock}><Label>{t('session.howEnded')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+      <View style={s.guidedBlock}><Label>{t('session.howEnded')}</Label><AppText style={s.body}>{t('session.executionReflection')}</AppText><ChoiceGrid items={(['strong','stable','oscillating','compromised'] as ExecutionQuality[]).map(id=>({id,label:t(({'strong':'execution.strong','stable':'execution.stable','oscillating':'execution.oscillating','compromised':'execution.compromised'} as const)[id])}))} value={executionQuality} onChange={setExecutionQuality}/></View>
     </View>:null}
 
     {debriefStep===2?<View style={s.panel}>
