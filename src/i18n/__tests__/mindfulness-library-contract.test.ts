@@ -8,7 +8,7 @@ const overlays=fs.readFileSync(path.join(process.cwd(),'src/overlays.tsx'),'utf8
 describe('mindfulness library contract',()=>{
   it('ships all approved self-regulation techniques',()=>{
     for(const id of ['grounding-54321','mental-labeling','mountain-weather','leaves-stream','cinema-screen']){
-      expect(contentSource).toContain(`id: '${id}'`);
+      expect(contentSource).toMatch(new RegExp(`id:\\s*['\"]${id}['\"]`));
     }
   });
 
