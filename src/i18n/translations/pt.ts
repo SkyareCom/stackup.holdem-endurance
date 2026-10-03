@@ -802,6 +802,10 @@ export const pt = {
   'micro.lossAversion.summary': "Reconheça urgência de recuperar e separe perda passada da decisão que está diante de você.",
   'micro.personalStress.summary': "Crie uma fronteira prática entre problemas fora da mesa e as informações relevantes para o próximo spot.",
   'recovery.disconnectBody': "Siga apenas a voz e a respiração. Não revise mãos nem resultado durante estes dois minutos.",
+  'debrief.planVsExecution': "PLANO × EXECUÇÃO",
+  'debrief.plannedGoal': "OBJETIVO DEFINIDO",
+  'debrief.plannedLimit': "LIMITE PLANEJADO",
+  'debrief.actualDuration': "DURAÇÃO REAL",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
