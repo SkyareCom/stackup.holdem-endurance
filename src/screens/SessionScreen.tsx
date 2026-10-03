@@ -201,7 +201,7 @@ function formatElapsed(ms:number){
 
 function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:()=>void; openAudio:()=>void; openBreak:()=>void; openCheckin:()=>void }) {
   const { t } = useI18n();
-  const { activeSession,profile }=usePerformance();
+  const { activeSession,profile,incrementReentry }=usePerformance();
   const [state,setState]=useState<GameState>('B');
   const [cue,setCue]=useState(0);
   const [now,setNow]=useState(Date.now());
@@ -227,6 +227,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   });
   if(durationExceeded) action=activeSession.plan.mode==='tournament'&&!activeSession.plan.canLeave?'contain':'stop-session';
   const decisionLock=action==='contain'||action==='stop-session';
+  const reentryLimitReached=activeSession.reentriesUsed>=activeSession.plan.maxReentries;
   const readiness=calculateReadiness(activeSession.pre);
   const mentalState=deriveMentalState({readinessIndex:readiness,tiltRisk,sessionMinutes:minutes});
 
@@ -249,6 +250,19 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
       <Serif style={s.actionTitle}>{t(actionKey[action])}</Serif>
       <AppText style={s.body}>{t('session.protectTempoBody')}</AppText>
     </View>
+
+    {activeSession.plan.mode==='tournament'?<View style={s.panel}>
+      <View style={s.rowBetween}>
+        <Label>{t('session.reentriesUsed')}</Label>
+        <AppText style={s.goldText}>{activeSession.reentriesUsed} / {activeSession.plan.maxReentries}</AppText>
+      </View>
+      <PremiumButton
+        label={reentryLimitReached?t('debrief.reentryLimitReached'):t('session.registerReentry')}
+        secondary
+        disabled={reentryLimitReached}
+        onPress={incrementReentry}
+      />
+    </View>:null}
 
     <View style={s.twoCols}>
       <PremiumButton label={t('session.realCheckin')} secondary onPress={openCheckin} icon="pulse-outline"/>
@@ -280,6 +294,7 @@ function Debrief({ save }: { save:()=>void }) {
   const [reentryDecision,setReentryDecision]=useState<'none'|'stop'|'reenter'>('none');
 
   const readinessIndex=activeSession?calculateReadiness(activeSession.pre):0;
+  const reentryLimitReached=activeSession?activeSession.reentriesUsed>=activeSession.plan.maxReentries:true;
   const mentalEv=calculateMentalEv({gameQuality,foldDiscipline,readinessIndex});
   const evComponents=mentalEvComponents({gameQuality,foldDiscipline,readinessIndex,attitude,logic,patience});
   const toggle=(id:WarRoomTriggerId)=>setTriggers(v=>v.includes(id)?v.filter(t=>t!==id):[...v,id]);
@@ -328,7 +343,14 @@ function Debrief({ save }: { save:()=>void }) {
       <View style={s.panel}><Label>{t('session.triggers')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>toggle(x.id)} style={[s.chip,triggers.includes(x.id)&&s.chipActive]}><AppText style={[s.chipText,triggers.includes(x.id)&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
       {activeSession?.plan.mode==='tournament'?<View style={s.panel}>
         <TouchableOpacity style={[s.option,busted&&s.optionActive]} onPress={()=>setBusted(v=>!v)}><AppText style={[s.optionText,busted&&s.optionTextActive]}>{t('debrief.busted')}</AppText></TouchableOpacity>
-        {busted?<><Label>{t('debrief.reentry')}</Label><ChoiceGrid items={[{id:'stop' as const,label:t('debrief.stop')},{id:'reenter' as const,label:t('debrief.reenter')}]} value={reentryDecision==='none'?'stop':reentryDecision} onChange={setReentryDecision}/></>:null}
+        {busted?<View style={s.guidedBlock}>
+          <Label>{t('debrief.reentry')}</Label>
+          {reentryLimitReached?<AppText style={s.body}>{t('debrief.reentryLimitBody')}</AppText>:null}
+          <View style={s.twoCols}>
+            <PremiumButton label={t('debrief.stop')} secondary onPress={()=>setReentryDecision('stop')}/>
+            <PremiumButton label={t('debrief.reenter')} secondary disabled={reentryLimitReached} onPress={()=>setReentryDecision('reenter')}/>
+          </View>
+        </View>:null}
       </View>:null}
     </>:null}
 
