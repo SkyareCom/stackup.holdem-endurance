@@ -33,6 +33,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const { profile,updateProfile,updateExtraGrind,updateStopRules,sessions,baseline,clearHistory }=usePerformance();
   const developmentSnapshot=buildDevelopmentSnapshot(sessions);
   const tiltProfile=buildTiltProfile(sessions);
+  const analyticsUsable=baseline.confidence!=='none';
   const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
 
   return (
@@ -99,11 +100,11 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               <TouchableOpacity style={s.coachContextToggle} onPress={()=>setAnalyticsExpanded(v=>!v)}><AppText style={s.coachContextToggleText}>{t(analyticsExpanded?'profile.hideAnalytics':'profile.showAnalytics')}</AppText><Ionicons name={analyticsExpanded?'chevron-up':'chevron-down'} size={18} color={C.goldLight}/></TouchableOpacity>
               {analyticsExpanded?<View style={s.contextList}>
                 <AppText style={s.body}>{t('profile.correlationBody')}</AppText>
-                <View style={s.rowBetween}><Label>{t('profile.resultCorrelation')}</Label><AppText style={s.goldText}>{baseline.resultCorrelation===null?'—':baseline.resultCorrelation.toFixed(2)}</AppText></View>
-                <View style={s.rowBetween}><Label>{t('profile.sleepCorrelation')}</Label><AppText style={s.goldText}>{baseline.sleepToMentalEvCorrelation===null?'—':baseline.sleepToMentalEvCorrelation.toFixed(2)}</AppText></View>
-                <View style={s.rowBetween}><Label>{t('profile.stressCorrelation')}</Label><AppText style={s.goldText}>{baseline.stressToMentalEvCorrelation===null?'—':baseline.stressToMentalEvCorrelation.toFixed(2)}</AppText></View>
-                <View style={s.rowBetween}><Label>{t('profile.readinessCorrelation')}</Label><AppText style={s.goldText}>{baseline.readinessToMentalEvCorrelation===null?'—':baseline.readinessToMentalEvCorrelation.toFixed(2)}</AppText></View>
-                {baseline.resultCorrelation===null?<AppText style={s.body}>{t('profile.correlationInsufficient')}</AppText>:null}
+                <View style={s.rowBetween}><Label>{t('profile.resultCorrelation')}</Label><AppText style={s.goldText}>{analyticsUsable&&baseline.resultCorrelation!==null?baseline.resultCorrelation.toFixed(2):'—'}</AppText></View>
+                <View style={s.rowBetween}><Label>{t('profile.sleepCorrelation')}</Label><AppText style={s.goldText}>{analyticsUsable&&baseline.sleepToMentalEvCorrelation!==null?baseline.sleepToMentalEvCorrelation.toFixed(2):'—'}</AppText></View>
+                <View style={s.rowBetween}><Label>{t('profile.stressCorrelation')}</Label><AppText style={s.goldText}>{analyticsUsable&&baseline.stressToMentalEvCorrelation!==null?baseline.stressToMentalEvCorrelation.toFixed(2):'—'}</AppText></View>
+                <View style={s.rowBetween}><Label>{t('profile.readinessCorrelation')}</Label><AppText style={s.goldText}>{analyticsUsable&&baseline.readinessToMentalEvCorrelation!==null?baseline.readinessToMentalEvCorrelation.toFixed(2):'—'}</AppText></View>
+                {!analyticsUsable?<AppText style={s.body}>{t('profile.analyticsInsufficient')}</AppText>:baseline.resultCorrelation===null?<AppText style={s.body}>{t('profile.correlationInsufficient')}</AppText>:null}
               </View>:null}
             </View>:<>
               <AppText style={s.body}>{t('profile.patternsInsufficient')}</AppText>
