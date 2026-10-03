@@ -12,6 +12,7 @@ import {
   calculateReadiness,
   classifyTiltRisk,
   deriveMentalState,
+  deriveExecutionQuality,
   getRitualMinutes,
   getSessionAction,
   getRecoveryPlan,
@@ -231,7 +232,6 @@ function formatElapsed(ms:number){
 function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:()=>void; openAudio:()=>void; openBreak:()=>void; openCheckin:()=>void }) {
   const { t } = useI18n();
   const { activeSession,profile,incrementReentry }=usePerformance();
-  const [executionQuality,setExecutionQuality]=useState<ExecutionQuality>('stable');
   const [cue,setCue]=useState(0);
   const [now,setNow]=useState(Date.now());
 
@@ -258,7 +258,8 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const decisionLock=action==='contain'||action==='stop-session';
   const reentryLimitReached=activeSession.reentriesUsed>=activeSession.plan.maxReentries;
   const readiness=calculateReadiness(activeSession.pre);
-  const mentalState=deriveMentalState({readinessIndex:readiness,tiltRisk,sessionMinutes:minutes,focus:last?.focus??activeSession.pre.mentalDrive,tension:last?.tension??activeSession.pre.tension,impulse:last?.impulse??activeSession.pre.impulse,fatigue:last?.fatigue??activeSession.pre.fatigue});
+  const mentalState=deriveMentalState({readinessIndex:readiness,tiltRisk,sessionMinutes:minutes,focus,tension,impulse,fatigue});
+  const executionQuality=deriveExecutionQuality({focus,tension,impulse,fatigue});
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={2} total={4} label={t('session.activeStage')}/>
