@@ -9,9 +9,9 @@ import { diaryQuestions, heatmapIntensityLegend, lifestyleSections, mentalPlayli
 import { AppText, AppTextInput, Label, PremiumButton, Serif } from './ui';
 import { TestIntro } from './components/TestIntro';
 import { s } from './styles';
-import { ExercisePhase, GameState, Module, moduleMeta } from './types';
+import { ExercisePhase, Module, moduleMeta } from './types';
 import { useI18n, type Locale, type TranslationKey } from './i18n';
-import { buildHeatmap, getSOSProtocol, type HeatmapIntensity, type HeatmapWindowId, type TiltTrigger } from './performanceEngine';
+import { buildHeatmap, deriveExecutionQuality, deriveMentalState, getSOSProtocol, type ExecutionQuality, type HeatmapIntensity, type HeatmapWindowId, type MentalState, type TiltTrigger } from './performanceEngine';
 import { usePerformance } from './performanceStore';
 
 type FrequencyPresetId='delta'|'alpha'|'beta'|'gamma';
@@ -359,7 +359,8 @@ function QuickScore({label,value,onChange}:{label:string;value:number;onChange:(
 export function CheckinOverlay({ close }: { close:()=>void }) {
   const { t } = useI18n();
   const { addRuntimeCheckin,activeSession }=usePerformance();
-  const [state,setState]=useState<GameState>('B');
+  const initialMentalState=deriveMentalState({readinessIndex:50,tiltRisk:'medium',sessionMinutes:0,focus:activeSession?.pre.mentalDrive??6,tension:activeSession?.pre.tension??4,impulse:activeSession?.pre.impulse??3,fatigue:activeSession?.pre.fatigue??4});
+  const [mentalState,setMentalState]=useState<MentalState>(initialMentalState);
   const [focus,setFocus]=useState(activeSession?.pre.mentalDrive??6);
   const [tension,setTension]=useState(activeSession?.pre.tension??4);
   const [impulse,setImpulse]=useState(activeSession?.pre.impulse??3);
@@ -367,7 +368,10 @@ export function CheckinOverlay({ close }: { close:()=>void }) {
   const [trigger,setTrigger]=useState<TiltTrigger|''>('');
 
   const save=()=>{
-    addRuntimeCheckin({focus,tension,impulse,fatigue,state,trigger:trigger||undefined});
+    const executionQuality=deriveExecutionQuality({focus,tension,impulse,fatigue});
+    const nextMentalState=deriveMentalState({readinessIndex:50,tiltRisk:impulse>=9||tension>=9?'critical':impulse>=6||tension>=7?'medium':'low',sessionMinutes:0,focus,tension,impulse,fatigue});
+    setMentalState(nextMentalState);
+    addRuntimeCheckin({focus,tension,impulse,fatigue,mentalState:nextMentalState,executionQuality,trigger:trigger||undefined});
     close();
   };
 
@@ -381,7 +385,7 @@ export function CheckinOverlay({ close }: { close:()=>void }) {
         <QuickScore label={t('checkin.impulse')} value={impulse} onChange={setImpulse}/>
         <QuickScore label={t('checkin.fatigue')} value={fatigue} onChange={setFatigue}/>
       </View>
-      <View style={s.panel}><Label>{t('checkin.game')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+      <View style={s.panel}><Label>{t('checkin.mentalState')}</Label><Serif style={s.actionTitle}>{t(({'centered':'mentalState.centered','alert':'mentalState.alert','vulnerable':'mentalState.vulnerable','dysregulated':'mentalState.dysregulated','tilt':'mentalState.tilt'} as const)[mentalState])}</Serif><AppText style={s.body}>{t('checkin.mentalStateBody')}</AppText></View>
       <View style={s.panel}><Label>{t('checkin.triggerState')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity key={x.id} onPress={()=>setTrigger(x.id as TiltTrigger)} style={[s.chip,trigger===x.id&&s.chipActive]}><AppText style={[s.chipText,trigger===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
     </ScrollView>
     <PremiumButton label={t('checkin.save')} onPress={save}/>
