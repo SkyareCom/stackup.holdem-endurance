@@ -780,6 +780,11 @@ export const pt = {
   'overlay.audioFrequency': "CAMADA ESTÉREO",
   'overlay.audioHertz': "HZ",
   'overlay.audioFrequencyNote': "A CAMADA DE FREQUÊNCIA É OPCIONAL. A EVIDÊNCIA SOBRE BINAURAL BEATS É MISTA; USE EM VOLUME CONFORTÁVEL COMO APOIO DE ROTINA, NÃO COMO TRATAMENTO.",
+  'session.reentriesUsed': "REENTRIES USADOS",
+  'session.registerReentry': "REGISTRAR REENTRY",
+  'session.reentryLimit': "LIMITE DE REENTRY",
+  'debrief.reentryLimitReached': "LIMITE DE REENTRY ATINGIDO",
+  'debrief.reentryLimitBody': "A REGRA DEFINIDA ANTES DA SESSÃO NÃO PERMITE OUTRA REENTRADA.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
