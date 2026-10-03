@@ -801,4 +801,8 @@ export const es: TranslationCatalog = {
   'recovery.disconnectRunning': "DESCONECTANDO DE LA SESIÓN",
   'recovery.disconnectComplete': "DESCONECTADO",
   'recovery.disconnectScript': "La sesión terminó. El resultado no necesita seguir ocurriendo dentro de ti. Suelta los hombros, relaja las manos y haz una exhalación larga. Ahora separa tres cosas: resultado, ejecución y estado. El resultado ya ocurrió y no puede corregirse durante esta pausa. La ejecución podrá revisarse después, con datos y distancia. Tu estado actual solo necesita bajar de intensidad. No repases manos ahora. No busques justificaciones. No decidas si jugaste bien o mal a partir del dinero ganado o perdido. Di mentalmente: la sesión terminó, no existe una próxima decisión en este momento. Percibe tres puntos de contacto de tu cuerpo con la silla o el suelo. Haz otra exhalación lenta. Si una mano insiste en volver, imagínala en una pantalla distante y deja que la imagen se apague. Elige una sola frase para llevar al estudio posterior y deja el resto aquí. Tu tarea ahora es salir del modo competición. Respira normalmente. Vuelve al ambiente que te rodea. Cuando termine el cronómetro, cierra la sesión y vuelve a la vida fuera de la mesa.",
+  'micro.downswing.summary': "Reancla el proceso cuando una mala racha empieza a contaminar identidad, ritmo o toma de decisiones.",
+  'micro.lossAversion.summary': "Reconoce la urgencia de recuperar y separa la pérdida pasada de la decisión que tienes delante.",
+  'micro.personalStress.summary': "Crea una frontera práctica entre problemas fuera de la mesa y la información relevante para el próximo spot.",
+  'recovery.disconnectBody': "Sigue únicamente la voz y tu respiración. No revises manos ni resultado durante estos dos minutos.",
 };
