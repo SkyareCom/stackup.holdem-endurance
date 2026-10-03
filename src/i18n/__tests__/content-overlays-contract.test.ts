@@ -45,7 +45,8 @@ describe('Train, content libraries, and overlays localization contract', () => {
     const overlays = read('src/overlays.tsx');
     expect(overlays).toContain("useState('a-game')");
     expect(overlays).toContain('toggleMentalAudio(p.id)');
-    expect(overlays).toContain('setTrigger(x.id)');
+    expect(overlays).toContain('choose(x.id as TiltTrigger)');
+    expect(overlays).toContain('recordSOS(next)');
     expect(overlays).toContain('diaryIndex');
     expect(overlays).toContain('step');
   });
