@@ -283,7 +283,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
         </View>
         <Serif style={s.actionTitle}>{t(microAudio.titleKey)}</Serif>
         <Label>{t(microAudio.durationKey)}</Label>
-        <AppText style={s.body}>{t(microAudio.scriptKey)}</AppText>
+        <AppText style={s.body}>{t(microAudio.summaryKey)}</AppText>
         <PremiumButton
           label={t(speakingMicroAudio?'micro.stop':'micro.play')}
           secondary={speakingMicroAudio}
