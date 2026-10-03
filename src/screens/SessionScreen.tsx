@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { C, PHOTO } from '../theme';
@@ -12,11 +12,13 @@ import {
   deriveMentalState,
   getRitualMinutes,
   getSessionAction,
+  getRecoveryPlan,
   mentalEvComponents,
   type Emotion,
   type GameMode,
   type PlayReason,
   type PreGrindCheckin,
+  type RecoveryPlan,
   type SessionAction,
   type TiltRisk,
 } from '../performanceEngine';
@@ -350,13 +352,33 @@ function Debrief({ save }: { save:()=>void }) {
 
 function Recovery({ finish,openAudio }: { finish:()=>void;openAudio:()=>void }) {
   const { t }=useI18n();
+  const { sessions }=usePerformance();
+  const plan=getRecoveryPlan(sessions[0]??null);
+  const titleKey:Record<RecoveryPlan,TranslationKey>={
+    cooldown:'recovery.cooldown',
+    sleep:'recovery.sleep',
+    personal:'recovery.personal',
+  };
+  const bodyKey:Record<RecoveryPlan,TranslationKey>={
+    cooldown:'recovery.plan.cooldown',
+    sleep:'recovery.plan.sleep',
+    personal:'recovery.plan.personal',
+  };
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={4} total={4} label={t('recovery.subtitle')}/>
     <View style={s.lead}><Label>{t('recovery.subtitle')}</Label><Serif style={s.leadTitle}>{t('recovery.title')}</Serif><AppText style={s.body}>{t('recovery.body')}</AppText></View>
-    <TouchableOpacity style={s.guidedToolRow} onPress={openAudio}><View style={s.flex}><Label>{t('recovery.cooldown')}</Label><AppText style={s.body}>{t('playlist.cooldown.description')}</AppText></View></TouchableOpacity>
-    <TouchableOpacity style={s.guidedToolRow} onPress={openAudio}><View style={s.flex}><Label>{t('recovery.sleep')}</Label><AppText style={s.body}>{t('need.sleep')}</AppText></View></TouchableOpacity>
-    <View style={s.panel}><Label>{t('recovery.personal')}</Label><AppText style={s.body}>{t('evidence.body')}</AppText></View>
-    <PremiumButton label={t('recovery.finish')} onPress={finish}/>
+    <View style={s.readingCard}>
+      <Label>{t('recovery.recommended')}</Label>
+      <Serif style={s.actionTitle}>{t(titleKey[plan])}</Serif>
+      <AppText style={s.body}>{t(bodyKey[plan])}</AppText>
+    </View>
+    {plan==='personal'
+      ?<PremiumButton label={t('recovery.finish')} onPress={finish}/>
+      :<>
+        <PremiumButton label={t(titleKey[plan])} onPress={openAudio} icon="headset-outline"/>
+        <PremiumButton label={t('recovery.finish')} secondary onPress={finish}/>
+      </>
+    }
   </ScrollView>;
 }
 
