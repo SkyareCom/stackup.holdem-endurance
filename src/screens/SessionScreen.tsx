@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Speech from 'expo-speech';
+import { Ionicons } from '@expo/vector-icons';
 import { C, PHOTO } from '../theme';
 import { decisionCues, processGoals, warRoomTriggers, type ProcessGoalId, type WarRoomTriggerId } from '../content';
 import { AppText, AppTextInput, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
@@ -89,6 +90,9 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const [reason,setReason]=useState<PlayReason>('planned');
   const [mode,setMode]=useState<GameMode>('tournament');
   const [goal,setGoal]=useState<ProcessGoalId>('process');
+  const [expectedMinutes,setExpectedMinutes]=useState(120);
+  const [stakesLabel,setStakesLabel]=useState('');
+  const [planExpanded,setPlanExpanded]=useState(false);
   const [activationUsed,setActivationUsed]=useState(false);
 
   const impulse=reason==='recover-loss'||reason==='ego'||reason==='fomo'?8:emotion==='anger'||emotion==='euphoria'?7:3;
@@ -107,8 +111,8 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const begin=()=>{
     updateExtraGrind({sleep,nutrition,hydration,physicalActivity});
     startSession(pre,{
-      mode,canLeave,expectedMinutes:profile.stopRules.maxDurationMinutes,
-      maxReentries:profile.stopRules.maxReentries,processGoal:goal,
+      mode,canLeave,expectedMinutes,
+      maxReentries:profile.stopRules.maxReentries,processGoal:goal,stakesLabel:stakesLabel.trim()||undefined,
     });
     onStart();
   };
@@ -176,6 +180,22 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
           <View><Label>{t('profile.maxReentries')}</Label><AppText style={s.body}>{profile.stopRules.maxReentries}</AppText></View>
         </View>
         <AppText style={s.body}>{t('profile.noStakeIncrease')}</AppText>
+        <TouchableOpacity style={s.coachContextToggle} onPress={()=>setPlanExpanded(v=>!v)}>
+          <AppText style={s.coachContextToggleText}>{t(planExpanded?'pregrind.hidePlanDetails':'pregrind.planDetails')}</AppText>
+          <Ionicons name={planExpanded?'chevron-up':'chevron-down'} size={18} color={C.goldLight}/>
+        </TouchableOpacity>
+        {planExpanded?<View style={s.contextList}>
+          <Label>{t('pregrind.expectedDuration')}</Label>
+          <ChoiceGrid items={[60,90,120,180].map(value=>({id:String(value),label:String(value)}))} value={String(expectedMinutes)} onChange={value=>setExpectedMinutes(Number(value))}/>
+          <Label>{t('pregrind.stakes')}</Label>
+          <AppTextInput
+            value={stakesLabel}
+            onChangeText={setStakesLabel}
+            placeholder={t('pregrind.stakesPlaceholder')}
+            placeholderTextColor={C.dim}
+            style={s.planInput}
+          />
+        </View>:null}
       </View>
     </>:null}
 
@@ -376,6 +396,7 @@ function Debrief({ save }: { save:()=>void }) {
         <View style={s.rowBetween}><AppText style={s.body}>{t('debrief.plannedGoal')}</AppText><AppText style={s.goldText}>{plannedGoal?t(plannedGoal.labelKey):'—'}</AppText></View>
         <View style={s.rowBetween}><AppText style={s.body}>{t('debrief.plannedLimit')}</AppText><AppText style={s.goldText}>{activeSession.plan.expectedMinutes}</AppText></View>
         <View style={s.rowBetween}><AppText style={s.body}>{t('debrief.actualDuration')}</AppText><AppText style={s.goldText}>{actualDurationMinutes}</AppText></View>
+        {activeSession.plan.stakesLabel?<View style={s.rowBetween}><AppText style={s.body}>{t('debrief.plannedStakes')}</AppText><AppText style={s.goldText}>{activeSession.plan.stakesLabel}</AppText></View>:null}
         {activeSession.plan.mode==='tournament'?<View style={s.rowBetween}><AppText style={s.body}>{t('session.reentriesUsed')}</AppText><AppText style={s.goldText}>{activeSession.reentriesUsed} / {activeSession.plan.maxReentries}</AppText></View>:null}
       </View>:null}
       <View style={s.panel}><Label>{t('debrief.resultVsExecution')}</Label><AppText style={s.body}>{t('debrief.resultBody')}</AppText></View>
