@@ -14,27 +14,13 @@ import { useI18n, type Locale, type TranslationKey } from './i18n';
 import { buildHeatmap, getSOSProtocol, type HeatmapIntensity, type HeatmapWindowId, type TiltTrigger } from './performanceEngine';
 import { usePerformance } from './performanceStore';
 
-const bundledMentalTone=require('../assets/audio/mental-tone.wav');
-const frequencyRateByPlaylist:Record<string,number>={
-  'lock-in':20/12,
-  'a-game':1,
-  discipline:20/12,
-  'long-grind':1,
-  pressure:1,
-  'mental-fortress':1,
-  cooldown:4/12,
-  'break-4':1,
-};
-const frequencyBeatByPlaylist:Record<string,number>={
-  'lock-in':20,
-  'a-game':12,
-  discipline:20,
-  'long-grind':12,
-  pressure:12,
-  'mental-fortress':12,
-  cooldown:4,
-  'break-4':12,
-};
+type FrequencyPresetId='delta'|'alpha'|'beta'|'gamma';
+const frequencyPresets=[
+  {id:'delta' as const,hz:4,source:require('../assets/audio/binaural-delta-4.wav'),labelKey:'overlay.audioBand.delta' as TranslationKey,useKey:'overlay.audioBand.deltaUse' as TranslationKey},
+  {id:'alpha' as const,hz:10,source:require('../assets/audio/binaural-alpha-10.wav'),labelKey:'overlay.audioBand.alpha' as TranslationKey,useKey:'overlay.audioBand.alphaUse' as TranslationKey},
+  {id:'beta' as const,hz:20,source:require('../assets/audio/binaural-beta-20.wav'),labelKey:'overlay.audioBand.beta' as TranslationKey,useKey:'overlay.audioBand.betaUse' as TranslationKey},
+  {id:'gamma' as const,hz:30,source:require('../assets/audio/binaural-gamma-30.wav'),labelKey:'overlay.audioBand.gamma' as TranslationKey,useKey:'overlay.audioBand.gammaUse' as TranslationKey},
+];
 
 const speechLanguage:Record<Locale,string>={
   pt:'pt-BR',
@@ -54,6 +40,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   const [moduleStarted,setModuleStarted]=useState(false);
   const [playlist,setPlaylist]=useState('a-game');
   const [loadedPlaylist,setLoadedPlaylist]=useState<string|null>(null);
+  const [frequencyPreset,setFrequencyPreset]=useState<FrequencyPresetId>('alpha');
   const audioPlayer=useAudioPlayer(null,{updateInterval:250});
   const audioStatus=useAudioPlayerStatus(audioPlayer);
   const [exercisePhase,setExercisePhase]=useState<ExercisePhase>('intro');
@@ -87,6 +74,21 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     setReactionReady(false);
     setExercisePhase('result');
   };
+  const currentFrequency=frequencyPresets.find(item=>item.id===frequencyPreset)??frequencyPresets[1];
+  const selectFrequencyPreset=(next:FrequencyPresetId)=>{
+    const preset=frequencyPresets.find(item=>item.id===next)??frequencyPresets[1];
+    const wasPlaying=audioStatus.playing;
+    setFrequencyPreset(next);
+    if(loadedPlaylist){
+      audioPlayer.pause();
+      audioPlayer.replace(preset.source);
+      audioPlayer.loop=true;
+      audioPlayer.shouldCorrectPitch=false;
+      audioPlayer.playbackRate=1;
+      audioPlayer.volume=0.18;
+      if(wasPlaying) audioPlayer.play();
+    }
+  };
   const toggleMentalAudio=(id:string)=>{
     if(loadedPlaylist===id){
       if(audioStatus.playing) audioPlayer.pause();
@@ -95,10 +97,10 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     }
     setPlaylist(id);
     setLoadedPlaylist(id);
-    audioPlayer.replace(bundledMentalTone);
+    audioPlayer.replace(currentFrequency.source);
     audioPlayer.loop=true;
     audioPlayer.shouldCorrectPitch=false;
-    audioPlayer.playbackRate=frequencyRateByPlaylist[id]??1;
+    audioPlayer.playbackRate=1;
     audioPlayer.volume=0.18;
     audioPlayer.play();
   };
@@ -220,8 +222,15 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     body=<View style={s.moduleContent}>{lifestyleSections.map(x=><View key={x.id} style={s.lifestyle}><Label>{t(x.titleKey)}</Label><Serif style={s.actionTitle}>{t(x.subtitleKey)}</Serif><AppText style={s.lessonBody}>{t(x.bodyKey)}</AppText></View>)}</View>;
   } else if(module==='audio') {
     body=<View style={s.moduleContent}>
-      <View style={s.guidedBlock}>
-        <Label>{t('overlay.audioFrequency')}</Label>
+      <View style={s.panel}>
+        <Label>{t('overlay.audioBand')}</Label>
+        <View style={s.processGrid}>{frequencyPresets.map(preset=><TouchableOpacity key={preset.id} onPress={()=>selectFrequencyPreset(preset.id)} style={[s.processChip,frequencyPreset===preset.id&&s.chipActive]}>
+          <AppText style={[s.chipText,frequencyPreset===preset.id&&s.chipTextActive]}>{t(preset.labelKey)}</AppText>
+        </TouchableOpacity>)}</View>
+        <View style={s.guidedBlock}>
+          <Label>{t('overlay.audioBandUse')}</Label>
+          <AppText style={s.body}>{t(currentFrequency.useKey)}</AppText>
+        </View>
         <AppText style={s.body}>{t('overlay.audioFrequencyNote')}</AppText>
       </View>
       {mentalPlaylists.map(p=>{
@@ -233,7 +242,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
             <View style={s.playlistDetail}><Label>{t('overlay.audioObjective')}</Label><AppText style={s.playlistBody}>{t(p.objectiveKey)}</AppText></View>
             <View style={s.playlistDetail}><Label>{t('overlay.audioBestMoment')}</Label><AppText style={s.playlistBody}>{t(p.bestMomentKey)}</AppText></View>
             <View style={s.rowBetween}><Label>{t('overlay.audioDuration')}</Label><AppText style={s.goldText}>{p.duration}</AppText></View>
-            <View style={s.rowBetween}><Label>{t('overlay.audioFrequency')}</Label><AppText style={s.goldText}>{frequencyBeatByPlaylist[p.id]} {t('overlay.audioHertz')}</AppText></View>
+            <View style={s.rowBetween}><Label>{t('overlay.audioFrequency')}</Label><AppText style={s.goldText}>{currentFrequency.hz} {t('overlay.audioHertz')}</AppText></View>
             <View style={s.playlistDetail}><Label>{t('overlay.audioExpectedEffect')}</Label><AppText style={s.playlistBody}>{t(p.descriptionKey)}</AppText></View>
             <View style={s.playlistDetail}><Label>{t('overlay.audioCue')}</Label><Serif style={s.nowCue}>“{t(p.cueKey)}”</Serif></View>
           </View>
