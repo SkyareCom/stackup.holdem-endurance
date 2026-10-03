@@ -5,6 +5,7 @@ export type TiltRisk = 'low'|'medium'|'critical';
 export type MentalState = 'ready'|'vulnerable'|'fatigued'|'tilt-risk'|'recovery';
 export type SessionAction = 'continue'|'check-in'|'break-4'|'contain'|'stop-session';
 export type BaselineConfidence = 'none'|'low'|'moderate'|'high';
+export type RecoveryPlan = 'cooldown'|'sleep'|'personal';
 export type Temperament = 'impulsive'|'passive'|'perfectionist'|'analytical';
 export type TiltTrigger =
   | 'bad-beat'|'own-error'|'anger'|'rush'|'fear'|'euphoria'|'fatigue'|'autopilot'
@@ -137,6 +138,16 @@ export function getRitualMinutes(readinessIndex:number,tiltRisk:TiltRisk):3|7|12
   if(tiltRisk==='critical'||readinessIndex<45) return 12;
   if(tiltRisk==='medium'||readinessIndex<75) return 7;
   return 3;
+}
+
+
+export function getRecoveryPlan(session:SessionRecord|null):RecoveryPlan {
+  if(!session) return 'personal';
+  const durationMinutes=Math.max(0,(session.endedAt-session.startedAt)/60000);
+  const fatigueDominant=session.debrief.triggers.includes('fatigue');
+  if(fatigueDominant) return 'sleep';
+  if(session.debrief.endState==='C'||durationMinutes>=180||session.mentalEv<5) return 'cooldown';
+  return 'personal';
 }
 
 export function getSessionAction(input:{
