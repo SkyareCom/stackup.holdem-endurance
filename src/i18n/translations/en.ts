@@ -825,4 +825,5 @@ export const en: TranslationCatalog = {
   'overlay.audioBand.betaUse': "FOCUS AND STUDY WHILE ALERT.",
   'overlay.audioBand.gamma': "GAMMA · 30 HZ",
   'overlay.audioBand.gammaUse': "SHORT BLOCKS OF INTENSE ATTENTION.",
+  'privacy.systemSpeechBody': "guided micro-audios and the mental cleanup use the text-to-speech engine configured on the device. the app does not send these scripts to its own backend; system voice-provider processing depends on the device settings and provider policies.",
 };
