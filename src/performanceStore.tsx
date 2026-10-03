@@ -144,7 +144,8 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
         tension:last?.tension??s.activeSession.pre.tension,
         impulse:Math.max(last?.impulse??s.activeSession.pre.impulse,6),
         fatigue:last?.fatigue??s.activeSession.pre.fatigue,
-        state:last?.state??'B',
+        mentalState:'dysregulated',
+        executionQuality:last?.executionQuality??'oscillating',
         trigger,
       };
       return {...s,activeSession:{...s.activeSession,checkins:[...s.activeSession.checkins,next]}};
