@@ -315,6 +315,42 @@ export function buildDevelopmentSnapshot(sessions:SessionRecord[]) {
 }
 
 
+export type SportPsychologySnapshot = {
+  attentionStability:number;
+  impulseRegulation:number;
+  pressureRegulation:number;
+  recoveryEfficiency:number|null;
+  processAdherence:number;
+  mentalFatigueLoad:number;
+  adversityResponse:number;
+  evidenceCount:number;
+  confidence:BaselineConfidence;
+};
+
+export function buildSportPsychologySnapshot(sessions:SessionRecord[]):SportPsychologySnapshot {
+  const checkins=sessions.flatMap(s=>s.checkins);
+  const avg=(values:number[])=>values.length?values.reduce((a,b)=>a+b,0)/values.length:0;
+  const recoveryValues=sessions.map(s=>calculateRecoveryMinutes(s.checkins)).filter((v):v is number=>v!==null);
+  const focusValues=checkins.map(c=>clamp(c.focus));
+  const impulseValues=checkins.map(c=>clamp(c.impulse));
+  const tensionValues=checkins.map(c=>clamp(c.tension));
+  const fatigueValues=checkins.map(c=>clamp(c.fatigue));
+  const processValues=sessions.map(s=>(clamp(s.debrief.foldDiscipline)+clamp(s.debrief.patience)+clamp(s.debrief.professionalConduct))/3);
+  const adversityValues=sessions.map(s=>clamp(s.debrief.resilience??0));
+  const to10=(value:number)=>Math.round(clamp(value)*10)/10;
+  return {
+    attentionStability:to10(avg(focusValues)),
+    impulseRegulation:to10(10-avg(impulseValues)),
+    pressureRegulation:to10(10-avg(tensionValues)),
+    recoveryEfficiency:recoveryValues.length?Math.round(avg(recoveryValues)*10)/10:null,
+    processAdherence:to10(avg(processValues)),
+    mentalFatigueLoad:to10(avg(fatigueValues)),
+    adversityResponse:to10(avg(adversityValues)),
+    evidenceCount:checkins.length,
+    confidence:getBaselineConfidence(sessions.length),
+  };
+}
+
 export type HeatmapIntensity='low'|'moderate'|'high'|'critical';
 export type HeatmapWindowId='0-45'|'45-90'|'90-135'|'135-180'|'180-plus';
 
