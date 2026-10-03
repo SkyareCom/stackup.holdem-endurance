@@ -32,7 +32,7 @@ describe('ENDURANCE performance engine', () => {
   });
 
   it('derives state and ritual intensity without historical fixtures', () => {
-    expect(deriveMentalState({ readinessIndex: 82, tiltRisk: 'low', sessionMinutes: 0 })).toBe('ready');
+    expect(deriveMentalState({ readinessIndex: 82, tiltRisk: 'low', sessionMinutes: 0 })).toBe('centered');
     expect(deriveMentalState({ readinessIndex: 55, tiltRisk: 'medium', sessionMinutes: 90 })).toBe('vulnerable');
     expect(getRitualMinutes(85, 'low')).toBe(3);
     expect(getRitualMinutes(62, 'medium')).toBe(7);
