@@ -14,7 +14,8 @@ describe('offline frequency generator contract',()=>{
   it('lets the user choose delta, alpha, beta, or gamma without remote audio',()=>{
     expect(overlays).toContain('frequencyPreset');
     expect(overlays).toContain('frequencyPresets');
-    expect(overlays).toContain('selectFrequencyPreset');
+    expect(overlays).toContain('toggleFrequencyAudio');
+    expect(overlays).toContain('loadedFrequency===preset.id&&audioStatus.playing');
     expect(overlays).not.toContain('frequencyRateByPlaylist');
   });
 
