@@ -83,6 +83,7 @@ export type SessionRecord = {
   pre:PreGrindCheckin;
   plan:SessionPlan;
   checkins:RuntimeCheckin[];
+  reentriesUsed?:number;
   debrief:DebriefData;
   readinessIndex:number;
   mentalEv:number;
