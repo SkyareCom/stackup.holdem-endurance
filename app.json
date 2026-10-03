@@ -7,13 +7,40 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "android": {
-      "package": "com.stackupholdem.endurance"
+      "package": "com.stackupholdem.endurance",
+      "backgroundColor": "#090806"
     },
     "ios": {
       "bundleIdentifier": "com.stackupholdem.endurance"
     },
     "plugins": [
-      "expo-router"
-    ]
+      "expo-router",
+      "expo-system-ui",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#090806"
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false,
+          "enableBackgroundRecording": false
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36
+          }
+        }
+      ]
+    ],
+    "backgroundColor": "#090806"
   }
 }
