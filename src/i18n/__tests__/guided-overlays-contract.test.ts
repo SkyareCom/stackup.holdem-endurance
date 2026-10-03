@@ -39,7 +39,7 @@ describe('guided module and exercise contract', () => {
   });
 
   it('renders the emotional heatmap as explicit time buckets with text intensity', () => {
-    expect(content).toContain('emotionalHeatmapBuckets');
+    expect(overlays).toContain('buildHeatmap(sessions)');
     expect(content).toContain("'heatmap.window.0_45'");
     expect(content).toContain("'heatmap.window.45_90'");
     expect(content).toContain("'heatmap.window.90_135'");
@@ -49,21 +49,19 @@ describe('guided module and exercise contract', () => {
     expect(content).toContain("'heatmap.intensity.moderate'");
     expect(content).toContain("'heatmap.intensity.high'");
     expect(content).toContain("'heatmap.intensity.critical'");
-    expect(overlays).toContain('emotionalHeatmapBuckets.map');
+    expect(overlays).toContain('heatmap.filter(bucket=>bucket.count>0).map');
     expect(overlays).not.toContain('Array.from({length:28})');
   });
 
   it('explains the heatmap, interprets the pattern and gives direct actions', () => {
     expect(overlays).toContain("t('overlay.heatmapExplanation')");
-    expect(overlays).toContain("t('overlay.heatmapReading')");
-    expect(overlays).toContain("t('overlay.heatmapActionBreak')");
-    expect(overlays).toContain("t('overlay.heatmapActionCue')");
+    expect(overlays).toContain("t('profile.correlationBody')");
     expect(overlays).toContain("t('overlay.heatmapActionSlow')");
     expect(overlays).toContain("t('overlay.heatmapActionCheckin')");
   });
 
   it('defaults the heatmap to insufficient history until real session history exists', () => {
-    expect(overlays).toContain('const heatmapHasHistory=false');
+    expect(overlays).toContain('const heatmapHasHistory=heatmap.some(bucket=>bucket.count>0)');
     expect(overlays).toContain('heatmapHasHistory');
     expect(overlays).toContain("t('overlay.heatmapInsufficient')");
     expect(overlays).toContain("t('overlay.heatmapCollect')");
