@@ -47,15 +47,16 @@ export function Serif({ children, style }: { children: React.ReactNode; style?: 
 
 export function GoldRule() { return <View style={s.rule} />; }
 
-export function PremiumButton({ label, onPress, secondary = false, danger = false, icon }: {
+export function PremiumButton({ label, onPress, secondary = false, danger = false, icon, disabled = false }: {
   label: string;
   onPress?: () => void;
   secondary?: boolean;
   danger?: boolean;
   icon?: keyof typeof Ionicons.glyphMap;
+  disabled?: boolean;
 }) {
   return (
-    <TouchableOpacity onPress={onPress} style={[s.button, secondary ? s.buttonSecondary : s.buttonGold, danger && s.buttonDanger]}>
+    <TouchableOpacity disabled={disabled} onPress={onPress} style={[s.button, secondary ? s.buttonSecondary : s.buttonGold, danger && s.buttonDanger, disabled && {opacity:0.45}]}>
       {icon ? <Ionicons name={icon} size={16} color={danger ? C.ivory : secondary ? C.goldLight : C.ink} /> : null}
       <AppText style={[s.buttonText, secondary && s.buttonTextSecondary, danger && s.buttonTextDanger]}>{label}</AppText>
       {!icon ? <Ionicons name="chevron-forward" size={16} color={danger ? C.ivory : secondary ? C.goldLight : C.ink} /> : null}
