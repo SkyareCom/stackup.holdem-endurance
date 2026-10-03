@@ -22,8 +22,8 @@ const riskKey:Record<TiltRisk,TranslationKey>={
   low:'risk.low',medium:'risk.medium',critical:'risk.critical',
 };
 const stateKey:Record<MentalState,TranslationKey>={
-  ready:'mentalState.ready',vulnerable:'mentalState.vulnerable',fatigued:'mentalState.fatigued',
-  'tilt-risk':'mentalState.tilt-risk',recovery:'mentalState.recovery',
+  centered:'mentalState.centered',alert:'mentalState.alert',vulnerable:'mentalState.vulnerable',
+  dysregulated:'mentalState.dysregulated',tilt:'mentalState.tilt',
 };
 const actionKey:Record<SessionAction,TranslationKey>={
   continue:'action.continue','check-in':'action.check-in','break-4':'action.break-4',
@@ -63,7 +63,7 @@ export function HomeScreen({ startSession, openModule: _openModule }: { startSes
   const readinessIndex=calculateReadiness(latestCheckin);
   const tiltRisk=classifyTiltRisk(latestCheckin);
   const minutes=activeSession?Math.max(0,Math.floor((Date.now()-activeSession.startedAt)/60000)):0;
-  const mentalState=deriveMentalState({readinessIndex,tiltRisk,sessionMinutes:minutes});
+  const mentalState=deriveMentalState({readinessIndex,tiltRisk,sessionMinutes:minutes,focus:lastRuntime?.focus??latestCheckin.mentalDrive,tension:lastRuntime?.tension??latestCheckin.tension,impulse:lastRuntime?.impulse??latestCheckin.impulse,fatigue:lastRuntime?.fatigue??latestCheckin.fatigue});
   const lastRuntime=activeSession?.checkins[activeSession.checkins.length-1];
   const action=getSessionAction({
     mode:activeSession?.plan.mode??'cash',
