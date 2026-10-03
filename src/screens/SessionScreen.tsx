@@ -16,7 +16,6 @@ import {
   getSessionAction,
   getRecoveryPlan,
   mentalEvComponents,
-  deriveExecutionQuality,
   type Emotion,
   type ExecutionQuality,
   type GameMode,
