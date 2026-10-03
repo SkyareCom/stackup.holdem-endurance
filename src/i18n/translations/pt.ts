@@ -52,6 +52,7 @@ export const pt = {
   'sportPsych.adversity': 'RESPOSTA À ADVERSIDADE',
   'sportPsych.caution': 'estes indicadores descrevem padrões de performance observados no app. não são diagnóstico psicológico, não medem valor pessoal e não garantem resultado financeiro.',
 
+  'home.historySummary': 'HISTÓRICO DE SESSÕES',
   'coachJourney.notice': 'PERCEBER',
   'coachJourney.noticeBody': 'Antes de tentar corrigir qualquer coisa, vamos entender como você chegou. Não existe resposta certa: existe o estado que você realmente traz para a mesa hoje.',
   'coachJourney.interrupt': 'INTERROMPER',
