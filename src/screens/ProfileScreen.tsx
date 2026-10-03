@@ -51,6 +51,9 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               <SmallScale label={t('profile.sleep')} value={profile.extraGrind.sleep} onChange={sleep=>updateExtraGrind({sleep})}/>
               <SmallScale label={t('profile.personalStress')} value={profile.extraGrind.personalStress} onChange={personalStress=>updateExtraGrind({personalStress})}/>
               <SmallScale label={t('profile.financialStress')} value={profile.extraGrind.financialStress} onChange={financialStress=>updateExtraGrind({financialStress})}/>
+              <SmallScale label={t('pregrind.nutrition')} value={profile.extraGrind.nutrition} onChange={nutrition=>updateExtraGrind({nutrition})}/>
+              <SmallScale label={t('pregrind.hydration')} value={profile.extraGrind.hydration} onChange={hydration=>updateExtraGrind({hydration})}/>
+              <SmallScale label={t('pregrind.activity')} value={profile.extraGrind.physicalActivity} onChange={physicalActivity=>updateExtraGrind({physicalActivity})}/>
             </View>
             <View style={s.panel}>
               <Label>{t('profile.stopRules')}</Label>

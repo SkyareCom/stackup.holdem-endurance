@@ -66,6 +66,7 @@ export type DebriefData = {
   decisionConfidence:number;
   professionalConduct:number;
   attitude:number;
+  resilience:number;
   gameUnderstanding:number;
   logic:number;
   endState:'A'|'B'|'C';
@@ -96,13 +97,16 @@ const inverse=(n:number)=>10-clamp(n);
 
 export function calculateReadiness(input: ReadinessInput): number {
   const weighted =
-    clamp(input.sleep)*1.5 +
-    inverse(input.personalStress)*1.0 +
-    inverse(input.financialStress)*1.0 +
-    inverse(input.tension)*1.5 +
-    inverse(input.fatigue)*1.5 +
-    clamp(input.energy)*1.75 +
-    clamp(input.mentalDrive)*1.75;
+    clamp(input.sleep)*1.25 +
+    inverse(input.personalStress)*0.9 +
+    inverse(input.financialStress)*0.7 +
+    inverse(input.tension)*1.25 +
+    inverse(input.fatigue)*1.25 +
+    clamp(input.energy)*1.4 +
+    clamp(input.mentalDrive)*1.5 +
+    clamp(input.nutrition??5)*0.55 +
+    clamp(input.hydration??5)*0.55 +
+    clamp(input.physicalActivity??5)*0.65;
   return Math.round(Math.max(0,Math.min(100,weighted)));
 }
 
@@ -158,7 +162,7 @@ export function getSessionAction(input:{
 }
 
 export function getBaselineConfidence(count:number):BaselineConfidence {
-  if(count<5) return 'none';
+  if(count<minimumBaselineSessions) return 'none';
   if(count<10) return 'low';
   if(count<20) return 'moderate';
   return 'high';
@@ -242,11 +246,17 @@ export function mentalEvComponents(input:{gameQuality:number;foldDiscipline:numb
 
 export function buildDevelopmentSnapshot(sessions:SessionRecord[]) {
   const avg=(values:number[])=>values.length?Math.round((values.reduce((a,b)=>a+b,0)/values.length)*10)/10:0;
+  const consistency=(values:number[])=>{
+    if(values.length<3) return 0;
+    const mean=values.reduce((a,b)=>a+b,0)/values.length;
+    const sd=Math.sqrt(values.reduce((sum,value)=>sum+Math.pow(value-mean,2),0)/values.length);
+    return Math.round(clamp(10-sd)*10)/10;
+  };
   return {
     discipline:avg(sessions.map(s=>s.debrief.foldDiscipline)),
     focus:avg(sessions.map(s=>s.pre.mentalDrive)),
-    consistency:avg(sessions.map(s=>s.debrief.gameQuality)),
-    resilience:avg(sessions.map(s=>10-Math.min(10,s.pre.personalStress))),
+    consistency:consistency(sessions.map(s=>s.debrief.gameQuality)),
+    resilience:avg(sessions.map(s=>s.debrief.resilience??0)),
     attitude:avg(sessions.map(s=>s.debrief.attitude)),
     decisionConfidence:avg(sessions.map(s=>s.debrief.decisionConfidence)),
     patience:avg(sessions.map(s=>s.debrief.patience)),
@@ -278,4 +288,13 @@ export function buildHeatmap(sessions:SessionRecord[]) {
     const triggers=[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,2).map(([trigger])=>trigger);
     return {id:window.id,count:items.length,intensity,triggers};
   });
+}
+
+
+export const HUMAN_PILLARS=['temperament','extraGrind','sensations','feeling','emotion','reasoning','behavior'] as const;
+export type TiltPattern='loss-tilt'|'winner-tilt'|'fatigue-tilt'|'ego-tilt';
+export const minimumBaselineSessions=5;
+export function getEvidenceState(sessionCount:number){
+  const confidence=getBaselineConfidence(sessionCount);
+  return {confidence,status:sessionCount<minimumBaselineSessions?'insufficient' as const:'usable' as const};
 }

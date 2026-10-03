@@ -18,7 +18,7 @@ const STORAGE_KEY='stackup.endurance.performance.v1';
 
 export type PerformanceProfile = {
   temperament:Temperament|null;
-  extraGrind:{ sleep:number; personalStress:number; financialStress:number };
+  extraGrind:{ sleep:number; personalStress:number; financialStress:number; nutrition:number; hydration:number; physicalActivity:number };
   stopRules:StopRules;
 };
 
@@ -52,7 +52,7 @@ type PerformanceContextValue = PersistedState & {
 
 const defaultProfile:PerformanceProfile={
   temperament:null,
-  extraGrind:{sleep:5,personalStress:5,financialStress:5},
+  extraGrind:{sleep:5,personalStress:5,financialStress:5,nutrition:5,hydration:5,physicalActivity:5},
   stopRules:{maxDurationMinutes:180,maxReentries:1,minFocus:4,maxTension:7,noStakeIncrease:true},
 };
 

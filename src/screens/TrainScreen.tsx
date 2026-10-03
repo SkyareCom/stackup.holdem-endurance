@@ -26,7 +26,7 @@ export function TrainScreen({ openModule }: { openModule:(m:Module)=>void }) {
   const [selectedDevelopmentGroup,setSelectedDevelopmentGroup]=useState(0);
   const selected=needs.find(x=>x.id===need)??needs[0];
   const development=developmentGroups[selectedDevelopmentGroup];
-  const reserve=baseline.confidence==='moderate'||baseline.confidence==='high'?Math.round(baseline.averageMentalEv*10):null;
+  const reserve=baseline.confidence==='moderate'||baseline.confidence==='high'?baseline.averageReadiness:null;
 
   return (
     <Backdrop uri={PHOTO.focus} blur={12} overlay={0.84}>

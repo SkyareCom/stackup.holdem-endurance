@@ -52,7 +52,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
     impulse:last?.impulse??latestCheckin.impulse,
     emotion:latestCheckin.emotion,
   }):null;
-  const currentAction=currentRisk?getSessionAction({
+  const currentAction=activeSession&&currentRisk?getSessionAction({
     mode:activeSession?.plan.mode??'cash',
     canLeave:activeSession?.plan.canLeave??true,
     tiltRisk:currentRisk,
@@ -71,7 +71,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
           <View style={s.panel}>
             <Label>{t('coach.activeContext')}</Label>
             <Serif style={s.contextTitle}>{t('coach.contextTitle')}</Serif>
-            <AppText style={s.body}>{t('coach.contextNoHistory')}</AppText>
+            <AppText style={s.body}>{baseline.count?t('profile.developmentBody'):t('coach.contextNoHistory')}</AppText>
             <View style={s.coachPhaseRow}>
               <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{readiness===null?t('coach.contextUnavailable'):readiness}</AppText></View>
               <View style={s.contextRow}><Label>{t('coach.contextPhase')}</Label><AppText style={s.contextValue}>{t(phaseKey)}</AppText></View>

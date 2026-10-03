@@ -66,14 +66,14 @@ function ChoiceGrid<T extends string>({items,value,onChange}:{items:{id:T;label:
 
 function Ready({ onStart }: { onStart:()=>void }) {
   const { t } = useI18n();
-  const { profile,startSession }=usePerformance();
+  const { profile,startSession,updateExtraGrind }=usePerformance();
   const [wizardStep,setWizardStep]=useState(0);
   const [tension,setTension]=useState(3);
   const [fatigue,setFatigue]=useState(3);
   const [sleep,setSleep]=useState(profile.extraGrind.sleep);
-  const [nutrition,setNutrition]=useState(5);
-  const [hydration,setHydration]=useState(5);
-  const [physicalActivity,setPhysicalActivity]=useState(5);
+  const [nutrition,setNutrition]=useState(profile.extraGrind.nutrition);
+  const [hydration,setHydration]=useState(profile.extraGrind.hydration);
+  const [physicalActivity,setPhysicalActivity]=useState(profile.extraGrind.physicalActivity);
   const [energy,setEnergy]=useState(6);
   const [mentalDrive,setMentalDrive]=useState(6);
   const [emotion,setEmotion]=useState<Emotion>('calm');
@@ -95,6 +95,7 @@ function Ready({ onStart }: { onStart:()=>void }) {
   const next=()=>setWizardStep(v=>Math.min(5,v+1));
   const back=()=>setWizardStep(v=>Math.max(0,v-1));
   const begin=()=>{
+    updateExtraGrind({sleep,nutrition,hydration,physicalActivity});
     startSession(pre,{
       mode,canLeave,expectedMinutes:profile.stopRules.maxDurationMinutes,
       maxReentries:profile.stopRules.maxReentries,processGoal:goal,
@@ -255,6 +256,7 @@ function Debrief({ save }: { save:()=>void }) {
   const [decisionConfidence,setDecisionConfidence]=useState(6);
   const [professionalConduct,setProfessionalConduct]=useState(7);
   const [attitude,setAttitude]=useState(6);
+  const [resilience,setResilience]=useState(6);
   const [gameUnderstanding,setGameUnderstanding]=useState(6);
   const [logic,setLogic]=useState(6);
   const [state,setState]=useState<GameState>('B');
@@ -271,7 +273,7 @@ function Debrief({ save }: { save:()=>void }) {
     finishSession({
       financialResult:resultHidden||!financialResult.trim()?null:Number(financialResult.replace(',','.')),
       resultHidden,gameQuality,foldDiscipline,patience,decisionConfidence,professionalConduct,
-      attitude,gameUnderstanding,logic,endState:state,triggers,busted,reentryDecision,
+      attitude,resilience,gameUnderstanding,logic,endState:state,triggers,busted,reentryDecision,
     });
     save();
   };
@@ -302,6 +304,7 @@ function Debrief({ save }: { save:()=>void }) {
       <Score10 oneToTen label={t('debrief.decisionConfidence')} value={decisionConfidence} setValue={setDecisionConfidence}/>
       <Score10 oneToTen label={t('debrief.professionalConduct')} value={professionalConduct} setValue={setProfessionalConduct}/>
       <Score10 oneToTen label={t('debrief.attitude')} value={attitude} setValue={setAttitude}/>
+      <Score10 oneToTen label={t('debrief.resilience')} value={resilience} setValue={setResilience}/>
       <Score10 oneToTen label={t('debrief.gameUnderstanding')} value={gameUnderstanding} setValue={setGameUnderstanding}/>
       <Score10 oneToTen label={t('debrief.logic')} value={logic} setValue={setLogic}/>
     </View>:null}
