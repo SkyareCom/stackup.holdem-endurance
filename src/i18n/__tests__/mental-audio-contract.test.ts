@@ -28,6 +28,9 @@ describe('offline mental audio contract',()=>{
     expect(overlays).toContain("audioIntent!=='play'||!audioStatus.isLoaded");
     expect(overlays).toContain("setAudioIntent('pause')");
     expect(overlays).toContain("setAudioIntent('play')");
+    expect(overlays).toContain('toggleFrequencyAudio');
+    expect(overlays).toContain('loadedFrequency===preset.id&&audioStatus.playing');
+    expect(overlays).not.toContain('mentalPlaylists.map');
   });
 
   it('does not request recording permissions for playback-only audio',()=>{
