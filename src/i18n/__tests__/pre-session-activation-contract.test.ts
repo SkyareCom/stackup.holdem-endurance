@@ -18,7 +18,7 @@ describe('mandatory pre-session activation contract',()=>{
     expect(session).toContain("t('pregrind.openAudio')");
     expect(session).toContain("t('pregrind.openBreathing')");
     expect(session).toContain("t('pregrind.activationComplete')");
-    expect(session).toContain('disabled={!activationUsed}');
+    expect(session).toContain('disabled={wizardStep===6&&!activationUsed}');
   });
 
   it('supports disabled primary actions in shared UI',()=>{
