@@ -87,10 +87,10 @@ export const mindfulnessTechniques = [
 
 
 export const microAudios = [
-  { id:'downswing', titleKey:'micro.downswing.title', durationKey:'micro.duration', scriptKey:'micro.downswing.script' },
-  { id:'loss-aversion', titleKey:'micro.lossAversion.title', durationKey:'micro.duration', scriptKey:'micro.lossAversion.script' },
-  { id:'personal-stress', titleKey:'micro.personalStress.title', durationKey:'micro.duration', scriptKey:'micro.personalStress.script' },
-] as const satisfies readonly { id:string; titleKey:TranslationKey; durationKey:TranslationKey; scriptKey:TranslationKey }[];
+  { id:'downswing', titleKey:'micro.downswing.title', summaryKey:'micro.downswing.summary', durationKey:'micro.duration', scriptKey:'micro.downswing.script' },
+  { id:'loss-aversion', titleKey:'micro.lossAversion.title', summaryKey:'micro.lossAversion.summary', durationKey:'micro.duration', scriptKey:'micro.lossAversion.script' },
+  { id:'personal-stress', titleKey:'micro.personalStress.title', summaryKey:'micro.personalStress.summary', durationKey:'micro.duration', scriptKey:'micro.personalStress.script' },
+] as const satisfies readonly { id:string; titleKey:TranslationKey; summaryKey:TranslationKey; durationKey:TranslationKey; scriptKey:TranslationKey }[];
 
 export const warRoomTriggers = [
   { id: 'bad-beat', labelKey: 'trigger.badBeat' },
