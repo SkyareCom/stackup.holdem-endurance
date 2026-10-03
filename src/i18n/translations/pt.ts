@@ -812,6 +812,16 @@ export const pt = {
   'pregrind.stakes': "STAKES / BUY-IN",
   'pregrind.stakesPlaceholder': "opcional · ex.: ABI 55 / NL100",
   'debrief.plannedStakes': "STAKES / BUY-IN PLANEJADO",
+  'overlay.audioBand': "PRESET DE FREQUÊNCIA",
+  'overlay.audioBandUse': "CONTEXTO SUGERIDO",
+  'overlay.audioBand.delta': "DELTA · 4 HZ",
+  'overlay.audioBand.deltaUse': "DESACELERAÇÃO, RECUPERAÇÃO E PREPARAÇÃO PARA SONO.",
+  'overlay.audioBand.alpha': "ALPHA · 10 HZ",
+  'overlay.audioBand.alphaUse': "PRÉ-SESSÃO, PAUSAS E REDUÇÃO DE RUÍDO.",
+  'overlay.audioBand.beta': "BETA · 20 HZ",
+  'overlay.audioBand.betaUse': "FOCO E ESTUDO EM ESTADO ALERTA.",
+  'overlay.audioBand.gamma': "GAMMA · 30 HZ",
+  'overlay.audioBand.gammaUse': "BLOCOS CURTOS DE ATENÇÃO INTENSA.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
