@@ -805,4 +805,8 @@ export const es: TranslationCatalog = {
   'micro.lossAversion.summary': "Reconoce la urgencia de recuperar y separa la pérdida pasada de la decisión que tienes delante.",
   'micro.personalStress.summary': "Crea una frontera práctica entre problemas fuera de la mesa y la información relevante para el próximo spot.",
   'recovery.disconnectBody': "Sigue únicamente la voz y tu respiración. No revises manos ni resultado durante estos dos minutos.",
+  'debrief.planVsExecution': "PLAN × EJECUCIÓN",
+  'debrief.plannedGoal': "OBJETIVO DEFINIDO",
+  'debrief.plannedLimit': "LÍMITE PLANIFICADO",
+  'debrief.actualDuration': "DURACIÓN REAL",
 };
