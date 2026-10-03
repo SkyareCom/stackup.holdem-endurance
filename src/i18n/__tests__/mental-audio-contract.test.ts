@@ -14,8 +14,13 @@ describe('offline mental audio contract',()=>{
     expect(overlays).toContain('useAudioPlayerStatus');
   });
 
-  it('ships a bundled local tone source instead of remote playback',()=>{
-    expect(overlays).toContain("require('../assets/audio/mental-tone.wav')");
+  it('ships distinct bundled frequency sources instead of remote playback',()=>{
+    for(const source of [
+      'binaural-delta-4.wav',
+      'binaural-alpha-10.wav',
+      'binaural-beta-20.wav',
+      'binaural-gamma-30.wav',
+    ]) expect(overlays).toContain(source);
     expect(overlays).toContain('audioPlayer.replace');
     expect(overlays).toContain('audioPlayer.play()');
     expect(overlays).toContain('audioPlayer.pause()');
