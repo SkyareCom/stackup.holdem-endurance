@@ -81,7 +81,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
               stopRules:{...defaultProfile.stopRules,...parsed.profile?.stopRules},
             },
             sessions:Array.isArray(parsed.sessions)?parsed.sessions:[],
-            activeSession:parsed.activeSession??null,
+            activeSession:parsed.activeSession?{...parsed.activeSession,reentriesUsed:parsed.activeSession.reentriesUsed??0}:null,
             latestCheckin:parsed.latestCheckin??null,
           });
         }catch{
