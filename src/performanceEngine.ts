@@ -2,7 +2,9 @@ export type Emotion = 'calm'|'fear'|'anger'|'frustration'|'greed'|'euphoria'|'an
 export type PlayReason = 'planned'|'important'|'study'|'recover-loss'|'boredom'|'fomo'|'ego';
 export type GameMode = 'cash'|'tournament';
 export type TiltRisk = 'low'|'medium'|'critical';
-export type MentalState = 'ready'|'vulnerable'|'fatigued'|'tilt-risk'|'recovery';
+export type MentalState = 'centered'|'alert'|'vulnerable'|'dysregulated'|'tilt';
+export type ExecutionQuality = 'strong'|'stable'|'oscillating'|'compromised';
+export type LegacyGameState = 'A'|'B'|'C';
 export type SessionAction = 'continue'|'check-in'|'break-4'|'contain'|'stop-session';
 export type BaselineConfidence = 'none'|'low'|'moderate'|'high';
 export type RecoveryPlan = 'cooldown'|'sleep'|'personal';
@@ -38,7 +40,10 @@ export type RuntimeCheckin = {
   tension:number;
   impulse:number;
   fatigue:number;
-  state:'A'|'B'|'C';
+  mentalState?:MentalState;
+  executionQuality?:ExecutionQuality;
+  /** Legacy history compatibility. New check-ins should use mentalState + executionQuality. */
+  state?:LegacyGameState;
   trigger?:TiltTrigger;
 };
 
@@ -71,7 +76,10 @@ export type DebriefData = {
   resilience:number;
   gameUnderstanding:number;
   logic:number;
-  endState:'A'|'B'|'C';
+  endMentalState?:MentalState;
+  endExecutionQuality?:ExecutionQuality;
+  /** Legacy history compatibility. */
+  endState?:LegacyGameState;
   triggers:TiltTrigger[];
   busted:boolean;
   reentryDecision:'none'|'stop'|'reenter';
@@ -129,11 +137,35 @@ export function classifyTiltRisk(input:{tension:number;fatigue:number;impulse:nu
   return 'low';
 }
 
-export function deriveMentalState(input:{readinessIndex:number;tiltRisk:TiltRisk;sessionMinutes:number}):MentalState {
-  if(input.tiltRisk==='critical') return 'tilt-risk';
-  if(input.sessionMinutes>=180 || input.readinessIndex<45) return 'fatigued';
-  if(input.tiltRisk==='medium' || input.readinessIndex<70) return 'vulnerable';
-  return 'ready';
+export function deriveMentalState(input:{readinessIndex:number;tiltRisk:TiltRisk;sessionMinutes:number;focus?:number;tension?:number;impulse?:number;fatigue?:number}):MentalState {
+  const focus=input.focus??10;
+  const tension=input.tension??0;
+  const impulse=input.impulse??0;
+  const fatigue=input.fatigue??0;
+  if(input.tiltRisk==='critical'||impulse>=9||(tension>=9&&focus<=3)) return 'tilt';
+  if(impulse>=7||tension>=8||focus<=3) return 'dysregulated';
+  if(input.tiltRisk==='medium'||input.readinessIndex<65||fatigue>=7||focus<=5) return 'vulnerable';
+  if(input.sessionMinutes>=120||input.readinessIndex<80||tension>=5||fatigue>=5) return 'alert';
+  return 'centered';
+}
+
+export function deriveExecutionQuality(input:{focus:number;impulse:number;fatigue:number;tension:number}):ExecutionQuality {
+  const impairment=(10-clamp(input.focus))*0.35+clamp(input.impulse)*0.3+clamp(input.fatigue)*0.2+clamp(input.tension)*0.15;
+  if(impairment>=7) return 'compromised';
+  if(impairment>=5) return 'oscillating';
+  if(impairment>=3) return 'stable';
+  return 'strong';
+}
+
+export function calculateRecoveryMinutes(checkins:RuntimeCheckin[]):number|null {
+  if(checkins.length<2) return null;
+  const severeIndex=checkins.findIndex(c=>c.mentalState==='dysregulated'||c.mentalState==='tilt'||c.state==='C');
+  if(severeIndex<0) return null;
+  const start=checkins[severeIndex];
+  const recovered=checkins.slice(severeIndex+1).find(c=>
+    c.mentalState==='centered'||c.mentalState==='alert'||c.executionQuality==='strong'||c.executionQuality==='stable'||c.state==='A'
+  );
+  return recovered?Math.max(0,recovered.minute-start.minute):null;
 }
 
 export function getRitualMinutes(readinessIndex:number,tiltRisk:TiltRisk):3|7|12 {
@@ -148,7 +180,7 @@ export function getRecoveryPlan(session:SessionRecord|null):RecoveryPlan {
   const durationMinutes=Math.max(0,(session.endedAt-session.startedAt)/60000);
   const fatigueDominant=session.debrief.triggers.includes('fatigue');
   if(fatigueDominant) return 'sleep';
-  if(session.debrief.endState==='C'||durationMinutes>=180||session.mentalEv<5) return 'cooldown';
+  if(session.debrief.endMentalState==='tilt'||session.debrief.endMentalState==='dysregulated'||session.debrief.endExecutionQuality==='compromised'||session.debrief.endState==='C'||durationMinutes>=180||session.mentalEv<5) return 'cooldown';
   return 'personal';
 }
 
