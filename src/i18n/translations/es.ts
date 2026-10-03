@@ -809,4 +809,10 @@ export const es: TranslationCatalog = {
   'debrief.plannedGoal': "OBJETIVO DEFINIDO",
   'debrief.plannedLimit': "LÍMITE PLANIFICADO",
   'debrief.actualDuration': "DURACIÓN REAL",
+  'pregrind.planDetails': "DETALLES DEL PLAN",
+  'pregrind.hidePlanDetails': "OCULTAR DETALLES",
+  'pregrind.expectedDuration': "DURACIÓN ESPERADA",
+  'pregrind.stakes': "STAKES / BUY-IN",
+  'pregrind.stakesPlaceholder': "opcional · ej.: ABI 55 / NL100",
+  'debrief.plannedStakes': "STAKES / BUY-IN PLANIFICADO",
 };
