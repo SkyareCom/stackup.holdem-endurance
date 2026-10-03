@@ -46,6 +46,7 @@ Official references:
 | Coach data | CURRENTLY LOCAL | No external AI integration; typed messages remain in local component state for this release. |
 | Microphone / voice | CURRENTLY INACTIVE | Mic control is visual only; no recording/upload and no mic permission requested by product code. |
 | Mental Audio | LOCAL PLAYBACK IMPLEMENTED | Bundled offline stereo tone playback uses `expo-audio`; play/pause is functional, no microphone/recording is enabled, and no remote audio service is used. |
+| Guided narration | DEVICE TTS IMPLEMENTED | Guided micro-audios and the two-minute disconnect use `expo-speech` / the device text-to-speech engine. The app does not send these scripts to an app backend; OS/voice-provider behavior depends on the device configuration. |
 | Content rating | PLAY CONSOLE ACTION | Complete IARC accurately. App is training/performance software and does not provide real-money wagering or gameplay. |
 | Target audience | PLAY CONSOLE ACTION | Declare intended age group accurately; do not include children unless Families requirements are intentionally supported. |
 | Store listing PT / EN / ES | PREPARED | See `docs/play-store-listing-pt-en-es.md`. |
