@@ -44,7 +44,7 @@ describe('Train, content libraries, and overlays localization contract', () => {
   it('keeps overlay state on stable ids or indexes', () => {
     const overlays = read('src/overlays.tsx');
     expect(overlays).toContain("useState('a-game')");
-    expect(overlays).toContain('setPlaylist(p.id)');
+    expect(overlays).toContain('toggleMentalAudio(p.id)');
     expect(overlays).toContain('setTrigger(x.id)');
     expect(overlays).toContain('diaryIndex');
     expect(overlays).toContain('step');
