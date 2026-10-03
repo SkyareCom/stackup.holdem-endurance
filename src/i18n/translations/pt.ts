@@ -772,6 +772,7 @@ export const pt = {
   'mindfulness.cinema.title': "TELA DE CINEMA",
   'mindfulness.cinema.when': "USE QUANDO UMA MÃO, ERRO OU BAD BEAT CONTINUAR SENDO REPLAYADO MENTALMENTE.",
   'mindfulness.cinema.body': "VISUALIZE A CENA EM UMA TELA DISTANTE, SEM ENTRAR NELA. REDUZA O VOLUME, A COR E A PROXIMIDADE; DEPOIS ENCERRA A CENA E RETORNE À PRÓXIMA DECISÃO.",
+  'profile.analyticsInsufficient': "A AMOSTRA AINDA É PEQUENA PARA EXIBIR CORRELAÇÕES COMO LEITURA ÚTIL. CONTINUE REGISTRANDO SESSÕES; O APP LIBERA ESSA CAMADA APÓS A BASELINE MÍNIMA.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
