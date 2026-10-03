@@ -85,6 +85,13 @@ export const mindfulnessTechniques = [
   { id:'cinema-screen', titleKey:'mindfulness.cinema.title', whenKey:'mindfulness.cinema.when', bodyKey:'mindfulness.cinema.body' },
 ] as const satisfies readonly { id:string; titleKey:TranslationKey; whenKey:TranslationKey; bodyKey:TranslationKey }[];
 
+
+export const microAudios = [
+  { id:'downswing', titleKey:'micro.downswing.title', durationKey:'micro.duration', scriptKey:'micro.downswing.script' },
+  { id:'loss-aversion', titleKey:'micro.lossAversion.title', durationKey:'micro.duration', scriptKey:'micro.lossAversion.script' },
+  { id:'personal-stress', titleKey:'micro.personalStress.title', durationKey:'micro.duration', scriptKey:'micro.personalStress.script' },
+] as const satisfies readonly { id:string; titleKey:TranslationKey; durationKey:TranslationKey; scriptKey:TranslationKey }[];
+
 export const warRoomTriggers = [
   { id: 'bad-beat', labelKey: 'trigger.badBeat' },
   { id: 'own-error', labelKey: 'trigger.ownError' },
