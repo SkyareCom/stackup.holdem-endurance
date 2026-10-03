@@ -4,6 +4,9 @@ import {
   calculateReadiness,
   classifyTiltRisk,
   deriveMentalState,
+  deriveExecutionQuality,
+  calculateRecoveryMinutes,
+  buildSportPsychologySnapshot,
   getBaselineConfidence,
   getRitualMinutes,
   getSessionAction,
@@ -37,6 +40,28 @@ describe('ENDURANCE performance engine', () => {
     expect(getRitualMinutes(85, 'low')).toBe(3);
     expect(getRitualMinutes(62, 'medium')).toBe(7);
     expect(getRitualMinutes(35, 'critical')).toBe(12);
+  });
+
+  it('separates mental state from execution quality', () => {
+    expect(deriveExecutionQuality({ focus: 9, impulse: 1, fatigue: 2, tension: 2 })).toBe('strong');
+    expect(deriveExecutionQuality({ focus: 2, impulse: 9, fatigue: 8, tension: 9 })).toBe('compromised');
+  });
+
+  it('measures observed recovery after dysregulation without inventing recovery', () => {
+    expect(calculateRecoveryMinutes([
+      {createdAt:1,minute:10,focus:3,tension:8,impulse:8,fatigue:5,mentalState:'dysregulated',executionQuality:'compromised'},
+      {createdAt:2,minute:14,focus:7,tension:4,impulse:3,fatigue:5,mentalState:'alert',executionQuality:'stable'},
+    ])).toBe(4);
+    expect(calculateRecoveryMinutes([
+      {createdAt:1,minute:10,focus:3,tension:8,impulse:8,fatigue:5,mentalState:'dysregulated',executionQuality:'compromised'},
+    ])).toBeNull();
+  });
+
+  it('keeps sport psychology analytics evidence-based when history is empty', () => {
+    const snapshot=buildSportPsychologySnapshot([]);
+    expect(snapshot.evidenceCount).toBe(0);
+    expect(snapshot.recoveryEfficiency).toBeNull();
+    expect(snapshot.confidence).toBe('none');
   });
 
   it('uses containment instead of stop-session when an MTT cannot be left', () => {
