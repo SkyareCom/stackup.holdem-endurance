@@ -76,6 +76,15 @@ export const stoicPrinciples = [
   { id: 'process', titleKey: 'stoic.process.title', bodyKey: 'stoic.process.body' },
 ] as const satisfies readonly { id: string; titleKey: TranslationKey; bodyKey: TranslationKey }[];
 
+
+export const mindfulnessTechniques = [
+  { id:'grounding-54321', titleKey:'mindfulness.54321.title', whenKey:'mindfulness.54321.when', bodyKey:'mindfulness.54321.body' },
+  { id:'mental-labeling', titleKey:'mindfulness.labeling.title', whenKey:'mindfulness.labeling.when', bodyKey:'mindfulness.labeling.body' },
+  { id:'mountain-weather', titleKey:'mindfulness.mountain.title', whenKey:'mindfulness.mountain.when', bodyKey:'mindfulness.mountain.body' },
+  { id:'leaves-stream', titleKey:'mindfulness.leaves.title', whenKey:'mindfulness.leaves.when', bodyKey:'mindfulness.leaves.body' },
+  { id:'cinema-screen', titleKey:'mindfulness.cinema.title', whenKey:'mindfulness.cinema.when', bodyKey:'mindfulness.cinema.body' },
+] as const satisfies readonly { id:string; titleKey:TranslationKey; whenKey:TranslationKey; bodyKey:TranslationKey }[];
+
 export const warRoomTriggers = [
   { id: 'bad-beat', labelKey: 'trigger.badBeat' },
   { id: 'own-error', labelKey: 'trigger.ownError' },
