@@ -48,6 +48,7 @@ export type SessionPlan = {
   expectedMinutes:number;
   maxReentries:number;
   processGoal:string;
+  stakesLabel?:string;
 };
 
 export type StopRules = {
