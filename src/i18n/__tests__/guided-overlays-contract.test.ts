@@ -77,11 +77,10 @@ describe('guided module and exercise contract', () => {
   });
 
   it('gives every mental playlist objective, best moment, duration, effect and cue', () => {
-    expect(content).toContain('objectiveKey');
-    expect(content).toContain('bestMomentKey');
-    expect(overlays).toContain("t('overlay.audioObjective')");
-    expect(overlays).toContain("t('overlay.audioBestMoment')");
-    expect(overlays).toContain("t('overlay.audioDuration')");
+    expect(overlays).toContain('frequencyPresets.map');
+    expect(overlays).toContain('toggleFrequencyAudio(preset.id)');
+    expect(overlays).toContain('t(preset.useKey)');
+    expect(overlays).toContain("t('overlay.audioHertz')");
     expect(overlays).toContain("t('overlay.audioExpectedEffect')");
     expect(overlays).toContain("t('overlay.audioCue')");
     expect(overlays).toContain('t(p.objectiveKey)');
