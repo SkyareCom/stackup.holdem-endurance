@@ -747,6 +747,12 @@ export const pt = {
   'lifestyle.activity.subtitle': 'CORPO QUE SUSTENTA O GRIND',
   'lifestyle.activity.body': 'atividade física regular, mobilidade e menos tempo contínuo sentado ajudam a sustentar rotina e recuperação. adapte volume e intensidade à sua condição.',
 
+  'coach.advice.continue': "SEU ESTADO ATUAL NÃO PEDE INTERVENÇÃO FORTE. MANTENHA O PLANO, O RITMO E A PRÓXIMA DECISÃO INDEPENDENTE DO RESULTADO ANTERIOR.",
+  'coach.advice.checkin': "HÁ SINAIS DE DESVIO. FAÇA UM CHECK-IN RÁPIDO, REDUZA A VELOCIDADE E REAVALIE FOCO, TENSÃO E IMPULSO ANTES DA PRÓXIMA DECISÃO IMPORTANTE.",
+  'coach.advice.break': "O MOTOR IDENTIFICOU UM LIMITE DE PERFORMANCE. FAÇA A PAUSA PROGRAMADA E SÓ RETORNE APÓS REAVALIAR FOCO E TENSÃO.",
+  'coach.advice.contain': "VOCÊ ESTÁ EM CONTEXTO DE CONTENÇÃO. NÃO TENTE RECUPERAR, NÃO AUMENTE O RITMO E ELIMINE DECISÕES MARGINAIS DESNECESSÁRIAS ATÉ O ESTADO BAIXAR.",
+  'coach.advice.stop': "A CONDIÇÃO ATUAL CRUZOU O LIMITE DEFINIDO PARA CONTINUAR. SE PUDER SAIR, ENCERRAR A SESSÃO É A AÇÃO PREVISTA PELAS SUAS PRÓPRIAS REGRAS.",
+  'coach.advice.noContext': "AINDA NÃO HÁ CONTEXTO ATUAL SUFICIENTE PARA UMA RECOMENDAÇÃO ESPECÍFICA. FAÇA UM CHECK-IN OU INICIE A JORNADA PRÉ-SESSÃO.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
