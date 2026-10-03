@@ -7,7 +7,7 @@ import { C, PHOTO } from '../theme';
 import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
 import { LanguageSelector } from '../components/LanguageSelector';
-import { buildDevelopmentSnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
+import { buildDevelopmentSnapshot, buildSportPsychologySnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
 import { useI18n, type TranslationKey } from '../i18n';
 
@@ -33,6 +33,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const { profile,updateProfile,updateExtraGrind,updateStopRules,sessions,baseline,clearHistory }=usePerformance();
   const developmentSnapshot=buildDevelopmentSnapshot(sessions);
   const tiltProfile=buildTiltProfile(sessions);
+  const sportPsychology=buildSportPsychologySnapshot(sessions);
   const analyticsUsable=baseline.confidence!=='none';
   const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
 
@@ -88,6 +89,25 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               <View style={s.rowBetween}><Label>{t('development.resilience.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.resilience}/10</AppText></View>
               <View style={s.rowBetween}><Label>{t('development.logic.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.logic}/10</AppText></View>
               <View style={s.rowBetween}><Label>{t('development.lifestyle.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.lifestyle}/10</AppText></View>
+            </View>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>{t('sportPsych.title')}</Label>
+            <AppText style={s.body}>{t('sportPsych.body')}</AppText>
+            {sessions.length?<View style={s.panel}>
+              <View style={s.rowBetween}><Label>{t('sportPsych.attention')}</Label><AppText style={s.goldText}>{sportPsychology.attentionStability}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.impulse')}</Label><AppText style={s.goldText}>{sportPsychology.impulseRegulation}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.pressure')}</Label><AppText style={s.goldText}>{sportPsychology.pressureRegulation}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.process')}</Label><AppText style={s.goldText}>{sportPsychology.processAdherence}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.fatigue')}</Label><AppText style={s.goldText}>{sportPsychology.mentalFatigueLoad}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.adversity')}</Label><AppText style={s.goldText}>{sportPsychology.adversityResponse}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('resilience.recoveryTime')}</Label><AppText style={s.goldText}>{sportPsychology.recoveryEfficiency===null?'—':sportPsychology.recoveryEfficiency+' min'}</AppText></View>
+              <View style={s.rule}/>
+              <View style={s.rowBetween}><Label>{t('profile.confidence')}</Label><AppText style={s.goldText}>{t(({
+                none:'confidence.none',low:'confidence.low',moderate:'confidence.moderate',high:'confidence.high',
+              } as const)[sportPsychology.confidence])}</AppText></View>
+              <AppText style={s.body}>{t('sportPsych.caution')}</AppText>
             </View>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
           </View>
 
