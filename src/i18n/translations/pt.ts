@@ -806,6 +806,12 @@ export const pt = {
   'debrief.plannedGoal': "OBJETIVO DEFINIDO",
   'debrief.plannedLimit': "LIMITE PLANEJADO",
   'debrief.actualDuration': "DURAÇÃO REAL",
+  'pregrind.planDetails': "DETALHES DO PLANO",
+  'pregrind.hidePlanDetails': "OCULTAR DETALHES",
+  'pregrind.expectedDuration': "DURAÇÃO ESPERADA",
+  'pregrind.stakes': "STAKES / BUY-IN",
+  'pregrind.stakesPlaceholder': "opcional · ex.: ABI 55 / NL100",
+  'debrief.plannedStakes': "STAKES / BUY-IN PLANEJADO",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
