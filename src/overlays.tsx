@@ -273,11 +273,43 @@ const protocolBodyKey={
   'personal-reset':'sos.protocol.personal-reset.body',
 } as const satisfies Record<ReturnType<typeof getSOSProtocol>['id'],TranslationKey>;
 
+const sosBreathPhaseKey={
+  inhale1:'sos.breathe.inhale1',
+  inhale2:'sos.breathe.inhale2',
+  exhale:'sos.breathe.exhale',
+} as const satisfies Record<'inhale1'|'inhale2'|'exhale',TranslationKey>;
+
 export function SOSOverlay({ close, goCoach }: { close:()=>void; goCoach:()=>void }) {
   const { t } = useI18n();
   const { activeSession,recordSOS }=usePerformance();
   const [trigger,setTrigger]=useState<TiltTrigger|''>('');
+  const [sosRemaining,setSosRemaining]=useState(0);
+  const [sosBreathPhase,setSosBreathPhase]=useState<'inhale1'|'inhale2'|'exhale'>('inhale1');
   const protocol=trigger?getSOSProtocol(trigger,activeSession?.plan.mode??'cash'):null;
+
+  useEffect(()=>{
+    if(!protocol){
+      setSosRemaining(0);
+      setSosBreathPhase('inhale1');
+      return;
+    }
+    setSosRemaining(protocol.seconds);
+    setSosBreathPhase('inhale1');
+    const id=setInterval(()=>{
+      setSosRemaining(previous=>{
+        if(previous<=1){
+          clearInterval(id);
+          return 0;
+        }
+        const next=previous-1;
+        const elapsed=protocol.seconds-next;
+        const cycle=elapsed%7;
+        setSosBreathPhase(cycle<2?'inhale1':cycle<3?'inhale2':'exhale');
+        return next;
+      });
+    },1000);
+    return()=>clearInterval(id);
+  },[protocol?.id,protocol?.seconds]);
 
   const choose=(next:TiltTrigger)=>{
     setTrigger(next);
@@ -294,9 +326,10 @@ export function SOSOverlay({ close, goCoach }: { close:()=>void; goCoach:()=>voi
     </View>:<View style={s.sosCenter}>
       <Label>{t('sos.protocol')}</Label>
       <View style={s.breathe}><View style={s.breatheInner}/></View>
+      <AppText style={s.goldText}>{t(sosRemaining>0?sosBreathPhaseKey[sosBreathPhase]:'sos.breathe.complete')}</AppText>
       <Serif style={s.sosTitle}>{t(protocolTitleKey[protocol.id])}</Serif>
       <AppText style={s.sosCopy}>{t(protocolBodyKey[protocol.id])}</AppText>
-      <AppText style={s.sosTimer}>{protocol.seconds}</AppText>
+      <AppText style={s.sosTimer}>{sosRemaining}</AppText>
     </View>}
     <View style={s.sosActions}>
       {protocol?<PremiumButton label={t('sos.return')} onPress={close}/>:null}
