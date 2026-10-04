@@ -16,7 +16,7 @@ describe('session planning details contract',()=>{
   it('keeps plan details behind progressive disclosure',()=>{
     expect(session).toContain('planExpanded');
     expect(session).toContain("t(planExpanded?'pregrind.hidePlanDetails':'pregrind.planDetails')");
-    expect(session).toContain("t('pregrind.expectedDuration')");
+    expect(session).toContain("t('pregrind.expectedDurationQuestion')");
     expect(session).toContain("t('pregrind.stakes')");
   });
 });
