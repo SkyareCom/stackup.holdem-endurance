@@ -7,6 +7,8 @@ import {
   type DebriefData,
   type PreGrindCheckin,
   type RuntimeCheckin,
+  type LiveSessionEvent,
+  type LiveEventType,
   type SessionPlan,
   type SessionRecord,
   type StopRules,
@@ -32,6 +34,7 @@ type ActiveSession = {
   pre:PreGrindCheckin;
   plan:SessionPlan;
   checkins:RuntimeCheckin[];
+  liveEvents:LiveSessionEvent[];
   reentriesUsed:number;
 };
 
@@ -55,6 +58,7 @@ type PerformanceContextValue = PersistedState & {
   addRuntimeCheckin:(checkin:Omit<RuntimeCheckin,'createdAt'|'minute'>)=>void;
   recordSOS:(trigger:TiltTrigger)=>void;
   incrementReentry:()=>void;
+  addLiveEvent:(type:LiveEventType,amount?:number,note?:string)=>void;
   finishSession:(debrief:DebriefData)=>SessionRecord|null;
   setCareTaskStatus:(taskId:string,status:'done'|'skipped')=>void;
   updateDailyWellbeing:(patch:Partial<Omit<DailyWellbeing,'date'|'updatedAt'>>)=>void;
@@ -92,7 +96,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
               lifestyle:{...defaultProfile.lifestyle,...parsed.profile?.lifestyle},
             },
             sessions:Array.isArray(parsed.sessions)?parsed.sessions:[],
-            activeSession:parsed.activeSession?{...parsed.activeSession,reentriesUsed:parsed.activeSession.reentriesUsed??0}:null,
+            activeSession:parsed.activeSession?{...parsed.activeSession,liveEvents:Array.isArray((parsed.activeSession as ActiveSession).liveEvents)?(parsed.activeSession as ActiveSession).liveEvents:[],reentriesUsed:parsed.activeSession.reentriesUsed??0}:null,
             latestCheckin:parsed.latestCheckin??null,
             careTaskEvents:Array.isArray(parsed.careTaskEvents)?parsed.careTaskEvents:[],
             dailyWellbeing:Array.isArray(parsed.dailyWellbeing)?parsed.dailyWellbeing:[],
@@ -135,6 +139,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
       pre,
       plan,
       checkins:[],
+      liveEvents:[],
       reentriesUsed:0,
     }}));
   },[]);
@@ -170,6 +175,17 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
   },[]);
 
 
+  const addLiveEvent=useCallback((type:LiveEventType,amount?:number,note?:string)=>{
+    const now=Date.now();
+    setState(s=>{
+      if(!s.activeSession)return s;
+      const minute=Math.max(0,Math.floor((now-s.activeSession.startedAt)/60000));
+      const event:LiveSessionEvent={id:'event-'+now,createdAt:now,minute,type,...(amount&&amount>0?{amount}:{}),...(note?.trim()?{note:note.trim()}: {})};
+      const reentriesUsed=type==='rebuy'?Math.min(s.activeSession.plan.maxReentries,s.activeSession.reentriesUsed+1):s.activeSession.reentriesUsed;
+      return {...s,activeSession:{...s.activeSession,reentriesUsed,liveEvents:[...s.activeSession.liveEvents,event]}};
+    });
+  },[]);
+
   const incrementReentry=useCallback(()=>{
     setState(s=>{
       if(!s.activeSession||s.activeSession.plan.mode!=='tournament')return s;
@@ -191,6 +207,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
         pre:s.activeSession.pre,
         plan:s.activeSession.plan,
         checkins:s.activeSession.checkins,
+        liveEvents:s.activeSession.liveEvents,
         reentriesUsed:s.activeSession.reentriesUsed,
         debrief,
         readinessIndex,
@@ -213,8 +230,8 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
   const baseline=useMemo(()=>buildBaseline(state.sessions),[state.sessions]);
   const value=useMemo<PerformanceContextValue>(()=>({
     ...state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,
-    addRuntimeCheckin,recordSOS,incrementReentry,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory,
-  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory]);
+    addRuntimeCheckin,recordSOS,incrementReentry,addLiveEvent,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory,
+  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,addLiveEvent,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory]);
 
   if(!ready)return null;
   return <PerformanceContext.Provider value={value}>{children}</PerformanceContext.Provider>;
