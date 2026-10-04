@@ -446,7 +446,8 @@ function Debrief({ save }: { save:()=>void }) {
 
 function Recovery({ finish,openAudio }: { finish:()=>void;openAudio:()=>void }) {
   const { t,locale }=useI18n();
-  const { sessions }=usePerformance();
+  const { sessions,profile }=usePerformance();
+  const recoveryCare=buildPerformanceCare(profile.lifestyle)[0];
   const [disconnectRemaining,setDisconnectRemaining]=useState(120);
   const plan=getRecoveryPlan(sessions[0]??null);
   const titleKey:Record<RecoveryPlan,TranslationKey>={
@@ -490,6 +491,12 @@ function Recovery({ finish,openAudio }: { finish:()=>void;openAudio:()=>void }) 
       <Label>{t(disconnectRemaining>0?'recovery.disconnectRunning':'recovery.disconnectComplete')}</Label>
       <Serif style={s.heroNumber}>{disconnectRemaining}</Serif>
       <AppText style={s.body}>{t('recovery.disconnectBody')}</AppText>
+    </View>
+
+    <View style={s.panel}>
+      <Label>{t('care.title')}</Label>
+      <Serif style={s.actionTitle}>{t(`care.action.${recoveryCare.priority}.title` as TranslationKey)}</Serif>
+      <AppText style={s.body}>{t(`care.action.${recoveryCare.priority}.body` as TranslationKey)}</AppText>
     </View>
 
     <View style={s.readingCard}>
