@@ -31,7 +31,7 @@ function SmallScale({label,value,onChange}:{label:string;value:number;onChange:(
 export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const { t } = useI18n();
   const router = useRouter();
-  const { profile,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,sessions,baseline,clearHistory }=usePerformance();
+  const { profile,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,sessions,baseline,careTaskEvents,setCareTaskStatus,clearHistory }=usePerformance();
   const developmentSnapshot=buildDevelopmentSnapshot(sessions);
   const tiltProfile=buildTiltProfile(sessions);
   const sportPsychology=buildSportPsychologySnapshot(sessions);
@@ -39,6 +39,8 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
   const careActions=buildPerformanceCare(profile.lifestyle);
   const careTasks=buildDailyCareTasks(profile.lifestyle);
+  const today=new Date().toISOString().slice(0,10);
+  const todayCare=careTaskEvents.filter(e=>e.date===today);
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.88}>
