@@ -1044,4 +1044,8 @@ export const es: TranslationCatalog = {
   'home.patterns': "PATRONES",
   'home.history': "HISTORIAL",
   'home.patternsBody': "Eventos, disparadores y evolución entre sesiones.",
+  'emotion.confident': 'CONFIADO',
+  'emotion.wellbeing': 'BIENESTAR',
+  'emotion.motivated': 'MOTIVADO',
+  'emotion.focused': 'ENFOCADO',
 };
