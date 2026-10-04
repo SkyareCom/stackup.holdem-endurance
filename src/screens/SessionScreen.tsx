@@ -264,7 +264,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const mentalState=deriveMentalState({readinessIndex:readiness,tiltRisk,sessionMinutes:minutes,focus,tension,impulse,fatigue});
   const executionQuality=deriveExecutionQuality({focus,tension,impulse,fatigue});
   const sessionCare=buildPerformanceCare({...profile.lifestyle,sittingHours:profile.lifestyle.sittingHours+minutes/60});
-  const carePriority=sessionCare.find(item=>item.priority!==\'ready\')??sessionCare[0];
+  const carePriority=sessionCare.find(item=>item.priority!=='ready')??sessionCare[0];
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={2} total={4} label={t('session.activeStage')}/>
