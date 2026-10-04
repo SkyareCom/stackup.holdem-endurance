@@ -13,6 +13,7 @@ import {
   type Temperament,
   type TiltTrigger,
 } from './performanceEngine';
+import type { LifestyleCheckin } from './performanceCare';
 
 const STORAGE_KEY='stackup.endurance.performance.v1';
 
@@ -20,6 +21,7 @@ export type PerformanceProfile = {
   temperament:Temperament|null;
   extraGrind:{ sleep:number; personalStress:number; financialStress:number; nutrition:number; hydration:number; physicalActivity:number };
   stopRules:StopRules;
+  lifestyle:LifestyleCheckin;
 };
 
 type ActiveSession = {
@@ -44,6 +46,7 @@ type PerformanceContextValue = PersistedState & {
   updateProfile:(patch:Partial<PerformanceProfile>)=>void;
   updateExtraGrind:(patch:Partial<PerformanceProfile['extraGrind']>)=>void;
   updateStopRules:(patch:Partial<StopRules>)=>void;
+  updateLifestyle:(patch:Partial<LifestyleCheckin>)=>void;
   startSession:(pre:PreGrindCheckin,plan:SessionPlan)=>void;
   addRuntimeCheckin:(checkin:Omit<RuntimeCheckin,'createdAt'|'minute'>)=>void;
   recordSOS:(trigger:TiltTrigger)=>void;
@@ -56,6 +59,7 @@ const defaultProfile:PerformanceProfile={
   temperament:null,
   extraGrind:{sleep:5,personalStress:5,financialStress:5,nutrition:5,hydration:5,physicalActivity:5},
   stopRules:{maxDurationMinutes:180,maxReentries:1,minFocus:4,maxTension:7,noStakeIncrease:true},
+  lifestyle:{sleepHours:7.5,sleepQuality:7,hydration:7,mealQuality:7,hoursSinceMeal:3,caffeineMg:0,caffeineHoursAgo:24,movementMinutes:30,strengthDaysThisWeek:2,sittingHours:2,painOrIllness:false},
 };
 
 const defaultState:PersistedState={profile:defaultProfile,sessions:[],activeSession:null,latestCheckin:null};
@@ -79,6 +83,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
               ...parsed.profile,
               extraGrind:{...defaultProfile.extraGrind,...parsed.profile?.extraGrind},
               stopRules:{...defaultProfile.stopRules,...parsed.profile?.stopRules},
+              lifestyle:{...defaultProfile.lifestyle,...parsed.profile?.lifestyle},
             },
             sessions:Array.isArray(parsed.sessions)?parsed.sessions:[],
             activeSession:parsed.activeSession?{...parsed.activeSession,reentriesUsed:parsed.activeSession.reentriesUsed??0}:null,
@@ -104,6 +109,10 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
 
   const updateExtraGrind=useCallback((patch:Partial<PerformanceProfile['extraGrind']>)=>{
     setState(s=>({...s,profile:{...s.profile,extraGrind:{...s.profile.extraGrind,...patch}}}));
+  },[]);
+
+  const updateLifestyle=useCallback((patch:Partial<LifestyleCheckin>)=>{
+    setState(s=>({...s,profile:{...s.profile,lifestyle:{...s.profile.lifestyle,...patch}}}));
   },[]);
 
   const updateStopRules=useCallback((patch:Partial<StopRules>)=>{
@@ -188,9 +197,9 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
 
   const baseline=useMemo(()=>buildBaseline(state.sessions),[state.sessions]);
   const value=useMemo<PerformanceContextValue>(()=>({
-    ...state,ready,baseline,updateProfile,updateExtraGrind,updateStopRules,startSession,
+    ...state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,
     addRuntimeCheckin,recordSOS,incrementReentry,finishSession,clearHistory,
-  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,finishSession,clearHistory]);
+  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,finishSession,clearHistory]);
 
   if(!ready)return null;
   return <PerformanceContext.Provider value={value}>{children}</PerformanceContext.Provider>;
