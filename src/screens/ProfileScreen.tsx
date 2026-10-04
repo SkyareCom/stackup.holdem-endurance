@@ -97,7 +97,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
             </View>
             <View style={s.panel}>
               <Label>{t('care.dailyPlan')}</Label>
-              {careTasks.map(task=><View key={task.id} style={s.guidedBlock}><Serif style={s.actionTitle}>{t(`care.task.${task.id}.title` as TranslationKey)}</Serif><AppText style={s.body}>{t(`care.task.${task.id}.body` as TranslationKey)}</AppText></View>)}
+              {careTasks.map(task=>{const status=todayCare.find(e=>e.taskId===task.id)?.status;return <View key={task.id} style={s.guidedBlock}><View style={s.rowBetween}><Serif style={s.actionTitle}>{t(`care.task.${task.id}.title` as TranslationKey)}</Serif><AppText style={s.goldText}>{status?t(`care.status.${status}` as TranslationKey):t('care.status.pending')}</AppText></View><AppText style={s.body}>{t(`care.task.${task.id}.body` as TranslationKey)}</AppText><View style={s.processGrid}><TouchableOpacity onPress={()=>setCareTaskStatus(task.id,'done')} style={[s.processChip,status==='done'&&s.chipActive]}><AppText style={[s.chipText,status==='done'&&s.chipTextActive]}>{t('care.markDone')}</AppText></TouchableOpacity><TouchableOpacity onPress={()=>setCareTaskStatus(task.id,'skipped')} style={[s.processChip,status==='skipped'&&s.chipActive]}><AppText style={[s.chipText,status==='skipped'&&s.chipTextActive]}>{t('care.skip')}</AppText></TouchableOpacity></View></View>})}
               <View style={s.rule}/>
               <Label>{t('care.weeklyMovement')}</Label>
               <AppText style={s.body}>{t('care.movementTarget')}</AppText>
