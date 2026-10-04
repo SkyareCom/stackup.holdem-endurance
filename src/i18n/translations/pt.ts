@@ -1027,6 +1027,21 @@ export const pt = {
   'physiology.awaitingSamples': "Aguardando amostras suficientes próximas deste evento para comparação.",
   'physiology.before': "ANTES",
   'physiology.peakAfter': "PICO APÓS",
+  'home.grindJourney': "JORNADA DO GRIND",
+  'home.preGame': "PRÉ-JOGO",
+  'home.prepare': "PREPARAR",
+  'home.preGameBody': "Condição, contexto, limites e intenção.",
+  'home.duringGame': "DURANTE",
+  'home.quickLog': "REGISTRO RÁPIDO",
+  'home.duringGameBody': "Bad beat, rebuy, erro, insegurança, impulso e fadiga.",
+  'home.postGame': "PÓS-JOGO",
+  'home.review': "ANALISAR",
+  'home.postGameBody': "Resultado, execução, recuperação e parecer.",
+  'home.protection': "PROTEÇÃO",
+  'home.protectionBody': "Tilt, pausa, caminhada, contenção e jogo seguro.",
+  'home.patterns': "PADRÕES",
+  'home.history': "HISTÓRICO",
+  'home.patternsBody': "Eventos, gatilhos e evolução entre sessões.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
