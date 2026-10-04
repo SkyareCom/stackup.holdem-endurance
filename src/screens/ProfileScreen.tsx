@@ -31,13 +31,13 @@ function SmallScale({label,value,onChange}:{label:string;value:number;onChange:(
 export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const { t } = useI18n();
   const router = useRouter();
-  const { profile,updateProfile,updateExtraGrind,updateStopRules,sessions,baseline,clearHistory }=usePerformance();
+  const { profile,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,sessions,baseline,clearHistory }=usePerformance();
   const developmentSnapshot=buildDevelopmentSnapshot(sessions);
   const tiltProfile=buildTiltProfile(sessions);
   const sportPsychology=buildSportPsychologySnapshot(sessions);
   const analyticsUsable=baseline.confidence!=='none';
   const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
-  const careActions=buildPerformanceCare({sleepHours:profile.extraGrind.sleep,sleepQuality:profile.extraGrind.sleep,hydration:profile.extraGrind.hydration,mealQuality:profile.extraGrind.nutrition,hoursSinceMeal:0,caffeineMg:0,caffeineHoursAgo:24,movementMinutes:profile.extraGrind.physicalActivity*6,strengthDaysThisWeek:0,sittingHours:0,painOrIllness:false});
+  const careActions=buildPerformanceCare(profile.lifestyle);
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.88}>
@@ -77,6 +77,18 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
                 <View style={s.rowBetween}><Serif style={s.actionTitle}>{item.title}</Serif><AppText style={s.goldText}>{item.severity==='high'?'PRIORIDADE':item.severity==='attention'?'ATENÇÃO':'OK'}</AppText></View>
                 <AppText style={s.body}>{item.action}</AppText>
               </View>)}
+            </View>
+            <View style={s.panel}>
+              <Label>CHECK-IN LIFESTYLE / HOJE</Label>
+              <SmallScale label="HORAS DE SONO" value={Math.round(profile.lifestyle.sleepHours)} onChange={sleepHours=>updateLifestyle({sleepHours})}/>
+              <SmallScale label="QUALIDADE DO SONO" value={profile.lifestyle.sleepQuality} onChange={sleepQuality=>updateLifestyle({sleepQuality})}/>
+              <SmallScale label="HIDRATAÇÃO" value={profile.lifestyle.hydration} onChange={hydration=>updateLifestyle({hydration})}/>
+              <SmallScale label="QUALIDADE DA ALIMENTAÇÃO" value={profile.lifestyle.mealQuality} onChange={mealQuality=>updateLifestyle({mealQuality})}/>
+              <SmallScale label="HORAS DESDE A ÚLTIMA REFEIÇÃO" value={profile.lifestyle.hoursSinceMeal} onChange={hoursSinceMeal=>updateLifestyle({hoursSinceMeal})}/>
+              <SmallScale label="MOVIMENTO HOJE / MIN ÷ 6" value={Math.round(profile.lifestyle.movementMinutes/6)} onChange={v=>updateLifestyle({movementMinutes:v*6})}/>
+              <SmallScale label="HORAS SENTADO" value={profile.lifestyle.sittingHours} onChange={sittingHours=>updateLifestyle({sittingHours})}/>
+              <SmallScale label="CAFEÍNA / 50 MG" value={Math.min(10,Math.round(profile.lifestyle.caffeineMg/50))} onChange={v=>updateLifestyle({caffeineMg:v*50,caffeineHoursAgo:v?profile.lifestyle.caffeineHoursAgo:24})}/>
+              <TouchableOpacity onPress={()=>updateLifestyle({painOrIllness:!profile.lifestyle.painOrIllness})} style={[s.option,profile.lifestyle.painOrIllness&&s.optionActive]}><AppText style={[s.optionText,profile.lifestyle.painOrIllness&&s.optionTextActive]}>DOR, MAL-ESTAR OU DOENÇA HOJE: {profile.lifestyle.painOrIllness?'SIM':'NÃO'}</AppText></TouchableOpacity>
             </View>
             <View style={s.panel}>
               <Label>BASE DE PERFORMANCE</Label>
