@@ -191,7 +191,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
         <Label>{t('pregrind.sessionLimits')}</Label>
         <AppText style={s.body}>{t('pregrind.sessionLimitsBody')}</AppText>
         <View style={s.rowBetween}>
-          <View><Label>{t('profile.maxDuration')}</Label><AppText style={s.body}>{profile.stopRules.maxDurationMinutes} min</AppText></View>
+          <View><Label>{t('profile.maxDuration')}</Label><AppText style={s.body}>{profile.stopRules.maxDurationMinutes}</AppText></View>
           <View><Label>{t('profile.maxReentries')}</Label><AppText style={s.body}>{profile.stopRules.maxReentries}</AppText></View>
         </View>
         <AppText style={s.body}>{t('pregrind.sessionLimitsConsequence')}</AppText>
