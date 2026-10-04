@@ -996,6 +996,11 @@ export const pt = {
   'finance.level.protect.body': "A sequência negativa aumentou. Preserve os limites definidos antes da sessão e evite ampliar exposição por causa dos resultados recentes.",
   'finance.level.contain': "CONTENÇÃO",
   'finance.level.contain.body': "A sequência negativa coincide com sinais de execução comprometida no registro mais recente. Considere reduzir exposição, fazer uma pausa e reavaliar antes de continuar.",
+  'finance.currency': 'R
+
+export type TranslationCatalog = { [K in keyof typeof pt]: string };
+,
+  'common.minutesShort': 'min',
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
