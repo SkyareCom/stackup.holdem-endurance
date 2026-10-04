@@ -46,15 +46,11 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
         <ScrollView contentContainerStyle={s.scroll}>
           <View style={s.panel}>
             <Label>{t('home.grindJourney')}</Label>
-            <View style={s.quickGrid}>
-              <TouchableOpacity style={s.quickCard} onPress={startSession}><Label>{t('home.preGame')}</Label><Serif style={s.actionTitle}>{t('home.prepare')}</Serif><AppText style={s.quickCopy}>{t('home.preGameBody')}</AppText></TouchableOpacity>
-              <TouchableOpacity style={s.quickCard} onPress={startSession}><Label>{t('home.duringGame')}</Label><Serif style={s.actionTitle}>{t('home.quickLog')}</Serif><AppText style={s.quickCopy}>{t('home.duringGameBody')}</AppText></TouchableOpacity>
-              <TouchableOpacity style={s.quickCard} onPress={startSession}><Label>{t('home.postGame')}</Label><Serif style={s.actionTitle}>{t('home.review')}</Serif><AppText style={s.quickCopy}>{t('home.postGameBody')}</AppText></TouchableOpacity>
-            </View>
-            <View style={s.quickGrid}>
-              <TouchableOpacity style={s.quickCard} onPress={()=>openModule('war-room')}><Label>{t('home.protection')}</Label><Serif style={s.actionTitle}>{t('home.warRoom')}</Serif><AppText style={s.quickCopy}>{t('home.protectionBody')}</AppText></TouchableOpacity>
-              <TouchableOpacity style={s.quickCard} onPress={()=>openModule('heatmap')}><Label>{t('home.patterns')}</Label><Serif style={s.actionTitle}>{t('home.history')}</Serif><AppText style={s.quickCopy}>{t('home.patternsBody')}</AppText></TouchableOpacity>
-            </View>
+            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('war-room')}><View style={{flex:1}}><Label>{t('home.protection')}</Label><AppText style={s.guidedToolBody}>{t('home.protectionBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('heatmap')}><View style={{flex:1}}><Label>{t('home.patterns')}</Label><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
           </View>
 
           <GuidedSection
@@ -101,15 +97,11 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
         <ScrollView contentContainerStyle={s.scroll}>
           <View style={s.panel}>
             <Label>{t('home.grindJourney')}</Label>
-            <View style={s.quickGrid}>
-              <TouchableOpacity style={s.quickCard} onPress={startSession}><Label>{t('home.preGame')}</Label><Serif style={s.actionTitle}>{t('home.prepare')}</Serif><AppText style={s.quickCopy}>{t('home.preGameBody')}</AppText></TouchableOpacity>
-              <TouchableOpacity style={s.quickCard} onPress={startSession}><Label>{t('home.duringGame')}</Label><Serif style={s.actionTitle}>{t('home.quickLog')}</Serif><AppText style={s.quickCopy}>{t('home.duringGameBody')}</AppText></TouchableOpacity>
-              <TouchableOpacity style={s.quickCard} onPress={startSession}><Label>{t('home.postGame')}</Label><Serif style={s.actionTitle}>{t('home.review')}</Serif><AppText style={s.quickCopy}>{t('home.postGameBody')}</AppText></TouchableOpacity>
-            </View>
-            <View style={s.quickGrid}>
-              <TouchableOpacity style={s.quickCard} onPress={()=>openModule('war-room')}><Label>{t('home.protection')}</Label><Serif style={s.actionTitle}>{t('home.warRoom')}</Serif><AppText style={s.quickCopy}>{t('home.protectionBody')}</AppText></TouchableOpacity>
-              <TouchableOpacity style={s.quickCard} onPress={()=>openModule('heatmap')}><Label>{t('home.patterns')}</Label><Serif style={s.actionTitle}>{t('home.history')}</Serif><AppText style={s.quickCopy}>{t('home.patternsBody')}</AppText></TouchableOpacity>
-            </View>
+            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('war-room')}><View style={{flex:1}}><Label>{t('home.protection')}</Label><AppText style={s.guidedToolBody}>{t('home.protectionBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('heatmap')}><View style={{flex:1}}><Label>{t('home.patterns')}</Label><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
           </View>
 
           <GuidedSection
