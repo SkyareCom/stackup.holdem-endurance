@@ -268,6 +268,9 @@ export function buildBaseline(sessions:SessionRecord[]) {
       sessions.map(s=>s.mentalEv)
     ),
     readinessToMentalEvCorrelation:pearsonCorrelation(sessions.map(s=>s.readinessIndex),sessions.map(s=>s.mentalEv)),
+    nutritionToMentalEvCorrelation:pearsonCorrelation(sessions.map(s=>s.pre.nutrition??5),sessions.map(s=>s.mentalEv)),
+    hydrationToMentalEvCorrelation:pearsonCorrelation(sessions.map(s=>s.pre.hydration??5),sessions.map(s=>s.mentalEv)),
+    activityToMentalEvCorrelation:pearsonCorrelation(sessions.map(s=>s.pre.physicalActivity??5),sessions.map(s=>s.mentalEv)),
   };
 }
 
