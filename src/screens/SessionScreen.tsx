@@ -79,7 +79,7 @@ function ChoiceGrid<T extends string>({items,value,onChange}:{items:{id:T;label:
 
 function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=>void;openReset:()=>void }) {
   const { t } = useI18n();
-  const { profile,startSession,updateExtraGrind }=usePerformance();
+  const { profile,startSession,updateExtraGrind,updateLifestyle }=usePerformance();
   const [wizardStep,setWizardStep]=useState(0);
   const [tension,setTension]=useState(3);
   const [fatigue,setFatigue]=useState(3);
@@ -114,6 +114,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const back=()=>setWizardStep(v=>Math.max(0,v-1));
   const begin=()=>{
     updateExtraGrind({sleep,nutrition,hydration,physicalActivity});
+    updateLifestyle({sleepQuality:sleep,hydration,mealQuality:nutrition,movementMinutes:Math.max(profile.lifestyle.movementMinutes,physicalActivity*6)});
     startSession(pre,{
       mode,canLeave,expectedMinutes,
       maxReentries:profile.stopRules.maxReentries,processGoal:goal,stakesLabel:stakesLabel.trim()||undefined,
@@ -142,6 +143,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
       <Score10 label={t('pregrind.nutrition')} value={nutrition} setValue={setNutrition}/>
       <Score10 label={t('pregrind.hydration')} value={hydration} setValue={setHydration}/>
       <Score10 label={t('pregrind.activity')} value={physicalActivity} setValue={setPhysicalActivity}/>
+      <View style={s.guidedBlock}><Label>{t('care.title')}</Label><AppText style={s.body}>{t('care.body')}</AppText></View>
       <View style={s.guidedBlock}><Label>{t('evidence.title')}</Label><AppText style={s.body}>{t('evidence.body')}</AppText></View>
     </View>:null}
 
