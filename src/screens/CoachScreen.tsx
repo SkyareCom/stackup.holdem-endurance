@@ -9,6 +9,7 @@ import { useI18n, type Locale, type TranslationKey } from '../i18n';
 import type { Phase } from '../types';
 import { calculateReadiness, classifyTiltRisk, getSessionAction, type SessionAction, type TiltTrigger } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
+import { buildPerformanceCare } from '../performanceCare';
 
 type ChatMessage = { role:'you'|'ai'; text:string; locale?:Locale };
 
@@ -52,6 +53,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
     impulse:last?.impulse??latestCheckin.impulse,
     emotion:latestCheckin.emotion,
   }):null;
+  const carePriority=buildPerformanceCare(profile.lifestyle).find(x=>x.priority!=='ready');
   const currentAction=activeSession&&currentRisk?getSessionAction({
     mode:activeSession?.plan.mode??'cash',
     canLeave:activeSession?.plan.canLeave??true,
@@ -67,7 +69,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
   const send=()=>{
     const v=input.trim();
     if(!v)return;
-    const reply=currentAction?t(coachAdviceKeys[currentAction]):t('coach.advice.noContext');
+    const reply=currentAction?t(coachAdviceKeys[currentAction]):carePriority?t(`care.action.${carePriority.priority}.body` as TranslationKey):t('coach.advice.noContext');
     setMessages(m=>[...m,{role:'you',text:v},{role:'ai',text:reply,locale}]);
     setInput('');
   };
@@ -81,6 +83,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
             <Label>{t('coach.activeContext')}</Label>
             <Serif style={s.contextTitle}>{t('coach.contextTitle')}</Serif>
             <AppText style={s.body}>{baseline.count?t('profile.developmentBody'):t('coach.contextNoHistory')}</AppText>
+            {carePriority?<View style={s.guidedBlock}><Label>{t('care.title')}</Label><AppText style={s.body}>{t(`care.action.${carePriority.priority}.body` as TranslationKey)}</AppText></View>:null}
             <View style={s.coachPhaseRow}>
               <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{readiness===null?t('coach.contextUnavailable'):readiness}</AppText></View>
               <View style={s.contextRow}><Label>{t('coach.contextPhase')}</Label><AppText style={s.contextValue}>{t(phaseKey)}</AppText></View>
