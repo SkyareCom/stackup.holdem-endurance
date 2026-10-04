@@ -13,6 +13,7 @@ import { ExercisePhase, Module, moduleMeta } from './types';
 import { useI18n, type Locale, type TranslationKey } from './i18n';
 import { buildHeatmap, deriveExecutionQuality, deriveMentalState, getSOSProtocol, type ExecutionQuality, type HeatmapIntensity, type HeatmapWindowId, type MentalState, type TiltTrigger } from './performanceEngine';
 import { usePerformance } from './performanceStore';
+import { buildPerformanceCare,buildDailyCareTasks } from './performanceCare';
 
 type FrequencyPresetId='delta'|'alpha'|'beta'|'gamma';
 const frequencyPresets=[
@@ -133,7 +134,9 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
 
   const meta=moduleMeta[module];
   const intro=moduleIntroById[module];
-  const { sessions }=usePerformance();
+  const { sessions,profile }=usePerformance();
+  const careActions=buildPerformanceCare(profile.lifestyle);
+  const careTasks=buildDailyCareTasks(profile.lifestyle);
   const heatmap=buildHeatmap(sessions);
   const heatmapHasHistory=heatmap.some(bucket=>bucket.count>0);
   const heatmapWindowKey:Record<HeatmapWindowId,TranslationKey>={
@@ -224,7 +227,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
       <View style={s.moduleAction}><View><Label>{t('overlay.attentionShift')}</Label><Serif style={s.actionTitle}>{t('overlay.attentionShiftBody')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
     </View>;
   } else if(module==='lifestyle') {
-    body=<View style={s.moduleContent}>{lifestyleSections.map(x=><View key={x.id} style={s.lifestyle}><Label>{t(x.titleKey)}</Label><Serif style={s.actionTitle}>{t(x.subtitleKey)}</Serif><AppText style={s.lessonBody}>{t(x.bodyKey)}</AppText></View>)}</View>;
+    body=<View style={s.moduleContent}><View style={s.panel}><Label>{t('care.dailyPlan')}</Label>{careActions.slice(0,3).map(item=><View key={item.priority} style={s.guidedBlock}><Serif style={s.actionTitle}>{t(`care.action.${item.priority}.title` as TranslationKey)}</Serif><AppText style={s.body}>{t(`care.action.${item.priority}.body` as TranslationKey)}</AppText></View>)}{careTasks.slice(0,3).map(task=><View key={task.id} style={s.guidedBlock}><Label>{t(`care.task.${task.id}.title` as TranslationKey)}</Label><AppText style={s.body}>{t(`care.task.${task.id}.body` as TranslationKey)}</AppText></View>)}</View>{lifestyleSections.map(x=><View key={x.id} style={s.lifestyle}><Label>{t(x.titleKey)}</Label><Serif style={s.actionTitle}>{t(x.subtitleKey)}</Serif><AppText style={s.lessonBody}>{t(x.bodyKey)}</AppText></View>)}</View>;
   } else if(module==='audio') {
     body=<View style={s.moduleContent}>
       <View style={s.panel}>
