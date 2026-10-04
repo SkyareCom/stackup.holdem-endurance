@@ -67,7 +67,7 @@ export function TrainScreen({ openModule }: { openModule:(m:Module)=>void }) {
 
           <View style={s.profileSection}>
             <Label>{t('care.dailyPlan')}</Label>
-            <View style={s.panel}>{care.slice(0,3).map(item=><View key={item.priority} style={s.guidedBlock}><Serif style={s.actionTitle}>{item.title}</Serif><AppText style={s.body}>{item.action}</AppText></View>)}</View>
+            <View style={s.panel}>{care.slice(0,3).map(item=><View key={item.priority} style={s.guidedBlock}><Serif style={s.actionTitle}>{t(`care.action.${item.priority}.title` as TranslationKey)}</Serif><AppText style={s.body}>{t(`care.action.${item.priority}.body` as TranslationKey)}</AppText></View>)}</View>
           </View>
 
           <View style={s.profileSection}>
