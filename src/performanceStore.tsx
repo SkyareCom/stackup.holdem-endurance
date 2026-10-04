@@ -14,6 +14,7 @@ import {
   type TiltTrigger,
 } from './performanceEngine';
 import type { LifestyleCheckin } from './performanceCare';
+export type CareTaskEvent={id:string;taskId:string;date:string;status:'done'|'skipped';createdAt:number};
 
 const STORAGE_KEY='stackup.endurance.performance.v1';
 
@@ -38,6 +39,7 @@ type PersistedState = {
   sessions:SessionRecord[];
   activeSession:ActiveSession|null;
   latestCheckin:PreGrindCheckin|null;
+  careTaskEvents:CareTaskEvent[];
 };
 
 type PerformanceContextValue = PersistedState & {
@@ -52,6 +54,7 @@ type PerformanceContextValue = PersistedState & {
   recordSOS:(trigger:TiltTrigger)=>void;
   incrementReentry:()=>void;
   finishSession:(debrief:DebriefData)=>SessionRecord|null;
+  setCareTaskStatus:(taskId:string,status:'done'|'skipped')=>void;
   clearHistory:()=>void;
 };
 
@@ -62,7 +65,7 @@ const defaultProfile:PerformanceProfile={
   lifestyle:{sleepHours:7.5,sleepQuality:7,hydration:7,mealQuality:7,hoursSinceMeal:3,caffeineMg:0,caffeineHoursAgo:24,movementMinutes:30,strengthDaysThisWeek:2,sittingHours:2,painOrIllness:false},
 };
 
-const defaultState:PersistedState={profile:defaultProfile,sessions:[],activeSession:null,latestCheckin:null};
+const defaultState:PersistedState={profile:defaultProfile,sessions:[],activeSession:null,latestCheckin:null,careTaskEvents:[]};
 
 const PerformanceContext=createContext<PerformanceContextValue|null>(null);
 
@@ -88,6 +91,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
             sessions:Array.isArray(parsed.sessions)?parsed.sessions:[],
             activeSession:parsed.activeSession?{...parsed.activeSession,reentriesUsed:parsed.activeSession.reentriesUsed??0}:null,
             latestCheckin:parsed.latestCheckin??null,
+            careTaskEvents:Array.isArray(parsed.careTaskEvents)?parsed.careTaskEvents:[],
           });
         }catch{
           setState(defaultState);
@@ -193,13 +197,18 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
     return created;
   },[]);
 
+  const setCareTaskStatus=useCallback((taskId:string,status:'done'|'skipped')=>{
+    const now=Date.now();const date=new Date(now).toISOString().slice(0,10);
+    setState(s=>({...s,careTaskEvents:[...s.careTaskEvents.filter(e=>!(e.taskId===taskId&&e.date===date)),{id:`care-${taskId}-${now}`,taskId,date,status,createdAt:now}]}));
+  },[]);
+
   const clearHistory=useCallback(()=>setState(s=>({...s,sessions:[],latestCheckin:null,activeSession:null})),[]);
 
   const baseline=useMemo(()=>buildBaseline(state.sessions),[state.sessions]);
   const value=useMemo<PerformanceContextValue>(()=>({
     ...state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,
-    addRuntimeCheckin,recordSOS,incrementReentry,finishSession,clearHistory,
-  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,finishSession,clearHistory]);
+    addRuntimeCheckin,recordSOS,incrementReentry,finishSession,setCareTaskStatus,clearHistory,
+  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,finishSession,setCareTaskStatus,clearHistory]);
 
   if(!ready)return null;
   return <PerformanceContext.Provider value={value}>{children}</PerformanceContext.Provider>;
