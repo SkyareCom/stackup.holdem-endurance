@@ -999,4 +999,7 @@ export const es: TranslationCatalog = {
   'finance.level.protect.body': "La secuencia negativa aumentó. Conserva los límites definidos antes de la sesión y evita aumentar la exposición por los resultados recientes.",
   'finance.level.contain': "CONTENCIÓN",
   'finance.level.contain.body': "La secuencia negativa coincide con señales de ejecución comprometida en el registro más reciente. Considera reducir la exposición, hacer una pausa y reevaluar antes de continuar.",
+  'finance.currency': 'R
+,
+  'common.minutesShort': 'min',
 };
