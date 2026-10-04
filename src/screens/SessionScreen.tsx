@@ -25,6 +25,7 @@ import {
   type RecoveryPlan,
   type SessionAction,
   type TiltRisk,
+  type LiveEventType,
 } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
 import { buildPerformanceCare } from '../performanceCare';
@@ -244,7 +245,10 @@ function formatElapsed(ms:number){
 
 function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:()=>void; openAudio:()=>void; openBreak:()=>void; openCheckin:()=>void }) {
   const { t } = useI18n();
-  const { activeSession,profile,incrementReentry }=usePerformance();
+  const { activeSession,profile,addLiveEvent }=usePerformance();
+  const [journalOpen,setJournalOpen]=useState(false);
+  const [eventAmount,setEventAmount]=useState('');
+  const [eventNote,setEventNote]=useState('');
   const [cue,setCue]=useState(0);
   const [now,setNow]=useState(Date.now());
 
@@ -312,18 +316,19 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
       {minutes>=60?<PremiumButton label={t('session.break4')} secondary onPress={openBreak} icon="walk-outline"/>:null}
     </View>
 
-    {activeSession.plan.mode==='tournament'?<View style={s.panel}>
-      <View style={s.rowBetween}>
-        <Label>{t('session.reentriesUsed')}</Label>
-        <AppText style={s.goldText}>{activeSession.reentriesUsed} / {activeSession.plan.maxReentries}</AppText>
-      </View>
-      <PremiumButton
-        label={reentryLimitReached?t('debrief.reentryLimitReached'):t('session.registerReentry')}
-        secondary
-        disabled={reentryLimitReached}
-        onPress={incrementReentry}
-      />
-    </View>:null}
+    <View style={s.panel}>
+      <View style={s.rowBetween}><View style={s.flex}><Label>{t('liveJournal.title')}</Label><AppText style={s.body}>{t('liveJournal.body')}</AppText></View><AppText style={s.goldText}>{activeSession.liveEvents.length}</AppText></View>
+      <PremiumButton label={journalOpen?t('common.close'):t('liveJournal.open')} secondary onPress={()=>setJournalOpen(v=>!v)} icon="flash-outline"/>
+      {journalOpen?<View style={s.guidedBlock}>
+        <View style={s.processGrid}>{([
+          'rebuy','lost-hand','bad-beat','mistake-loss','fear-fold','good-fold','good-decision-loss','impulsive-play','distraction','fatigue','other'
+        ] as LiveEventType[]).map(type=><TouchableOpacity key={type} style={s.processChip} onPress={()=>{addLiveEvent(type,type==='rebuy'?(Number(eventAmount.replace(',','.'))||undefined):undefined,eventNote);setEventAmount('');setEventNote('');}}><AppText style={s.chipText}>{t(`liveJournal.${type}` as TranslationKey)}</AppText></TouchableOpacity>)}</View>
+        <AppTextInput value={eventAmount} onChangeText={setEventAmount} keyboardType="numeric" placeholder={t('liveJournal.amountOptional')} placeholderTextColor={C.dim} style={s.diaryInput}/>
+        <AppTextInput value={eventNote} onChangeText={setEventNote} placeholder={t('liveJournal.noteOptional')} placeholderTextColor={C.dim} style={s.diaryInput}/>
+        <AppText style={s.body}>{t('liveJournal.tapHelp')}</AppText>
+      </View>:null}
+      {activeSession.plan.mode==='tournament'?<View style={s.rowBetween}><Label>{t('session.reentriesUsed')}</Label><AppText style={s.goldText}>{activeSession.reentriesUsed} / {activeSession.plan.maxReentries}</AppText></View>:null}
+    </View>
 
     <View style={s.twoCols}>
       <PremiumButton label={t('session.realCheckin')} secondary onPress={openCheckin} icon="pulse-outline"/>
