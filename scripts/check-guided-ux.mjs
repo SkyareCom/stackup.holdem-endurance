@@ -19,7 +19,7 @@ const requireOrder=(source,tokens,where)=>{
 const styles=read('src/styles.ts');
 for(const match of styles.matchAll(/fontSize\s*:\s*(\d+(?:\.\d+)?)/g)){
   const size=Number(match[1]);
-  if(!new Set([48,26,22,12,10]).has(size)) failures.push(`src/styles.ts uses disallowed fontSize ${size}`);
+  if(!new Set([24,20,14,12,10]).has(size)) failures.push(`src/styles.ts uses disallowed fontSize ${size}`);
 }
 for(const styleName of ['body','guidedDescription','guidedToolBody','lessonBody','playlistBody','settingSub','contextValue']){
   const pattern=new RegExp(`${styleName}\\s*:\\s*\\{[^}]*textTransform\\s*:\\s*['"]uppercase['"]`);
