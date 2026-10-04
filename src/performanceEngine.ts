@@ -417,6 +417,26 @@ export function buildHeatmap(sessions:SessionRecord[]) {
 }
 
 
+
+export type ProtectionLevel='stable'|'attention'|'pause'|'protect'|'safe-stop';
+export type ProtectionAssessment={level:ProtectionLevel;score:number;reasons:string[]};
+
+export function assessSessionProtection(input:{events:LiveSessionEvent[];checkins:RuntimeCheckin[];focus:number;tension:number;impulse:number;fatigue:number;durationExceeded:boolean;canLeave:boolean}):ProtectionAssessment{
+  const recent=input.events.filter(e=>Date.now()-e.createdAt<=30*60000);
+  const weights:Partial<Record<LiveEventType,number>>={'rebuy':2,'bad-beat':1,'mistake-loss':2,'fear-fold':2,'impulsive-play':3,'distraction':1,'fatigue':2};
+  let score=recent.reduce((sum,e)=>sum+(weights[e.type]??0),0);
+  const reasons:string[]=[];
+  if(input.tension>=7){score+=3;reasons.push('tension');}
+  if(input.impulse>=7){score+=3;reasons.push('impulse');}
+  if(input.focus<=4){score+=2;reasons.push('focus');}
+  if(input.fatigue>=7){score+=2;reasons.push('fatigue');}
+  if(input.durationExceeded){score+=3;reasons.push('duration');}
+  const latest=input.checkins[input.checkins.length-1];
+  if(latest?.mentalState==='dysregulated'||latest?.mentalState==='tilt'){score+=3;reasons.push('state');}
+  const level:ProtectionLevel=score>=10&&input.canLeave?'safe-stop':score>=8?'protect':score>=5?'pause':score>=2?'attention':'stable';
+  return {level,score,reasons};
+}
+
 export const HUMAN_PILLARS=['temperament','extraGrind','sensations','feeling','emotion','reasoning','behavior'] as const;
 export type TiltPattern='loss-tilt'|'winner-tilt'|'fatigue-tilt'|'ego-tilt';
 export const minimumBaselineSessions=5;
