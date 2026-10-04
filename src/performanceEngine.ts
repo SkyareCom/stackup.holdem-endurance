@@ -35,6 +35,8 @@ export type PreGrindCheckin = ReadinessInput & {
 
 export type LiveEventType = 'rebuy'|'lost-hand'|'bad-beat'|'mistake-loss'|'fear-fold'|'good-fold'|'good-decision-loss'|'impulsive-play'|'distraction'|'fatigue'|'other';
 export type LiveSessionEvent = { id:string; createdAt:number; minute:number; type:LiveEventType; amount?:number; note?:string; };
+export type PhysiologyPhase='pre'|'during'|'post';
+export type PhysiologySample={id:string;createdAt:number;minute:number;phase:PhysiologyPhase;heartRate?:number;systolic?:number;diastolic?:number;source:'manual'|'health-connect'|'healthkit'|'wearable';};
 
 export type RuntimeCheckin = {
   createdAt:number;
@@ -98,6 +100,17 @@ export type DebriefData = {
   reentryDecision:'none'|'stop'|'reenter';
 };
 
+export type EventPhysiologyComparison={event:LiveSessionEvent;beforeHeartRate:number|null;peakAfterHeartRate:number|null;deltaHeartRate:number|null;sampleCount:number};
+export function compareEventsWithPhysiology(events:LiveSessionEvent[],samples:PhysiologySample[]):EventPhysiologyComparison[]{
+  return events.map(event=>{
+    const before=samples.filter(x=>x.heartRate!==undefined&&x.createdAt<=event.createdAt&&x.createdAt>=event.createdAt-5*60000);
+    const after=samples.filter(x=>x.heartRate!==undefined&&x.createdAt>=event.createdAt&&x.createdAt<=event.createdAt+15*60000);
+    const beforeHeartRate=before.length?Math.round(before.reduce((a,b)=>a+(b.heartRate??0),0)/before.length):null;
+    const peakAfterHeartRate=after.length?Math.max(...after.map(x=>x.heartRate as number)):null;
+    return {event,beforeHeartRate,peakAfterHeartRate,deltaHeartRate:beforeHeartRate!==null&&peakAfterHeartRate!==null?peakAfterHeartRate-beforeHeartRate:null,sampleCount:before.length+after.length};
+  });
+}
+
 export type DownswingStatus = { negativeStreak:number; recentNet:number; level:'none'|'attention'|'protect'|'contain'; };
 
 export function analyzeDownswing(sessions:SessionRecord[]):DownswingStatus {
@@ -120,6 +133,7 @@ export type SessionRecord = {
   plan:SessionPlan;
   checkins:RuntimeCheckin[];
   liveEvents?:LiveSessionEvent[];
+  physiology?:PhysiologySample[];
   reentriesUsed?:number;
   debrief:DebriefData;
   readinessIndex:number;
