@@ -15,6 +15,7 @@ import {
 } from './performanceEngine';
 import type { LifestyleCheckin } from './performanceCare';
 export type CareTaskEvent={id:string;taskId:string;date:string;status:'done'|'skipped';createdAt:number};
+export type DailyWellbeing={date:string;feeling:string;personalImpact:string;professionalImpact:string;updatedAt:number};
 
 const STORAGE_KEY='stackup.endurance.performance.v1';
 
@@ -40,6 +41,7 @@ type PersistedState = {
   activeSession:ActiveSession|null;
   latestCheckin:PreGrindCheckin|null;
   careTaskEvents:CareTaskEvent[];
+  dailyWellbeing:DailyWellbeing[];
 };
 
 type PerformanceContextValue = PersistedState & {
@@ -55,6 +57,7 @@ type PerformanceContextValue = PersistedState & {
   incrementReentry:()=>void;
   finishSession:(debrief:DebriefData)=>SessionRecord|null;
   setCareTaskStatus:(taskId:string,status:'done'|'skipped')=>void;
+  updateDailyWellbeing:(patch:Partial<Omit<DailyWellbeing,'date'|'updatedAt'>>)=>void;
   clearHistory:()=>void;
 };
 
@@ -65,7 +68,7 @@ const defaultProfile:PerformanceProfile={
   lifestyle:{sleepHours:7.5,sleepQuality:7,hydration:7,mealQuality:7,hoursSinceMeal:3,caffeineMg:0,caffeineHoursAgo:24,movementMinutes:30,strengthDaysThisWeek:2,sittingHours:2,painOrIllness:false},
 };
 
-const defaultState:PersistedState={profile:defaultProfile,sessions:[],activeSession:null,latestCheckin:null,careTaskEvents:[]};
+const defaultState:PersistedState={profile:defaultProfile,sessions:[],activeSession:null,latestCheckin:null,careTaskEvents:[],dailyWellbeing:[]};
 
 const PerformanceContext=createContext<PerformanceContextValue|null>(null);
 
@@ -92,6 +95,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
             activeSession:parsed.activeSession?{...parsed.activeSession,reentriesUsed:parsed.activeSession.reentriesUsed??0}:null,
             latestCheckin:parsed.latestCheckin??null,
             careTaskEvents:Array.isArray(parsed.careTaskEvents)?parsed.careTaskEvents:[],
+            dailyWellbeing:Array.isArray(parsed.dailyWellbeing)?parsed.dailyWellbeing:[],
           });
         }catch{
           setState(defaultState);
@@ -202,13 +206,15 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
     setState(s=>({...s,careTaskEvents:[...s.careTaskEvents.filter(e=>!(e.taskId===taskId&&e.date===date)),{id:`care-${taskId}-${now}`,taskId,date,status,createdAt:now}]}));
   },[]);
 
+  const updateDailyWellbeing=useCallback((patch:Partial<Omit<DailyWellbeing,'date'|'updatedAt'>>)=>{const now=Date.now();const date=new Date(now).toISOString().slice(0,10);setState(s=>{const current=s.dailyWellbeing.find(x=>x.date===date)??{date,feeling:'',personalImpact:'',professionalImpact:'',updatedAt:now};return {...s,dailyWellbeing:[...s.dailyWellbeing.filter(x=>x.date!==date),{...current,...patch,updatedAt:now}]};});},[]);
+
   const clearHistory=useCallback(()=>setState(s=>({...s,sessions:[],latestCheckin:null,activeSession:null})),[]);
 
   const baseline=useMemo(()=>buildBaseline(state.sessions),[state.sessions]);
   const value=useMemo<PerformanceContextValue>(()=>({
     ...state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,
-    addRuntimeCheckin,recordSOS,incrementReentry,finishSession,setCareTaskStatus,clearHistory,
-  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,finishSession,setCareTaskStatus,clearHistory]);
+    addRuntimeCheckin,recordSOS,incrementReentry,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory,
+  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory]);
 
   if(!ready)return null;
   return <PerformanceContext.Provider value={value}>{children}</PerformanceContext.Provider>;
