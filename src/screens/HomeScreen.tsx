@@ -49,8 +49,8 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
             <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
             <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
             <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
-            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('war-room')}><View style={{flex:1}}><Label>{t('home.protection')}</Label><AppText style={s.guidedToolBody}>{t('home.protectionBody')}</AppText></View></TouchableOpacity>
-            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('heatmap')}><View style={{flex:1}}><Label>{t('home.patterns')}</Label><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('war')}><View style={{flex:1}}><Label>{t('home.protection')}</Label><AppText style={s.guidedToolBody}>{t('home.protectionBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('behavior')}><View style={{flex:1}}><Label>{t('home.patterns')}</Label><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
           </View>
 
           <GuidedSection
@@ -100,8 +100,8 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
             <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
             <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
             <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
-            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('war-room')}><View style={{flex:1}}><Label>{t('home.protection')}</Label><AppText style={s.guidedToolBody}>{t('home.protectionBody')}</AppText></View></TouchableOpacity>
-            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('heatmap')}><View style={{flex:1}}><Label>{t('home.patterns')}</Label><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('war')}><View style={{flex:1}}><Label>{t('home.protection')}</Label><AppText style={s.guidedToolBody}>{t('home.protectionBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('behavior')}><View style={{flex:1}}><Label>{t('home.patterns')}</Label><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
           </View>
 
           <GuidedSection
