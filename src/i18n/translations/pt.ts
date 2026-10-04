@@ -930,6 +930,18 @@ export const pt = {
   'care.skip': "ADIAR",
   'care.history': "HISTÓRICO DE CUIDADOS",
   'care.completed': "concluídos",
+  'care.followup.title': "ACOMPANHAMENTO DE HOJE",
+  'care.followup.body': "Quero confirmar algumas coisas importantes antes de você aumentar a carga.",
+  'care.followup.meal-overdue.question': "VOCÊ JÁ SE ALIMENTOU?",
+  'care.followup.meal-overdue.tip': "Você relatou muitas horas sem comer. Faça uma pausa e escolha uma refeição ou lanche equilibrado, com uma fonte de energia, proteína e alimento vegetal que você tolere bem.",
+  'care.followup.sleep-debt.question': "VOCÊ PROTEGEU SEU SONO?",
+  'care.followup.sleep-debt.tip': "Você relatou menos sono do que sua base desejável. Evite prolongar o grind desnecessariamente e planeje seu horário de descanso.",
+  'care.followup.sedentary.question': "VOCÊ SE MOVIMENTOU?",
+  'care.followup.sedentary.tip': "Você relatou muitas horas sentado. No próximo intervalo, levante e faça alguns minutos de movimento leve.",
+  'care.followup.hydration-low.question': "VOCÊ SE HIDRATOU?",
+  'care.followup.hydration-low.tip': "Sua hidratação relatada está baixa. Deixe água acessível e reavalie como você está se sentindo antes de continuar.",
+  'care.followup.yes': "SIM, FIZ",
+  'care.followup.notYet': "AINDA NÃO",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
