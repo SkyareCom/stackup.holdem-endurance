@@ -11,7 +11,7 @@ import { TestIntro } from './components/TestIntro';
 import { s } from './styles';
 import { ExercisePhase, Module, moduleMeta } from './types';
 import { useI18n, type Locale, type TranslationKey } from './i18n';
-import { buildHeatmap, deriveExecutionQuality, deriveMentalState, getSOSProtocol, type ExecutionQuality, type HeatmapIntensity, type HeatmapWindowId, type MentalState, type TiltTrigger } from './performanceEngine';
+import { buildHeatmap, calculateReadiness, deriveExecutionQuality, deriveMentalState, getSOSProtocol, type ExecutionQuality, type HeatmapIntensity, type HeatmapWindowId, type MentalState, type TiltTrigger } from './performanceEngine';
 import { usePerformance } from './performanceStore';
 import { buildPerformanceCare,buildDailyCareTasks } from './performanceCare';
 
