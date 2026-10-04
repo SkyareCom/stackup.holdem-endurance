@@ -141,12 +141,12 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
 
     {wizardStep===0?<View style={s.panel}><Serif style={s.actionTitle}>{t('pregrind.investigateFeeling')}</Serif><AppTextInput value={feelingContext} onChangeText={setFeelingContext} multiline placeholder={t('care.human.feelingPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('pregrind.investigatePersonal')}</Serif><AppTextInput value={personalContext} onChangeText={setPersonalContext} multiline placeholder={t('care.human.personalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('pregrind.investigateProfessional')}</Serif><AppTextInput value={professionalContext} onChangeText={setProfessionalContext} multiline placeholder={t('care.human.professionalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><AppText style={s.body}>{t('pregrind.investigateResponse')}</AppText></View>:null}
 
-    {wizardStep===7?<View style={s.panel}>
+    {wizardStep===1?<View style={s.panel}>
       <Score10 label={t('pregrind.tension')} value={tension} setValue={setTension}/>
       <Score10 label={t('pregrind.fatigue')} value={fatigue} setValue={setFatigue}/>
     </View>:null}
 
-    {wizardStep===7?<View style={s.panel}>
+    {wizardStep===2?<View style={s.panel}>
       <Score10 label={t('pregrind.sleep')} value={sleep} setValue={setSleep}/>
       <Score10 label={t('pregrind.nutrition')} value={nutrition} setValue={setNutrition}/>
       <Score10 label={t('pregrind.hydration')} value={hydration} setValue={setHydration}/>
@@ -155,16 +155,16 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
       <View style={s.guidedBlock}><Label>{t('evidence.title')}</Label><AppText style={s.body}>{t('evidence.body')}</AppText></View>
     </View>:null}
 
-    {wizardStep===7?<View style={s.panel}>
+    {wizardStep===3?<View style={s.panel}>
       <Score10 label={t('pregrind.energy')} value={energy} setValue={setEnergy}/>
       <Score10 label={t('pregrind.mentalDrive')} value={mentalDrive} setValue={setMentalDrive}/>
     </View>:null}
 
-    {wizardStep===7?<View style={s.panel}>
+    {wizardStep===4?<View style={s.panel}>
       <ChoiceGrid items={emotions.map(x=>({id:x.id,label:t(x.key)}))} value={emotion} onChange={setEmotion}/>
     </View>:null}
 
-    {wizardStep===7?<>
+    {wizardStep===5?<>
       <View style={s.panel}>
         <Label>{t('pregrind.reason')}</Label>
         <ChoiceGrid items={reasons.map(x=>({id:x.id,label:t(x.key)}))} value={reason} onChange={setReason}/>
@@ -176,7 +176,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
       </View>
     </>:null}
 
-    {wizardStep===7?<>
+    {wizardStep===6?<>
       <View style={s.readingCard}>
         <Label>{t('pregrind.readiness')}</Label><Serif style={s.heroNumber}>{readinessIndex}</Serif>
         <View style={s.rowBetween}><Label>{t('pregrind.tiltRisk')}</Label><AppText style={s.goldText}>{t(riskKey[tiltRisk])}</AppText></View>
