@@ -64,8 +64,18 @@ export type StopRules = {
   noStakeIncrease:boolean;
 };
 
+export type SessionFinance = {
+  currency:string;
+  buyIns:number;
+  reentriesCost:number;
+  otherCosts:number;
+  received:number;
+  netResult:number;
+};
+
 export type DebriefData = {
   financialResult:number|null;
+  finance?:SessionFinance;
   resultHidden:boolean;
   gameQuality:number;
   foldDiscipline:number;
@@ -84,6 +94,20 @@ export type DebriefData = {
   busted:boolean;
   reentryDecision:'none'|'stop'|'reenter';
 };
+
+export type DownswingStatus = { negativeStreak:number; recentNet:number; level:'none'|'attention'|'protect'|'contain'; };
+
+export function analyzeDownswing(sessions:SessionRecord[]):DownswingStatus {
+  const financial=sessions.filter(x=>!x.debrief.resultHidden&&x.debrief.financialResult!==null);
+  let negativeStreak=0;
+  for(const item of financial){if((item.debrief.financialResult??0)<0)negativeStreak++;else break;}
+  const recent=financial.slice(0,10);
+  const recentNet=recent.reduce((sum,x)=>sum+(x.debrief.financialResult??0),0);
+  const latest=financial[0];
+  const strained=Boolean(latest&&(latest.debrief.endMentalState==='dysregulated'||latest.debrief.endMentalState==='tilt'||latest.debrief.endExecutionQuality==='compromised'));
+  const level:DownswingStatus['level']=negativeStreak>=6&&strained?'contain':negativeStreak>=4?'protect':negativeStreak>=2?'attention':'none';
+  return {negativeStreak,recentNet,level};
+}
 
 export type SessionRecord = {
   id:string;
