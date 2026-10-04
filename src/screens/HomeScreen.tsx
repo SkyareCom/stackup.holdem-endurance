@@ -119,8 +119,8 @@ export function HomeScreen({ startSession, openModule: _openModule }: { startSes
 
           <GuidedSection
             subtitle={t('care.title')}
-            title={carePriority.title}
-            description={carePriority.action}
+            title={t(`care.action.${carePriority.priority}.title` as TranslationKey)}
+            description={t(`care.action.${carePriority.priority}.body` as TranslationKey)}
           />
 
           <GuidedSection
