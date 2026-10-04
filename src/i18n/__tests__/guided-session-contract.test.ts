@@ -5,18 +5,20 @@ import { describe, expect, it } from 'vitest';
 const source=fs.readFileSync(path.join(process.cwd(),'src/screens/SessionScreen.tsx'),'utf8');
 
 describe('sequential Session contract',()=>{
-  it('uses a seven-step pre-grind wizard with mandatory activation and four journey stages',()=>{
+  it('uses an eight-step investigative pre-grind wizard with mandatory activation and four journey stages',()=>{
     expect(source).toContain('wizardStep');
-    expect(source).toContain('total={7}');
+    expect(source).toContain('total={8}');
     expect(source).toContain("'pregrind.activation'");
     expect(source).toContain('activationUsed');
-    expect(source).toContain('disabled={wizardStep===6&&!activationUsed}');
+    expect(source).toContain('disabled={wizardStep===7&&!activationUsed}');
     expect(source).toContain('current={2}');
     expect(source).toContain('current={debriefStep+1}');
     expect(source).toContain('current={4}');
     expect(source).toContain('total={5}');
   });
-  it('orders human state from sensations through reframe',()=>{
+  it('starts with investigation, then orders human state through reframe',()=>{
+    expect(source).toContain("'care.human.title','pregrind.sensations'");
+    expect(source).toContain('updateDailyWellbeing');
     for(const token of ["pregrind.sensations","pregrind.lifestyle","pregrind.feeling","pregrind.emotion","pregrind.reason","pregrind.reframe"]){
       expect(source).toContain(token);
     }
