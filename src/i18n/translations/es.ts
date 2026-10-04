@@ -1072,4 +1072,5 @@ export const es: TranslationCatalog = {
   'physiology.state.error': "No fue posible sincronizar Health Connect.",
   'physiology.eventMarkers': "MARCADORES DE SESIÓN",
   'home.patternsEvolution': "PATRONES & EVOLUCIÓN",
+  'profile.smartwatch': "SMARTWATCH & SEÑALES FISIOLÓGICAS",
 };
