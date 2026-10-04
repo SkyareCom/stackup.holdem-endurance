@@ -115,13 +115,14 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
               <AppText style={s.chatText}>{m.text}</AppText>
             </View>
           )}
-        </ScrollView>
-        <View style={s.composer}>
-          <View style={s.inputRow}>
-            <AppTextInput value={input} onChangeText={setInput} placeholder={t('coach.placeholder')} placeholderTextColor={C.dim} style={s.input}/>
-            <TouchableOpacity style={s.send} onPress={send}><Ionicons name="arrow-up" size={19} color={C.ink}/></TouchableOpacity>
+          <View style={s.coachComposerCard}>
+            <Label>{t('coach.talkToCoach')}</Label>
+            <View style={s.inputRow}>
+              <AppTextInput value={input} onChangeText={setInput} placeholder={t('coach.placeholder')} placeholderTextColor={C.dim} style={s.input}/>
+              <TouchableOpacity style={s.send} onPress={send}><Ionicons name="arrow-up" size={19} color={C.ink}/></TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </Backdrop>
   );
