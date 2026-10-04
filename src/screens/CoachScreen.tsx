@@ -39,7 +39,7 @@ const coachAdviceKeys:Record<SessionAction,TranslationKey>={
 
 export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
   const { t, locale } = useI18n();
-  const { latestCheckin,activeSession,baseline,profile}=usePerformance();
+  const { latestCheckin,activeSession,baseline,profile,dailyWellbeing}=usePerformance();
   const [input,setInput]=useState('');
   const [messages,setMessages]=useState<ChatMessage[]>([]);
   const [contextExpanded,setContextExpanded]=useState(false);
@@ -54,6 +54,9 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
     emotion:latestCheckin.emotion,
   }):null;
   const carePriority=buildPerformanceCare(profile.lifestyle).find(x=>x.priority!=='ready');
+  const today=new Date().toISOString().slice(0,10);
+  const wellbeing=dailyWellbeing.find(x=>x.date===today);
+  const humanContext=Boolean(wellbeing?.feeling||wellbeing?.personalImpact||wellbeing?.professionalImpact);
   const currentAction=activeSession&&currentRisk?getSessionAction({
     mode:activeSession?.plan.mode??'cash',
     canLeave:activeSession?.plan.canLeave??true,
@@ -69,7 +72,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
   const send=()=>{
     const v=input.trim();
     if(!v)return;
-    const reply=currentAction?t(coachAdviceKeys[currentAction]):carePriority?t(`care.action.${carePriority.priority}.body` as TranslationKey):t('coach.advice.noContext');
+    const reply=currentAction?t(coachAdviceKeys[currentAction]):carePriority?t(`care.action.${carePriority.priority}.body` as TranslationKey):humanContext?t('coach.humanContextReply'):t('coach.advice.noContext');
     setMessages(m=>[...m,{role:'you',text:v},{role:'ai',text:reply,locale}]);
     setInput('');
   };
@@ -83,6 +86,7 @@ export function CoachScreen({ phase='ready' }: { phase?:Phase }) {
             <Label>{t('coach.activeContext')}</Label>
             <Serif style={s.contextTitle}>{t('coach.contextTitle')}</Serif>
             <AppText style={s.body}>{baseline.count?t('profile.developmentBody'):t('coach.contextNoHistory')}</AppText>
+            {humanContext?<View style={s.guidedBlock}><Label>{t('care.human.title')}</Label><AppText style={s.body}>{t('coach.humanContext')}</AppText></View>:null}
             {carePriority?<View style={s.guidedBlock}><Label>{t('care.title')}</Label><AppText style={s.body}>{t(`care.action.${carePriority.priority}.body` as TranslationKey)}</AppText></View>:null}
             <View style={s.coachPhaseRow}>
               <View style={s.contextRow}><Label>{t('coach.contextReadiness')}</Label><AppText style={s.contextValue}>{readiness===null?t('coach.contextUnavailable'):readiness}</AppText></View>
