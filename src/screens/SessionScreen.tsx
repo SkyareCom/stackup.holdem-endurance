@@ -338,7 +338,10 @@ function Debrief({ save }: { save:()=>void }) {
   const { t } = useI18n();
   const { activeSession,finishSession }=usePerformance();
   const [debriefStep,setDebriefStep]=useState(0);
-  const [financialResult,setFinancialResult]=useState('');
+  const [buyIns,setBuyIns]=useState('');
+  const [reentriesCost,setReentriesCost]=useState('');
+  const [otherCosts,setOtherCosts]=useState('');
+  const [received,setReceived]=useState('');
   const [resultHidden,setResultHidden]=useState(false);
   const [gameQuality,setGameQuality]=useState(6);
   const [foldDiscipline,setFoldDiscipline]=useState(6);
@@ -363,9 +366,12 @@ function Debrief({ save }: { save:()=>void }) {
   const evComponents=mentalEvComponents({gameQuality,foldDiscipline,readinessIndex,attitude,logic,patience});
   const toggle=(id:WarRoomTriggerId)=>setTriggers(v=>v.includes(id)?v.filter(t=>t!==id):[...v,id]);
 
+  const money=(value:string)=>Number(value.replace(',','.'))||0;
+  const netResult=money(received)-money(buyIns)-money(reentriesCost)-money(otherCosts);
   const persist=()=>{
     finishSession({
-      financialResult:resultHidden||!financialResult.trim()?null:Number(financialResult.replace(',','.')),
+      financialResult:resultHidden?null:netResult,
+      finance:resultHidden?undefined:{currency:'BRL',buyIns:money(buyIns),reentriesCost:money(reentriesCost),otherCosts:money(otherCosts),received:money(received),netResult},
       resultHidden,gameQuality,foldDiscipline,patience,decisionConfidence,professionalConduct,
       attitude,resilience,gameUnderstanding,logic,endMentalState:activeSession?.checkins[activeSession.checkins.length-1]?.mentalState??'centered',endExecutionQuality:executionQuality,triggers,busted,
       reentryDecision:busted&&reentryLimitReached?'stop':reentryDecision,
@@ -388,7 +394,14 @@ function Debrief({ save }: { save:()=>void }) {
       <Label>{t('debrief.financial')}</Label>
       <AppText style={s.body}>{t('debrief.resultBody')}</AppText>
       <TouchableOpacity style={[s.option,resultHidden&&s.optionActive]} onPress={()=>setResultHidden(v=>!v)}><AppText style={[s.optionText,resultHidden&&s.optionTextActive]}>{t('debrief.hideResult')}</AppText></TouchableOpacity>
-      {!resultHidden?<AppTextInput value={financialResult} onChangeText={setFinancialResult} keyboardType="numeric" placeholder={t('debrief.financialPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/>:null}
+      {!resultHidden?<View style={s.guidedBlock}>
+        <AppTextInput value={buyIns} onChangeText={setBuyIns} keyboardType="numeric" placeholder={t('debrief.buyIns')} placeholderTextColor={C.dim} style={s.diaryInput}/>
+        <AppTextInput value={reentriesCost} onChangeText={setReentriesCost} keyboardType="numeric" placeholder={t('debrief.reentriesCost')} placeholderTextColor={C.dim} style={s.diaryInput}/>
+        <AppTextInput value={otherCosts} onChangeText={setOtherCosts} keyboardType="numeric" placeholder={t('debrief.otherCosts')} placeholderTextColor={C.dim} style={s.diaryInput}/>
+        <AppTextInput value={received} onChangeText={setReceived} keyboardType="numeric" placeholder={t('debrief.received')} placeholderTextColor={C.dim} style={s.diaryInput}/>
+        <View style={s.rowBetween}><Label>{t('debrief.netResult')}</Label><AppText style={s.goldText}>R$ {netResult.toFixed(2)}</AppText></View>
+        <AppText style={s.body}>{t('debrief.resultSeparation')}</AppText>
+      </View>:null}
     </View>:null}
 
     {debriefStep===1?<View style={s.panel}>
