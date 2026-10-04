@@ -968,6 +968,16 @@ export const pt = {
   'pregrind.sessionLimitsConsequence': "Esses limites são referências de proteção. Durante o grind, o ENDURANCE reavalia foco, tensão, duração e reentradas antes de sugerir a próxima ação.",
   'pregrind.expectedDurationQuestion': "QUANTO TEMPO VOCÊ PLANEJA JOGAR HOJE?",
   'pregrind.expectedDurationHelp': "Escolha uma duração dentro do limite máximo que você definiu no Perfil.",
+  'train.developmentArea': "ÁREA",
+  'train.developmentOf': "DE",
+  'train.currentState': "ESTADO ATUAL",
+  'train.stateObserved': "Há registros suficientes para começar a acompanhar esta área.",
+  'train.stateCollecting': "AINDA COLETANDO DADOS",
+  'train.whatWeObserve': "O QUE OBSERVAMOS",
+  'train.observationInsufficient': "Ainda não há registros suficientes para fazer uma constatação sobre esta área. Continue usando os check-ins para formar sua linha de base.",
+  'train.nextStep': "PRÓXIMO PASSO",
+  'train.nextStepBody': "Use um treino relacionado a esta área e continue registrando seu estado. O ENDURANCE compara a evolução somente quando houver dados suficientes.",
+  'train.trainArea': "TREINAR ESTA ÁREA",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
