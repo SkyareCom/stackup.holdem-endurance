@@ -952,6 +952,22 @@ export const pt = {
   'care.human.response': "Obrigado por registrar. O ENDURANCE usará apenas o que você relatou e seus indicadores para contextualizar o grind, sem fazer diagnósticos.",
   'coach.humanContext': "Você registrou como está se sentindo e situações do seu dia que podem ocupar sua atenção. Vou considerar esse contexto junto com seus indicadores, sem interpretar isso como diagnóstico.",
   'coach.humanContextReply': "Eu considerei o contexto que você registrou hoje. Vamos trabalhar com o que você relatou e com seus indicadores, sem rotular o que você está sentindo. Se isso estiver ocupando sua atenção, podemos reduzir a carga e proteger a próxima decisão.",
+  'profile.sessionLimits': "LIMITES PADRÃO DA SESSÃO",
+  'profile.sessionLimitsBody': "Defina seus limites habituais. Antes de cada grind, você poderá confirmar o plano de acordo com seu estado e contexto daquele dia.",
+  'profile.maxDurationQuestion': "QUANTO TEMPO VOCÊ PRETENDE JOGAR NO MÁXIMO?",
+  'profile.maxDurationHelp': "Ao atingir esse limite, o ENDURANCE reavalia a continuidade da sessão.",
+  'profile.maxReentriesQuestion': "QUANTAS REENTRADAS VOCÊ ACEITA ANTES DE INTERROMPER NOVAS ENTRADAS?",
+  'profile.maxReentriesHelp': "Esse limite protege o plano definido antes do resultado começar a influenciar a decisão.",
+  'profile.minFocusQuestion': "A PARTIR DE QUAL NÍVEL DE FOCO O APP DEVE RECOMENDAR UMA PAUSA?",
+  'profile.minFocusHelp': "Se o foco registrado cair abaixo desse valor, o ENDURANCE aumenta a proteção da sessão.",
+  'profile.maxTensionQuestion': "A PARTIR DE QUAL NÍVEL DE TENSÃO O APP DEVE INTERVIR?",
+  'profile.maxTensionHelp': "Se a tensão registrada atingir esse valor, o ENDURANCE recomenda contenção, pausa ou encerramento conforme o contexto.",
+  'profile.noStakeIncreaseHelp': "Quando ativo, o plano lembra que aumentar o limite financeiro durante a sessão não fazia parte da decisão inicial.",
+  'pregrind.sessionLimits': "LIMITES DESTA SESSÃO",
+  'pregrind.sessionLimitsBody': "Agora que entendemos seu contexto e seus indicadores, confirme os limites que vão proteger este grind.",
+  'pregrind.sessionLimitsConsequence': "Esses limites são referências de proteção. Durante o grind, o ENDURANCE reavalia foco, tensão, duração e reentradas antes de sugerir a próxima ação.",
+  'pregrind.expectedDurationQuestion': "QUANTO TEMPO VOCÊ PLANEJA JOGAR HOJE?",
+  'pregrind.expectedDurationHelp': "Escolha uma duração dentro do limite máximo que você definiu no Perfil.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
