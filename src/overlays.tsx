@@ -452,7 +452,7 @@ export function SOSOverlay({ close, goCoach }: { close:()=>void; goCoach:()=>voi
   };
 
   return <View style={s.sos}><SafeAreaView style={s.sosSafe}>
-    <View style={s.rowBetween}><Label>{t('sos.label')}</Label><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
+    <View style={s.rowBetween}><Label>{t('sos.label')}</Label>{!protocol||sosRemaining===0?<TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity>:<View style={s.close}><Ionicons name="lock-closed-outline" size={20} color={C.dim}/></View>}</View>
     {!protocol?<View style={s.sosCenter}>
       <Label>{t('sos.symptom')}</Label>
       <Serif style={s.sosTitle}>{t('sos.whatHappened')}</Serif>
