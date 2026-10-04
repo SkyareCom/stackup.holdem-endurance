@@ -952,6 +952,12 @@ export const pt = {
   'care.human.response': "Obrigado por registrar. O ENDURANCE usará apenas o que você relatou e seus indicadores para contextualizar o grind, sem fazer diagnósticos.",
   'coach.humanContext': "Você registrou como está se sentindo e situações do seu dia que podem ocupar sua atenção. Vou considerar esse contexto junto com seus indicadores, sem interpretar isso como diagnóstico.",
   'coach.humanContextReply': "Eu considerei o contexto que você registrou hoje. Vamos trabalhar com o que você relatou e com seus indicadores, sem rotular o que você está sentindo. Se isso estiver ocupando sua atenção, podemos reduzir a carga e proteger a próxima decisão.",
+  'pregrind.investigate': "ANTES DE PENSAR NO GRIND",
+  'pregrind.investigateBody': "Primeiro quero entender como você chegou até aqui hoje. Não há atividade nem recomendação nesta etapa: apenas contexto.",
+  'pregrind.investigateFeeling': "COMO VOCÊ ESTÁ CHEGANDO PARA ESTE GRIND?",
+  'pregrind.investigatePersonal': "ACONTECEU ALGO PESSOAL QUE AINDA ESTÁ OCUPANDO SUA ATENÇÃO?",
+  'pregrind.investigateProfessional': "E NO TRABALHO, FINANÇAS OU OUTRA ÁREA IMPORTANTE?",
+  'pregrind.investigateResponse': "Entendi. Vamos considerar o que você relatou junto com seus indicadores. Primeiro compreendemos o momento; depois decidimos o que faz sentido fazer.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
