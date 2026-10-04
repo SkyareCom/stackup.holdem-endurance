@@ -11,6 +11,7 @@ import { analyzeDownswing, buildDevelopmentSnapshot, buildSportPsychologySnapsho
 import { usePerformance } from '../performanceStore';
 import { buildPerformanceCare, buildDailyCareTasks } from '../performanceCare';
 import { useI18n, type TranslationKey } from '../i18n';
+import { connectAndReadHealthConnect, type HealthConnectState } from '../healthConnect';
 
 const temperaments:{id:Temperament;key:TranslationKey}[]=[
   {id:'impulsive',key:'temperament.impulsive'},{id:'passive',key:'temperament.passive'},
@@ -38,6 +39,8 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const analyticsUsable=baseline.confidence!=='none';
   const downswing=analyzeDownswing(sessions);
   const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
+  const [healthState,setHealthState]=useState<HealthConnectState>('unsupported');
+  const connectHealth=async()=>{const result=await connectAndReadHealthConnect(Date.now()-60*60*1000);setHealthState(result.state);};
   const careActions=buildPerformanceCare(profile.lifestyle);
   const careTasks=buildDailyCareTasks(profile.lifestyle);
   const today=new Date().toISOString().slice(0,10);
@@ -49,6 +52,14 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
       <SafeAreaView style={s.flex}>
         <Header title={t('profile.title')} subtitle={t('profile.stackupId')}/>
         <ScrollView contentContainerStyle={s.scroll}>
+          <View style={s.profileSection}>
+            <Label>{t('profile.smartwatch')}</Label>
+            <View style={s.panel}>
+              <View style={s.rowBetween}><View style={s.flex}><Serif style={s.actionTitle}>{t('physiology.title')}</Serif><AppText style={s.body}>{t(`physiology.state.${healthState}` as TranslationKey)}</AppText></View><Ionicons name="watch-outline" size={24} color={C.goldLight}/></View>
+              <PremiumButton label={t('physiology.connect')} secondary onPress={connectHealth}/>
+              <AppText style={s.body}>{t('physiology.boundary')}</AppText>
+            </View>
+          </View>
           {sessions.some(x=>x.debrief.financialResult!==null)?<View style={s.profileSection}>
             <Label>{t('finance.analysis')}</Label>
             <View style={s.panel}>
