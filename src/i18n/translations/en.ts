@@ -953,4 +953,6 @@ export const en: TranslationCatalog = {
   'care.human.professional': "ANY PROFESSIONAL OR FINANCIAL ISSUE?",
   'care.human.professionalPlaceholder': "Record only what you believe may occupy your attention during the grind.",
   'care.human.response': "Thanks for recording this. ENDURANCE will use only what you reported and your indicators to contextualize the grind, without making diagnoses.",
+  'coach.humanContext': "You recorded how you feel and situations from your day that may occupy your attention. I will consider that context alongside your indicators, without interpreting it as a diagnosis.",
+  'coach.humanContextReply': "I considered the context you recorded today. We will work with what you reported and your indicators without labeling what you feel. If it is occupying your attention, we can reduce the load and protect the next decision.",
 };
