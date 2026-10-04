@@ -188,18 +188,20 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
       <View style={s.panel}>
         <Label>{t('session.processGoal')}</Label>
         <ChoiceGrid items={processGoals.map(x=>({id:x.id,label:t(x.labelKey)}))} value={goal} onChange={setGoal}/>
-        <Label>{t('pregrind.stopRules')}</Label>
+        <Label>{t('pregrind.sessionLimits')}</Label>
+        <AppText style={s.body}>{t('pregrind.sessionLimitsBody')}</AppText>
         <View style={s.rowBetween}>
-          <View><Label>{t('profile.maxDuration')}</Label><AppText style={s.body}>{profile.stopRules.maxDurationMinutes}</AppText></View>
+          <View><Label>{t('profile.maxDuration')}</Label><AppText style={s.body}>{profile.stopRules.maxDurationMinutes} min</AppText></View>
           <View><Label>{t('profile.maxReentries')}</Label><AppText style={s.body}>{profile.stopRules.maxReentries}</AppText></View>
         </View>
-        <AppText style={s.body}>{t('profile.noStakeIncrease')}</AppText>
+        <AppText style={s.body}>{t('pregrind.sessionLimitsConsequence')}</AppText>
         <TouchableOpacity style={s.coachContextToggle} onPress={()=>setPlanExpanded(v=>!v)}>
           <AppText style={s.coachContextToggleText}>{t(planExpanded?'pregrind.hidePlanDetails':'pregrind.planDetails')}</AppText>
           <Ionicons name={planExpanded?'chevron-up':'chevron-down'} size={18} color={C.goldLight}/>
         </TouchableOpacity>
         {planExpanded?<View style={s.contextList}>
-          <Label>{t('pregrind.expectedDuration')}</Label>
+          <Label>{t('pregrind.expectedDurationQuestion')}</Label>
+          <AppText style={s.body}>{t('pregrind.expectedDurationHelp')}</AppText>
           <ChoiceGrid items={durationOptions.map(value=>({id:String(value),label:String(value)}))} value={String(expectedMinutes)} onChange={value=>setExpectedMinutes(Number(value))}/>
           <Label>{t('pregrind.stakes')}</Label>
           <AppTextInput
