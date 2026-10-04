@@ -33,6 +33,9 @@ export type PreGrindCheckin = ReadinessInput & {
   impulse:number;
 };
 
+export type LiveEventType = 'rebuy'|'lost-hand'|'bad-beat'|'mistake-loss'|'fear-fold'|'good-fold'|'good-decision-loss'|'impulsive-play'|'distraction'|'fatigue'|'other';
+export type LiveSessionEvent = { id:string; createdAt:number; minute:number; type:LiveEventType; amount?:number; note?:string; };
+
 export type RuntimeCheckin = {
   createdAt:number;
   minute:number;
@@ -116,6 +119,7 @@ export type SessionRecord = {
   pre:PreGrindCheckin;
   plan:SessionPlan;
   checkins:RuntimeCheckin[];
+  liveEvents?:LiveSessionEvent[];
   reentriesUsed?:number;
   debrief:DebriefData;
   readinessIndex:number;
