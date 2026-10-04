@@ -1,5 +1,5 @@
 export type Emotion = 'calm'|'confident'|'wellbeing'|'motivated'|'focused'|'fear'|'anger'|'frustration'|'greed'|'euphoria'|'anxiety';
-export type PlayReason = 'planned'|'important'|'study'|'recover-loss'|'boredom'|'fomo'|'ego';
+export type PlayReason = 'planned'|'important'|'important-tournament'|'friends'|'fun-social'|'study'|'recover-loss'|'boredom'|'fomo'|'ego';
 export type GameMode = 'cash'|'tournament';
 export type TiltRisk = 'low'|'medium'|'critical';
 export type MentalState = 'centered'|'alert'|'vulnerable'|'dysregulated'|'tilt';
