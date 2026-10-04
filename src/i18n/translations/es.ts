@@ -925,4 +925,5 @@ export const es: TranslationCatalog = {
   'care.evidence.safety': "ENDURANCE ofrece educación y apoyo conductual. No diagnostica ni prescribe medicamentos, suplementos, dietas terapéuticas o tratamiento médico.",
   'care.caffeineHours': "HORAS DESDE LA CAFEÍNA",
   'care.strengthDays': "DÍAS DE FUERZA ESTA SEMANA",
+  'coach.talkToCoach': "HABLA CON EL COACH",
 };
