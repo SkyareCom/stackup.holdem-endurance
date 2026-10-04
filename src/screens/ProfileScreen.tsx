@@ -89,6 +89,8 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               <SmallScale label={t('care.movement')} value={Math.round(profile.lifestyle.movementMinutes/6)} onChange={v=>updateLifestyle({movementMinutes:v*6})}/>
               <SmallScale label={t('care.sitting')} value={profile.lifestyle.sittingHours} onChange={sittingHours=>updateLifestyle({sittingHours})}/>
               <SmallScale label={t('care.caffeine')} value={Math.min(10,Math.round(profile.lifestyle.caffeineMg/50))} onChange={v=>updateLifestyle({caffeineMg:v*50,caffeineHoursAgo:v?profile.lifestyle.caffeineHoursAgo:24})}/>
+              <SmallScale label={t('care.caffeineHours')} value={Math.min(10,profile.lifestyle.caffeineHoursAgo)} onChange={caffeineHoursAgo=>updateLifestyle({caffeineHoursAgo})}/>
+              <SmallScale label={t('care.strengthDays')} value={Math.min(10,profile.lifestyle.strengthDaysThisWeek)} onChange={strengthDaysThisWeek=>updateLifestyle({strengthDaysThisWeek})}/>
               <TouchableOpacity onPress={()=>updateLifestyle({painOrIllness:!profile.lifestyle.painOrIllness})} style={[s.option,profile.lifestyle.painOrIllness&&s.optionActive]}><AppText style={[s.optionText,profile.lifestyle.painOrIllness&&s.optionTextActive]}>{t('care.symptoms')}: {t(profile.lifestyle.painOrIllness?'care.yes':'care.no')}</AppText></TouchableOpacity>
             </View>
             <View style={s.panel}>
