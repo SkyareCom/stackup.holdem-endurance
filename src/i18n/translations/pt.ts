@@ -950,6 +950,8 @@ export const pt = {
   'care.human.professional': "E ALGUM PROBLEMA PROFISSIONAL OU FINANCEIRO?",
   'care.human.professionalPlaceholder': "Registre somente o que você acredita que pode ocupar sua atenção durante o grind.",
   'care.human.response': "Obrigado por registrar. O ENDURANCE usará apenas o que você relatou e seus indicadores para contextualizar o grind, sem fazer diagnósticos.",
+  'coach.humanContext': "Você registrou como está se sentindo e situações do seu dia que podem ocupar sua atenção. Vou considerar esse contexto junto com seus indicadores, sem interpretar isso como diagnóstico.",
+  'coach.humanContextReply': "Eu considerei o contexto que você registrou hoje. Vamos trabalhar com o que você relatou e com seus indicadores, sem rotular o que você está sentindo. Se isso estiver ocupando sua atenção, podemos reduzir a carga e proteger a próxima decisão.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
