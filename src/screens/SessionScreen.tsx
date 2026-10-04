@@ -14,6 +14,7 @@ import {
   deriveMentalState,
   deriveExecutionQuality,
   compareEventsWithPhysiology,
+  assessSessionProtection,
   getRitualMinutes,
   getSessionAction,
   getRecoveryPlan,
@@ -29,6 +30,7 @@ import {
   type LiveEventType,
 } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
+import { connectAndReadHealthConnect, type HealthConnectState } from '../healthConnect';
 import { buildPerformanceCare } from '../performanceCare';
 import { s } from '../styles';
 import { Module, Phase } from '../types';
@@ -43,9 +45,10 @@ const emotions:{id:Emotion;key:TranslationKey}[]=[
   {id:'euphoria',key:'emotion.euphoria'},{id:'anxiety',key:'emotion.anxiety'},
 ];
 const reasons:{id:PlayReason;key:TranslationKey}[]=[
-  {id:'planned',key:'reason.planned'},{id:'important',key:'reason.important'},{id:'study',key:'reason.study'},
-  {id:'recover-loss',key:'reason.recover-loss'},{id:'boredom',key:'reason.boredom'},
-  {id:'fomo',key:'reason.fomo'},{id:'ego',key:'reason.ego'},
+  {id:'important-tournament',key:'reason.importantTournament'},{id:'friends',key:'reason.friends'},
+  {id:'important',key:'reason.importantGame'},{id:'planned',key:'reason.planned'},
+  {id:'recover-loss',key:'reason.recover-loss'},{id:'fun-social',key:'reason.funSocial'},
+  {id:'fomo',key:'reason.fomo'},
 ];
 const reframeKey:Record<Emotion,TranslationKey>={
   calm:'pregrind.reframe.calm',confident:'pregrind.reframe.calm',wellbeing:'pregrind.reframe.calm',motivated:'pregrind.reframe.calm',focused:'pregrind.reframe.calm',fear:'pregrind.reframe.fear',anger:'pregrind.reframe.anger',
@@ -247,7 +250,7 @@ function formatElapsed(ms:number){
 
 function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:()=>void; openAudio:()=>void; openBreak:()=>void; openCheckin:()=>void }) {
   const { t } = useI18n();
-  const { activeSession,profile,addLiveEvent,addPhysiologySample }=usePerformance();
+  const { activeSession,profile,addLiveEvent,addPhysiologySample,importPhysiologySamples }=usePerformance();
   const [journalOpen,setJournalOpen]=useState(false);
   const [eventAmount,setEventAmount]=useState('');
   const [eventNote,setEventNote]=useState('');
@@ -255,6 +258,8 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const [systolic,setSystolic]=useState('');
   const [diastolic,setDiastolic]=useState('');
   const [cue,setCue]=useState(0);
+  const [healthState,setHealthState]=useState<HealthConnectState>('unsupported');
+  const [healthMessage,setHealthMessage]=useState('');
   const [now,setNow]=useState(Date.now());
 
   useEffect(()=>{
@@ -285,6 +290,8 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const sessionCare=buildPerformanceCare({...profile.lifestyle,sittingHours:profile.lifestyle.sittingHours+minutes/60});
   const carePriority=sessionCare.find(item=>item.priority!=='ready')??sessionCare[0];
   const eventPhysiology=compareEventsWithPhysiology(activeSession.liveEvents,activeSession.physiology);
+  const protection=assessSessionProtection({events:activeSession.liveEvents,checkins:activeSession.checkins,focus,tension,impulse,fatigue,durationExceeded,canLeave:activeSession.plan.canLeave});
+  const syncHealth=async()=>{const result=await connectAndReadHealthConnect(activeSession.startedAt);setHealthState(result.state);setHealthMessage(result.message??'');importPhysiologySamples(result.samples);};
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={2} total={4} label={t('session.activeStage')}/>
@@ -308,6 +315,13 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
       <Label>{t('coachJourney.anchor')}</Label>
       <AppText style={s.body}>{t('coachJourney.noRecoveryBody')}</AppText>
     </View>:null}
+
+    <View style={s.readingCard}>
+      <Label>{t('protection.title')}</Label>
+      <Serif style={s.actionTitle}>{t(`protection.${protection.level}` as TranslationKey)}</Serif>
+      <AppText style={s.body}>{t(`protection.${protection.level}.body` as TranslationKey)}</AppText>
+      {(protection.level==='pause'||protection.level==='protect'||protection.level==='safe-stop')?<PremiumButton label={t('protection.walk')} secondary onPress={openBreak} icon="walk-outline"/>:null}
+    </View>
 
     <View style={s.readingCard}>
       <Label>{t('session.currentAction')}</Label>
@@ -341,7 +355,9 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
 
     <View style={s.panel}>
       <Label>{t('physiology.title')}</Label>
-      <AppText style={s.body}>{t('physiology.notConnected')}</AppText>
+      <AppText style={s.body}>{t(`physiology.state.${healthState}` as TranslationKey)}</AppText>
+      <PremiumButton label={t('physiology.connect')} secondary onPress={syncHealth} icon="watch-outline"/>
+      {healthMessage?<AppText style={s.body}>{healthMessage}</AppText>:null}
       <View style={s.rowBetween}><AppText style={s.body}>{t('physiology.samples')}</AppText><AppText style={s.goldText}>{activeSession.physiology.length}</AppText></View>
       <View style={s.processGrid}>
         <AppTextInput value={heartRate} onChangeText={setHeartRate} keyboardType="numeric" placeholder={t('physiology.heartRate')} placeholderTextColor={C.dim} style={s.diaryInput}/>
@@ -350,6 +366,8 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
       </View>
       <PremiumButton label={t('physiology.record')} secondary onPress={()=>{addPhysiologySample('during',Number(heartRate)||undefined,Number(systolic)||undefined,Number(diastolic)||undefined);setHeartRate('');setSystolic('');setDiastolic('');}}/>
       <AppText style={s.body}>{t('physiology.boundary')}</AppText>
+      {activeSession.physiology.filter(x=>x.heartRate).length?<View style={{height:120,flexDirection:'row',alignItems:'flex-end',gap:3,marginVertical:12}}>{activeSession.physiology.filter(x=>x.heartRate).slice(-36).map(x=><View key={x.id} style={{flex:1,minWidth:3,maxWidth:12,height:Math.max(8,Math.min(110,(x.heartRate!-40)*1.2)),backgroundColor:C.gold}}/> )}</View>:null}
+      {activeSession.liveEvents.length?<View style={s.guidedBlock}><Label>{t('physiology.eventMarkers')}</Label>{activeSession.liveEvents.slice(-8).map(e=><AppText key={e.id} style={s.body}>• {e.minute} {t('common.minutesShort')} — {t(`liveJournal.${e.type}` as TranslationKey)}</AppText>)}</View>:null}
       {eventPhysiology.slice(-3).reverse().map(x=><View key={x.event.id} style={s.guidedBlock}><Label>{t(`liveJournal.${x.event.type}` as TranslationKey)} · {x.event.minute} {t('common.minutesShort')}</Label><AppText style={s.body}>{x.beforeHeartRate===null||x.peakAfterHeartRate===null?t('physiology.awaitingSamples'):`${t('physiology.before')} ${x.beforeHeartRate} bpm · ${t('physiology.peakAfter')} ${x.peakAfterHeartRate} bpm · Δ ${x.deltaHeartRate??0} bpm`}</AppText></View>)}
     </View>
 
