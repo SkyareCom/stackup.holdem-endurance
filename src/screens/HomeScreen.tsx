@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PHOTO } from '../theme';
 import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
@@ -14,7 +14,7 @@ import {
   type TiltRisk,
 } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
-import { buildPerformanceCare } from '../performanceCare';
+import { buildPerformanceCare, buildCareFollowups } from '../performanceCare';
 import { s } from '../styles';
 import { Module } from '../types';
 import { useI18n, type TranslationKey } from '../i18n';
@@ -33,9 +33,11 @@ const actionKey:Record<SessionAction,TranslationKey>={
 
 export function HomeScreen({ startSession, openModule: _openModule }: { startSession: () => void; openModule: (m: Module) => void }) {
   const { t } = useI18n();
-  const { latestCheckin,activeSession,sessions,baseline,profile } = usePerformance();
+  const { latestCheckin,activeSession,sessions,baseline,profile,careTaskEvents,setCareTaskStatus } = usePerformance();
   const dailyCare=buildPerformanceCare(profile.lifestyle);
   const carePriority=dailyCare.find(x=>x.priority!=='ready')??dailyCare[0];
+  const careFollowups=buildCareFollowups(profile.lifestyle);
+  const today=new Date().toISOString().slice(0,10);
 
   if(!latestCheckin){
     return <Backdrop uri={PHOTO.focus}>
