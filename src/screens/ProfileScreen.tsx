@@ -96,8 +96,9 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               <Label>{t('care.dailyPlan')}</Label>
               {careTasks.map(task=><View key={task.id} style={s.guidedBlock}><Serif style={s.actionTitle}>{task.title}</Serif><AppText style={s.body}>{task.target}</AppText></View>)}
               <View style={s.rule}/>
-              <Label>WHO / MOVIMENTO SEMANAL</Label>
+              <Label>{t('care.weeklyMovement')}</Label>
               <AppText style={s.body}>{movement.aerobicTarget} · {movement.strengthTarget} · {movement.sedentaryReminder}</AppText>
+              {baseline.count>=5?<><View style={s.rule}/><Label>{t('care.personalCorrelations')}</Label><AppText style={s.body}>{t('care.sleepCorrelation')}: {baseline.sleepToMentalEvCorrelation??'—'} · {t('care.nutritionCorrelation')}: {baseline.nutritionToMentalEvCorrelation??'—'} · {t('care.hydrationCorrelation')}: {baseline.hydrationToMentalEvCorrelation??'—'} · {t('care.activityCorrelation')}: {baseline.activityToMentalEvCorrelation??'—'}</AppText></>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
             </View>
             <View style={s.panel}>
               <Label>{t('care.base')}</Label>
