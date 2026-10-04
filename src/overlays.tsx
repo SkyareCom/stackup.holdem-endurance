@@ -357,7 +357,9 @@ function QuickScore({label,value,onChange}:{label:string;value:number;onChange:(
 export function CheckinOverlay({ close }: { close:()=>void }) {
   const { t } = useI18n();
   const { addRuntimeCheckin,activeSession }=usePerformance();
-  const initialMentalState=deriveMentalState({readinessIndex:50,tiltRisk:'medium',sessionMinutes:0,focus:activeSession?.pre.mentalDrive??6,tension:activeSession?.pre.tension??4,impulse:activeSession?.pre.impulse??3,fatigue:activeSession?.pre.fatigue??4});
+  const readinessIndex=activeSession?calculateReadiness(activeSession.pre):50;
+  const sessionMinutes=activeSession?Math.max(0,Math.floor((Date.now()-activeSession.startedAt)/60000)):0;
+  const initialMentalState=deriveMentalState({readinessIndex,tiltRisk:'medium',sessionMinutes,focus:activeSession?.pre.mentalDrive??6,tension:activeSession?.pre.tension??4,impulse:activeSession?.pre.impulse??3,fatigue:activeSession?.pre.fatigue??4});
   const [mentalState,setMentalState]=useState<MentalState>(initialMentalState);
   const [focus,setFocus]=useState(activeSession?.pre.mentalDrive??6);
   const [tension,setTension]=useState(activeSession?.pre.tension??4);
@@ -367,7 +369,7 @@ export function CheckinOverlay({ close }: { close:()=>void }) {
 
   const save=()=>{
     const executionQuality=deriveExecutionQuality({focus,tension,impulse,fatigue});
-    const nextMentalState=deriveMentalState({readinessIndex:50,tiltRisk:impulse>=9||tension>=9?'critical':impulse>=6||tension>=7?'medium':'low',sessionMinutes:0,focus,tension,impulse,fatigue});
+    const nextMentalState=deriveMentalState({readinessIndex,tiltRisk:impulse>=9||tension>=9?'critical':impulse>=6||tension>=7?'medium':'low',sessionMinutes,focus,tension,impulse,fatigue});
     setMentalState(nextMentalState);
     addRuntimeCheckin({focus,tension,impulse,fatigue,mentalState:nextMentalState,executionQuality,trigger:trigger||undefined});
     close();
