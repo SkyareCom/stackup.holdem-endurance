@@ -129,17 +129,17 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   };
 
   const titles:TranslationKey[]=[
-    'pregrind.investigate','pregrind.sensations','pregrind.lifestyle','pregrind.feeling','pregrind.emotion','pregrind.reason','pregrind.reframe','pregrind.activation',
+    'care.human.title','pregrind.sensations','pregrind.lifestyle','pregrind.feeling','pregrind.emotion','pregrind.reason','pregrind.reframe','pregrind.activation',
   ];
   const bodies:TranslationKey[]=[
-    'pregrind.investigateBody','pregrind.sensationsBody','pregrind.lifestyleBody','pregrind.feelingBody','pregrind.emotionBody','pregrind.reasonBody','pregrind.reframeBody','pregrind.activationBody',
+    'care.human.response','pregrind.sensationsBody','pregrind.lifestyleBody','pregrind.feelingBody','pregrind.emotionBody','pregrind.reasonBody','pregrind.reframeBody','pregrind.activationBody',
   ];
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={wizardStep+1} total={8} label={t('pregrind.title')}/>
     <View style={s.lead}><Label>{t('pregrind.title')}</Label><Serif style={s.leadTitle}>{t(titles[wizardStep]).toUpperCase()}</Serif><AppText style={s.body}>{t(bodies[wizardStep])}</AppText></View>
 
-    {wizardStep===0?<View style={s.panel}><Serif style={s.actionTitle}>{t('pregrind.investigateFeeling')}</Serif><AppTextInput value={feelingContext} onChangeText={setFeelingContext} multiline placeholder={t('care.human.feelingPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('pregrind.investigatePersonal')}</Serif><AppTextInput value={personalContext} onChangeText={setPersonalContext} multiline placeholder={t('care.human.personalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('pregrind.investigateProfessional')}</Serif><AppTextInput value={professionalContext} onChangeText={setProfessionalContext} multiline placeholder={t('care.human.professionalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><AppText style={s.body}>{t('pregrind.investigateResponse')}</AppText></View>:null}
+    {wizardStep===0?<View style={s.panel}><Serif style={s.actionTitle}>{t('care.human.feeling')}</Serif><AppTextInput value={feelingContext} onChangeText={setFeelingContext} multiline placeholder={t('care.human.feelingPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('care.human.personal')}</Serif><AppTextInput value={personalContext} onChangeText={setPersonalContext} multiline placeholder={t('care.human.personalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('care.human.professional')}</Serif><AppTextInput value={professionalContext} onChangeText={setProfessionalContext} multiline placeholder={t('care.human.professionalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><AppText style={s.body}>{t('care.human.response')}</AppText></View>:null}
 
     {wizardStep===1?<View style={s.panel}>
       <Score10 label={t('pregrind.tension')} value={tension} setValue={setTension}/>
