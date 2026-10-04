@@ -76,8 +76,8 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
             <AppText style={s.body}>{t('care.body')}</AppText>
             <View style={s.panel}>
               {careActions.map((item,index)=><View key={item.priority} style={index?s.guidedBlock:undefined}>
-                <View style={s.rowBetween}><Serif style={s.actionTitle}>{item.title}</Serif><AppText style={s.goldText}>{item.severity==='high'?'PRIORIDADE':item.severity==='attention'?'ATENÇÃO':'OK'}</AppText></View>
-                <AppText style={s.body}>{item.action}</AppText>
+                <View style={s.rowBetween}><Serif style={s.actionTitle}>{t(`care.action.${item.priority}.title` as TranslationKey)}</Serif><AppText style={s.goldText}>{item.severity==='high'?'PRIORIDADE':item.severity==='attention'?'ATENÇÃO':'OK'}</AppText></View>
+                <AppText style={s.body}>{t(`care.action.${item.priority}.body` as TranslationKey)}</AppText>
               </View>)}
             </View>
             <View style={s.panel}>
@@ -94,7 +94,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
             </View>
             <View style={s.panel}>
               <Label>{t('care.dailyPlan')}</Label>
-              {careTasks.map(task=><View key={task.id} style={s.guidedBlock}><Serif style={s.actionTitle}>{task.title}</Serif><AppText style={s.body}>{task.target}</AppText></View>)}
+              {careTasks.map(task=><View key={task.id} style={s.guidedBlock}><Serif style={s.actionTitle}>{t(`care.task.${task.id}.title` as TranslationKey)}</Serif><AppText style={s.body}>{t(`care.task.${task.id}.body` as TranslationKey)}</AppText></View>)}
               <View style={s.rule}/>
               <Label>{t('care.weeklyMovement')}</Label>
               <AppText style={s.body}>{movement.aerobicTarget} · {movement.strengthTarget} · {movement.sedentaryReminder}</AppText>
