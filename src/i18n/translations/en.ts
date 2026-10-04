@@ -999,7 +999,6 @@ export const en: TranslationCatalog = {
   'finance.level.protect.body': "The negative streak has grown. Preserve the limits set before the session and avoid increasing exposure because of recent results.",
   'finance.level.contain': "CONTAINMENT",
   'finance.level.contain.body': "The negative streak coincides with signs of compromised execution in the latest record. Consider reducing exposure, taking a break, and reassessing before continuing.",
-  'finance.currency': 'R
-,
+  'finance.currency': "R$",
   'common.minutesShort': 'min',
 };
