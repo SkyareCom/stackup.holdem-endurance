@@ -35,7 +35,7 @@ export function HomeScreen({ startSession, openModule: _openModule }: { startSes
   const { t } = useI18n();
   const { latestCheckin,activeSession,sessions,baseline,profile } = usePerformance();
   const dailyCare=buildPerformanceCare(profile.lifestyle);
-  const carePriority=dailyCare.find(x=>x.priority!==\'ready\')??dailyCare[0];
+  const carePriority=dailyCare.find(x=>x.priority!=='ready')??dailyCare[0];
 
   if(!latestCheckin){
     return <Backdrop uri={PHOTO.focus}>
