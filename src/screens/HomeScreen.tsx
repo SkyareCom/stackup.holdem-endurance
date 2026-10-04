@@ -119,6 +119,8 @@ export function HomeScreen({ startSession, openModule: _openModule }: { startSes
             <PremiumButton label={activeSession?t('nav.session'):t('home.checkinNow')} onPress={startSession}/>
           </GuidedSection>
 
+          {careFollowups.length?<View style={s.panel}><Label>{t('care.followup.title')}</Label><AppText style={s.body}>{t('care.followup.body')}</AppText>{careFollowups.map(item=>{const status=careTaskEvents.find(e=>e.date===today&&e.taskId===item.id)?.status;return <View key={item.id} style={s.guidedBlock}><Serif style={s.actionTitle}>{t(('care.followup.'+item.id+'.question') as TranslationKey)}</Serif><AppText style={s.body}>{t(('care.followup.'+item.id+'.tip') as TranslationKey)}</AppText><View style={s.processGrid}><TouchableOpacity onPress={()=>setCareTaskStatus(item.id,'done')} style={[s.processChip,status==='done'&&s.chipActive]}><AppText style={[s.chipText,status==='done'&&s.chipTextActive]}>{t('care.followup.yes')}</AppText></TouchableOpacity><TouchableOpacity onPress={()=>setCareTaskStatus(item.id,'skipped')} style={[s.processChip,status==='skipped'&&s.chipActive]}><AppText style={[s.chipText,status==='skipped'&&s.chipTextActive]}>{t('care.followup.notYet')}</AppText></TouchableOpacity></View></View>})}</View>:null}
+
           <GuidedSection
             subtitle={t('care.title')}
             title={t(`care.action.${carePriority.priority}.title` as TranslationKey)}
