@@ -23,7 +23,6 @@ export const pt = {
   'nav.profile': 'PERFIL',
   'common.active': 'ATIVO',
   'common.next': 'PRÓXIMO',
-  'common.close': 'FECHAR',
   'common.milliseconds': 'ms',
 
   'mentalState.centered': 'CENTRADO',
