@@ -34,7 +34,7 @@ const actionKey:Record<SessionAction,TranslationKey>={
 export function HomeScreen({ startSession, openModule: _openModule }: { startSession: () => void; openModule: (m: Module) => void }) {
   const { t } = useI18n();
   const { latestCheckin,activeSession,sessions,baseline,profile } = usePerformance();
-  const dailyCare=buildPerformanceCare({sleepHours:profile.extraGrind.sleep,sleepQuality:profile.extraGrind.sleep,hydration:profile.extraGrind.hydration,mealQuality:profile.extraGrind.nutrition,hoursSinceMeal:0,caffeineMg:0,caffeineHoursAgo:24,movementMinutes:profile.extraGrind.physicalActivity*6,strengthDaysThisWeek:0,sittingHours:0,painOrIllness:false});
+  const dailyCare=buildPerformanceCare(profile.lifestyle);
   const carePriority=dailyCare.find(x=>x.priority!==\'ready\')??dailyCare[0];
 
   if(!latestCheckin){
