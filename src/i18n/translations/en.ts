@@ -923,4 +923,6 @@ export const en: TranslationCatalog = {
   'care.evidence.nutrition': "Healthy eating prioritizes adequacy, balance, moderation and diversity; planning should respect individual needs and tolerance.",
   'care.evidence.hydration': "Hydration influences physical and cognitive function; needs vary by person, environment and session duration.",
   'care.evidence.safety': "ENDURANCE provides education and behavioral support. It does not diagnose or prescribe medication, supplements, therapeutic diets or medical treatment.",
+  'care.caffeineHours': "HOURS SINCE CAFFEINE",
+  'care.strengthDays': "STRENGTH DAYS THIS WEEK",
 };
