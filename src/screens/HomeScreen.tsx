@@ -31,7 +31,7 @@ const actionKey:Record<SessionAction,TranslationKey>={
   contain:'action.contain','stop-session':'action.stop-session',
 };
 
-export function HomeScreen({ startSession, openModule }: { startSession: () => void; openModule: (m: Module) => void }) {
+export function HomeScreen({ openPhase, openModule }: { openPhase: (p:'ready'|'active'|'debrief') => void; openModule: (m: Module) => void }) {
   const { t } = useI18n();
   const { latestCheckin,activeSession,sessions,baseline,profile,careTaskEvents,setCareTaskStatus } = usePerformance();
   const dailyCare=buildPerformanceCare(profile.lifestyle);
@@ -46,9 +46,9 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
         <ScrollView contentContainerStyle={s.scroll}>
           <View style={s.panel}>
             <Label>{t('home.grindJourney')}</Label>
-            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
-            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
-            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('ready')}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('active')}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('debrief')}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
             <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('war')}><View style={{flex:1}}><Label>{t('home.protection')}</Label><AppText style={s.guidedToolBody}>{t('home.protectionBody')}</AppText></View></TouchableOpacity>
             <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('behavior')}><View style={{flex:1}}><Label>{t('home.patterns')}</Label><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
           </View>
@@ -62,7 +62,7 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
               <Label>{t('coachJourney.notice')}</Label>
               <AppText style={s.body}>{t('coachJourney.noticeBody')}</AppText>
             </View>
-            <PremiumButton label={t('home.checkinNow')} onPress={startSession}/>
+            <PremiumButton label={t('home.checkinNow')} onPress={()=>openPhase('ready')}/>
           </GuidedSection>
           <View style={s.panel}>
             <Label>{t('home.historySummary')}</Label>
@@ -97,9 +97,9 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
         <ScrollView contentContainerStyle={s.scroll}>
           <View style={s.panel}>
             <Label>{t('home.grindJourney')}</Label>
-            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
-            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
-            <TouchableOpacity style={s.guidedToolRow} onPress={startSession}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('ready')}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('active')}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('debrief')}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
             <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('war')}><View style={{flex:1}}><Label>{t('home.protection')}</Label><AppText style={s.guidedToolBody}>{t('home.protectionBody')}</AppText></View></TouchableOpacity>
             <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('behavior')}><View style={{flex:1}}><Label>{t('home.patterns')}</Label><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
           </View>
@@ -134,7 +134,7 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
             title={activeSession?t(actionKey[action]):t('pregrind.title')}
             description={activeSession?t('session.protectTempoBody'):t('pregrind.reframeBody')}
           >
-            <PremiumButton label={activeSession?t('nav.session'):t('home.checkinNow')} onPress={startSession}/>
+            <PremiumButton label={activeSession?t('nav.session'):t('home.checkinNow')} onPress={()=>openPhase('ready')}/>
           </GuidedSection>
 
           {careFollowups.length?<View style={s.panel}><Label>{t('care.followup.title')}</Label><AppText style={s.body}>{t('care.followup.body')}</AppText>{careFollowups.map(item=>{const status=careTaskEvents.find(e=>e.date===today&&e.taskId===item.id)?.status;return <View key={item.id} style={s.guidedBlock}><Serif style={s.actionTitle}>{t(('care.followup.'+item.id+'.question') as TranslationKey)}</Serif><AppText style={s.body}>{t(('care.followup.'+item.id+'.tip') as TranslationKey)}</AppText><View style={s.processGrid}><TouchableOpacity onPress={()=>setCareTaskStatus(item.id,'done')} style={[s.processChip,status==='done'&&s.chipActive]}><AppText style={[s.chipText,status==='done'&&s.chipTextActive]}>{t('care.followup.yes')}</AppText></TouchableOpacity><TouchableOpacity onPress={()=>setCareTaskStatus(item.id,'skipped')} style={[s.processChip,status==='skipped'&&s.chipActive]}><AppText style={[s.chipText,status==='skipped'&&s.chipTextActive]}>{t('care.followup.notYet')}</AppText></TouchableOpacity></View></View>})}</View>:null}
