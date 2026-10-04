@@ -7,7 +7,7 @@ import { C, PHOTO } from '../theme';
 import { AppText, AppTextInput, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
 import { LanguageSelector } from '../components/LanguageSelector';
-import { buildDevelopmentSnapshot, buildSportPsychologySnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
+import { analyzeDownswing, buildDevelopmentSnapshot, buildSportPsychologySnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
 import { buildPerformanceCare, buildDailyCareTasks } from '../performanceCare';
 import { useI18n, type TranslationKey } from '../i18n';
@@ -36,6 +36,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const tiltProfile=buildTiltProfile(sessions);
   const sportPsychology=buildSportPsychologySnapshot(sessions);
   const analyticsUsable=baseline.confidence!=='none';
+  const downswing=analyzeDownswing(sessions);
   const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
   const careActions=buildPerformanceCare(profile.lifestyle);
   const careTasks=buildDailyCareTasks(profile.lifestyle);
@@ -48,6 +49,16 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
       <SafeAreaView style={s.flex}>
         <Header title={t('profile.title')} subtitle={t('profile.stackupId')}/>
         <ScrollView contentContainerStyle={s.scroll}>
+          {sessions.some(x=>x.debrief.financialResult!==null)?<View style={s.profileSection}>
+            <Label>{t('finance.analysis')}</Label>
+            <View style={s.panel}>
+              <View style={s.rowBetween}><Label>{t('finance.negativeStreak')}</Label><AppText style={s.goldText}>{downswing.negativeStreak}</AppText></View>
+              <View style={s.rowBetween}><Label>{t('finance.recentNet')}</Label><AppText style={s.goldText}>R$ {downswing.recentNet.toFixed(2)}</AppText></View>
+              <View style={s.guidedBlock}><Label>{t(`finance.level.${downswing.level}` as TranslationKey)}</Label><AppText style={s.body}>{t(`finance.level.${downswing.level}.body` as TranslationKey)}</AppText></View>
+              <AppText style={s.body}>{t('finance.notPerformance')}</AppText>
+            </View>
+          </View>:null}
+
           <View style={s.profileSection}>
             <Label>{t('profile.base')}</Label>
             <View style={s.panel}>
