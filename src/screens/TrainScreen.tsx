@@ -7,6 +7,7 @@ import { AppText, Backdrop, Header, Label, Serif } from '../ui';
 import { GuidedSection } from '../components/GuidedSection';
 import { developmentGroups } from '../content';
 import { usePerformance } from '../performanceStore';
+import { buildPerformanceCare } from '../performanceCare';
 import { s } from '../styles';
 import { Module, moduleMeta } from '../types';
 import { useI18n, type TranslationKey } from '../i18n';
@@ -21,7 +22,8 @@ const needs:{id:Need;key:TranslationKey;modules:Module[]}[]=[
 
 export function TrainScreen({ openModule }: { openModule:(m:Module)=>void }) {
   const { t } = useI18n();
-  const { baseline }=usePerformance();
+  const { baseline,profile }=usePerformance();
+  const care=buildPerformanceCare(profile.lifestyle);
   const [need,setNeed]=useState<Need>('focus');
   const [selectedDevelopmentGroup,setSelectedDevelopmentGroup]=useState(0);
   const selected=needs.find(x=>x.id===need)??needs[0];
@@ -61,6 +63,11 @@ export function TrainScreen({ openModule }: { openModule:(m:Module)=>void }) {
               <Serif style={s.actionTitle}>{t(development.titleKey)}</Serif>
               <AppText style={s.body}>{t(development.bodyKey)}</AppText>
             </View>
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>PLANO FÍSICO DO DIA</Label>
+            <View style={s.panel}>{care.slice(0,3).map(item=><View key={item.priority} style={s.guidedBlock}><Serif style={s.actionTitle}>{item.title}</Serif><AppText style={s.body}>{item.action}</AppText></View>)}</View>
           </View>
 
           <View style={s.profileSection}>
