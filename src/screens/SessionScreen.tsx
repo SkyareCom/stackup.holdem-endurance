@@ -79,7 +79,7 @@ function ChoiceGrid<T extends string>({items,value,onChange}:{items:{id:T;label:
 
 function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=>void;openReset:()=>void }) {
   const { t } = useI18n();
-  const { profile,startSession,updateExtraGrind,updateLifestyle }=usePerformance();
+  const { profile,startSession,updateExtraGrind,updateLifestyle,dailyWellbeing,updateDailyWellbeing }=usePerformance();
   const [wizardStep,setWizardStep]=useState(0);
   const [tension,setTension]=useState(3);
   const [fatigue,setFatigue]=useState(3);
@@ -97,6 +97,11 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const [stakesLabel,setStakesLabel]=useState('');
   const [planExpanded,setPlanExpanded]=useState(false);
   const [activationUsed,setActivationUsed]=useState(false);
+  const today=new Date().toISOString().slice(0,10);
+  const wellbeing=dailyWellbeing.find(x=>x.date===today);
+  const [personalContext,setPersonalContext]=useState(wellbeing?.personalImpact??'');
+  const [professionalContext,setProfessionalContext]=useState(wellbeing?.professionalImpact??'');
+  const [feelingContext,setFeelingContext]=useState(wellbeing?.feeling??'');
 
   const impulse=reason==='recover-loss'||reason==='ego'||reason==='fomo'?8:emotion==='anger'||emotion==='euphoria'?7:3;
   const pre:PreGrindCheckin={
@@ -110,9 +115,10 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const canLeave=mode==='cash';
   const durationOptions=[60,90,120,180].filter(value=>value<=profile.stopRules.maxDurationMinutes);
 
-  const next=()=>setWizardStep(v=>Math.min(6,v+1));
+  const next=()=>{if(wizardStep===0)updateDailyWellbeing({feeling:feelingContext,personalImpact:personalContext,professionalImpact:professionalContext});setWizardStep(v=>Math.min(7,v+1));};
   const back=()=>setWizardStep(v=>Math.max(0,v-1));
   const begin=()=>{
+    updateDailyWellbeing({feeling:feelingContext,personalImpact:personalContext,professionalImpact:professionalContext});
     updateExtraGrind({sleep,nutrition,hydration,physicalActivity});
     updateLifestyle({sleepQuality:sleep,hydration,mealQuality:nutrition,movementMinutes:Math.max(profile.lifestyle.movementMinutes,physicalActivity*6)});
     startSession(pre,{
@@ -123,22 +129,24 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   };
 
   const titles:TranslationKey[]=[
-    'pregrind.sensations','pregrind.lifestyle','pregrind.feeling','pregrind.emotion','pregrind.reason','pregrind.reframe','pregrind.activation',
+    'pregrind.investigate','pregrind.sensations','pregrind.lifestyle','pregrind.feeling','pregrind.emotion','pregrind.reason','pregrind.reframe','pregrind.activation',
   ];
   const bodies:TranslationKey[]=[
-    'pregrind.sensationsBody','pregrind.lifestyleBody','pregrind.feelingBody','pregrind.emotionBody','pregrind.reasonBody','pregrind.reframeBody','pregrind.activationBody',
+    'pregrind.investigateBody','pregrind.sensationsBody','pregrind.lifestyleBody','pregrind.feelingBody','pregrind.emotionBody','pregrind.reasonBody','pregrind.reframeBody','pregrind.activationBody',
   ];
 
   return <ScrollView contentContainerStyle={s.scroll}>
-    <FlowProgress current={wizardStep+1} total={7} label={t('pregrind.title')}/>
+    <FlowProgress current={wizardStep+1} total={8} label={t('pregrind.title')}/>
     <View style={s.lead}><Label>{t('pregrind.title')}</Label><Serif style={s.leadTitle}>{t(titles[wizardStep]).toUpperCase()}</Serif><AppText style={s.body}>{t(bodies[wizardStep])}</AppText></View>
 
-    {wizardStep===0?<View style={s.panel}>
+    {wizardStep===0?<View style={s.panel}><Serif style={s.actionTitle}>{t('pregrind.investigateFeeling')}</Serif><AppTextInput value={feelingContext} onChangeText={setFeelingContext} multiline placeholder={t('care.human.feelingPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('pregrind.investigatePersonal')}</Serif><AppTextInput value={personalContext} onChangeText={setPersonalContext} multiline placeholder={t('care.human.personalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('pregrind.investigateProfessional')}</Serif><AppTextInput value={professionalContext} onChangeText={setProfessionalContext} multiline placeholder={t('care.human.professionalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><AppText style={s.body}>{t('pregrind.investigateResponse')}</AppText></View>:null}
+
+    {wizardStep===7?<View style={s.panel}>
       <Score10 label={t('pregrind.tension')} value={tension} setValue={setTension}/>
       <Score10 label={t('pregrind.fatigue')} value={fatigue} setValue={setFatigue}/>
     </View>:null}
 
-    {wizardStep===1?<View style={s.panel}>
+    {wizardStep===7?<View style={s.panel}>
       <Score10 label={t('pregrind.sleep')} value={sleep} setValue={setSleep}/>
       <Score10 label={t('pregrind.nutrition')} value={nutrition} setValue={setNutrition}/>
       <Score10 label={t('pregrind.hydration')} value={hydration} setValue={setHydration}/>
@@ -147,16 +155,16 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
       <View style={s.guidedBlock}><Label>{t('evidence.title')}</Label><AppText style={s.body}>{t('evidence.body')}</AppText></View>
     </View>:null}
 
-    {wizardStep===2?<View style={s.panel}>
+    {wizardStep===7?<View style={s.panel}>
       <Score10 label={t('pregrind.energy')} value={energy} setValue={setEnergy}/>
       <Score10 label={t('pregrind.mentalDrive')} value={mentalDrive} setValue={setMentalDrive}/>
     </View>:null}
 
-    {wizardStep===3?<View style={s.panel}>
+    {wizardStep===7?<View style={s.panel}>
       <ChoiceGrid items={emotions.map(x=>({id:x.id,label:t(x.key)}))} value={emotion} onChange={setEmotion}/>
     </View>:null}
 
-    {wizardStep===4?<>
+    {wizardStep===7?<>
       <View style={s.panel}>
         <Label>{t('pregrind.reason')}</Label>
         <ChoiceGrid items={reasons.map(x=>({id:x.id,label:t(x.key)}))} value={reason} onChange={setReason}/>
@@ -168,7 +176,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
       </View>
     </>:null}
 
-    {wizardStep===5?<>
+    {wizardStep===7?<>
       <View style={s.readingCard}>
         <Label>{t('pregrind.readiness')}</Label><Serif style={s.heroNumber}>{readinessIndex}</Serif>
         <View style={s.rowBetween}><Label>{t('pregrind.tiltRisk')}</Label><AppText style={s.goldText}>{t(riskKey[tiltRisk])}</AppText></View>
@@ -205,7 +213,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
       </View>
     </>:null}
 
-    {wizardStep===6?<View style={s.panel}>
+    {wizardStep===7?<View style={s.panel}>
       <Label>{t('pregrind.ritual')}</Label>
       <Serif style={s.actionTitle}>{t(ritual===3?'pregrind.ritual3':ritual===7?'pregrind.ritual7':'pregrind.ritual12')}</Serif>
       <AppText style={s.body}>{t('pregrind.activationBody')}</AppText>
@@ -216,9 +224,9 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
     <View style={s.wizardActions}>
       {wizardStep>0?<PremiumButton label={t('pregrind.back')} secondary onPress={back}/>:<View style={s.flex}/>}
       <PremiumButton
-        label={wizardStep===6?t('pregrind.activationComplete'):t('pregrind.next')}
-        disabled={wizardStep===6&&!activationUsed}
-        onPress={wizardStep===6?begin:next}
+        label={wizardStep===7?t('pregrind.activationComplete'):t('pregrind.next')}
+        disabled={wizardStep===7&&!activationUsed}
+        onPress={wizardStep===7?begin:next}
       />
     </View>
   </ScrollView>;
