@@ -25,7 +25,6 @@ export const es: TranslationCatalog = {
   'nav.profile': 'PERFIL',
   'common.active': 'ACTIVO',
   'common.next': 'SIGUIENTE',
-  'common.close': 'CERRAR',
   'common.milliseconds': 'ms',
 
   'mentalState.centered': 'CENTRADO',
