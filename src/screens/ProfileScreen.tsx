@@ -70,8 +70,8 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
           </View>
 
           <View style={s.profileSection}>
-            <Label>PERFORMANCE CARE</Label>
-            <AppText style={s.body}>Seu corpo também joga. O ENDURANCE cruza recuperação, alimentação, hidratação e movimento para proteger a qualidade das próximas decisões.</AppText>
+            <Label>{t('care.title')}</Label>
+            <AppText style={s.body}>{t('care.body')}</AppText>
             <View style={s.panel}>
               {careActions.map((item,index)=><View key={item.priority} style={index?s.guidedBlock:undefined}>
                 <View style={s.rowBetween}><Serif style={s.actionTitle}>{item.title}</Serif><AppText style={s.goldText}>{item.severity==='high'?'PRIORIDADE':item.severity==='attention'?'ATENÇÃO':'OK'}</AppText></View>
@@ -79,19 +79,19 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               </View>)}
             </View>
             <View style={s.panel}>
-              <Label>CHECK-IN LIFESTYLE / HOJE</Label>
-              <SmallScale label="HORAS DE SONO" value={Math.round(profile.lifestyle.sleepHours)} onChange={sleepHours=>updateLifestyle({sleepHours})}/>
-              <SmallScale label="QUALIDADE DO SONO" value={profile.lifestyle.sleepQuality} onChange={sleepQuality=>updateLifestyle({sleepQuality})}/>
-              <SmallScale label="HIDRATAÇÃO" value={profile.lifestyle.hydration} onChange={hydration=>updateLifestyle({hydration})}/>
-              <SmallScale label="QUALIDADE DA ALIMENTAÇÃO" value={profile.lifestyle.mealQuality} onChange={mealQuality=>updateLifestyle({mealQuality})}/>
-              <SmallScale label="HORAS DESDE A ÚLTIMA REFEIÇÃO" value={profile.lifestyle.hoursSinceMeal} onChange={hoursSinceMeal=>updateLifestyle({hoursSinceMeal})}/>
-              <SmallScale label="MOVIMENTO HOJE / MIN ÷ 6" value={Math.round(profile.lifestyle.movementMinutes/6)} onChange={v=>updateLifestyle({movementMinutes:v*6})}/>
-              <SmallScale label="HORAS SENTADO" value={profile.lifestyle.sittingHours} onChange={sittingHours=>updateLifestyle({sittingHours})}/>
-              <SmallScale label="CAFEÍNA / 50 MG" value={Math.min(10,Math.round(profile.lifestyle.caffeineMg/50))} onChange={v=>updateLifestyle({caffeineMg:v*50,caffeineHoursAgo:v?profile.lifestyle.caffeineHoursAgo:24})}/>
-              <TouchableOpacity onPress={()=>updateLifestyle({painOrIllness:!profile.lifestyle.painOrIllness})} style={[s.option,profile.lifestyle.painOrIllness&&s.optionActive]}><AppText style={[s.optionText,profile.lifestyle.painOrIllness&&s.optionTextActive]}>DOR, MAL-ESTAR OU DOENÇA HOJE: {profile.lifestyle.painOrIllness?'SIM':'NÃO'}</AppText></TouchableOpacity>
+              <Label>{t('care.checkin')}</Label>
+              <SmallScale label={t('care.sleepHours')} value={Math.round(profile.lifestyle.sleepHours)} onChange={sleepHours=>updateLifestyle({sleepHours})}/>
+              <SmallScale label={t('care.sleepQuality')} value={profile.lifestyle.sleepQuality} onChange={sleepQuality=>updateLifestyle({sleepQuality})}/>
+              <SmallScale label={t('care.hydration')} value={profile.lifestyle.hydration} onChange={hydration=>updateLifestyle({hydration})}/>
+              <SmallScale label={t('care.mealQuality')} value={profile.lifestyle.mealQuality} onChange={mealQuality=>updateLifestyle({mealQuality})}/>
+              <SmallScale label={t('care.hoursSinceMeal')} value={profile.lifestyle.hoursSinceMeal} onChange={hoursSinceMeal=>updateLifestyle({hoursSinceMeal})}/>
+              <SmallScale label={t('care.movement')} value={Math.round(profile.lifestyle.movementMinutes/6)} onChange={v=>updateLifestyle({movementMinutes:v*6})}/>
+              <SmallScale label={t('care.sitting')} value={profile.lifestyle.sittingHours} onChange={sittingHours=>updateLifestyle({sittingHours})}/>
+              <SmallScale label={t('care.caffeine')} value={Math.min(10,Math.round(profile.lifestyle.caffeineMg/50))} onChange={v=>updateLifestyle({caffeineMg:v*50,caffeineHoursAgo:v?profile.lifestyle.caffeineHoursAgo:24})}/>
+              <TouchableOpacity onPress={()=>updateLifestyle({painOrIllness:!profile.lifestyle.painOrIllness})} style={[s.option,profile.lifestyle.painOrIllness&&s.optionActive]}><AppText style={[s.optionText,profile.lifestyle.painOrIllness&&s.optionTextActive]}>{t('care.symptoms')}: {t(profile.lifestyle.painOrIllness?'care.yes':'care.no')}</AppText></TouchableOpacity>
             </View>
             <View style={s.panel}>
-              <Label>BASE DE PERFORMANCE</Label>
+              <Label>{t('care.base')}</Label>
               <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.sleep}</AppText>
               <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.movement}</AppText>
               <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.nutrition}</AppText>
