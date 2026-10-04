@@ -945,4 +945,12 @@ export const en: TranslationCatalog = {
   'care.followup.hydration-low.tip': "Your reported hydration is low. Keep water available and reassess how you feel before continuing.",
   'care.followup.yes': "YES, DONE",
   'care.followup.notYet': "NOT YET",
+  'care.human.title': "HOW ARE YOU TODAY?",
+  'care.human.feeling': "WHAT ARE YOU FEELING?",
+  'care.human.feelingPlaceholder': "Use your own words. You do not need to organize everything.",
+  'care.human.personal': "DID ANY PERSONAL ISSUE HAPPEN THAT COULD AFFECT YOUR GRIND?",
+  'care.human.personalPlaceholder': "If you want, record only what feels relevant to playing today.",
+  'care.human.professional': "ANY PROFESSIONAL OR FINANCIAL ISSUE?",
+  'care.human.professionalPlaceholder': "Record only what you believe may occupy your attention during the grind.",
+  'care.human.response': "Thanks for recording this. ENDURANCE will use only what you reported and your indicators to contextualize the grind, without making diagnoses.",
 };
