@@ -15,6 +15,7 @@
     },
     "plugins": [
       "expo-router",
+      "react-native-health-connect",
       "expo-system-ui",
       [
         "expo-splash-screen",
@@ -36,7 +37,8 @@
         {
           "android": {
             "compileSdkVersion": 36,
-            "targetSdkVersion": 36
+            "targetSdkVersion": 36,
+            "minSdkVersion": 26
           }
         }
       ]
