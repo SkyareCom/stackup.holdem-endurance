@@ -923,6 +923,13 @@ export const pt = {
   'care.caffeineHours': "HORAS DESDE A CAFEÍNA",
   'care.strengthDays': "DIAS DE FORÇA NESTA SEMANA",
   'coach.talkToCoach': "FALE COM O COACH",
+  'care.status.pending': "PENDENTE",
+  'care.status.done': "CONCLUÍDO",
+  'care.status.skipped': "ADIADO",
+  'care.markDone': "CONCLUIR",
+  'care.skip': "ADIAR",
+  'care.history': "HISTÓRICO DE CUIDADOS",
+  'care.completed': "concluídos",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
