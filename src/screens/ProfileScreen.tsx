@@ -182,6 +182,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
             <Label>{t('profile.history')}</Label>
             <View style={s.settingRow}><Ionicons name="timer-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.historySessions')}</AppText><AppText style={s.settingSub}>{sessions.length}</AppText></View></View>
             <View style={s.settingRow}><Ionicons name="pulse-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.historyCheckins')}</AppText><AppText style={s.settingSub}>{sessions.reduce((n,x)=>n+x.checkins.length,0)}</AppText></View></View>
+            <View style={s.settingRow}><Ionicons name="checkmark-done-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('care.history')}</AppText><AppText style={s.settingSub}>{careTaskEvents.filter(e=>e.status==='done').length} {t('care.completed')}</AppText></View></View>
             <TouchableOpacity style={s.settingRow} onPress={openDiary}><Ionicons name="book-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.diary')}</AppText><AppText style={s.settingSub}>{t('profile.diaryBody')}</AppText></View><Ionicons name="chevron-forward" size={18} color={C.dim}/></TouchableOpacity>
             {sessions.length?<PremiumButton label={t('profile.clearHistory')} secondary danger onPress={clearHistory}/>:null}
           </View>
