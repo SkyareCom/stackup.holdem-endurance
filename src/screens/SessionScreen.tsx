@@ -297,8 +297,8 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
 
     <View style={s.panel}>
       <Label>{t('care.title')}</Label>
-      <Serif style={s.actionTitle}>{carePriority.title}</Serif>
-      <AppText style={s.body}>{carePriority.action}</AppText>
+      <Serif style={s.actionTitle}>{t(`care.action.${carePriority.priority}.title` as TranslationKey)}</Serif>
+      <AppText style={s.body}>{t(`care.action.${carePriority.priority}.body` as TranslationKey)}</AppText>
       {minutes>=60?<PremiumButton label={t('session.break4')} secondary onPress={openBreak} icon="walk-outline"/>:null}
     </View>
 
