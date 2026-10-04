@@ -917,4 +917,10 @@ export const es: TranslationCatalog = {
   'care.task.sedentary.body': "Levántate y muévete en el próximo intervalo disponible.",
   'care.task.maintain.title': "MANTENER LA BASE",
   'care.task.maintain.body': "Preserva sueño, alimentación, hidratación y movimiento sin carga innecesaria.",
+  'care.movementTarget': "150–300 min/semana de actividad moderada (o equivalente) · fuerza 2+ días/semana · reduce e interrumpe el tiempo sedentario.",
+  'care.evidence.sleep': "Consenso deportivo: el sueño debe individualizarse; dormir poco o mal es relevante para recuperación, cognición y rendimiento.",
+  'care.evidence.movement': "OMS: los adultos deben desarrollar actividad aeróbica regular, fuerza 2+ días y reducir el sedentarismo.",
+  'care.evidence.nutrition': "La alimentación saludable prioriza adecuación, equilibrio, moderación y diversidad; el plan debe respetar necesidades y tolerancia individuales.",
+  'care.evidence.hydration': "La hidratación influye en función física y cognitiva; las necesidades varían según persona, ambiente y duración de la sesión.",
+  'care.evidence.safety': "ENDURANCE ofrece educación y apoyo conductual. No diagnostica ni prescribe medicamentos, suplementos, dietas terapéuticas o tratamiento médico.",
 };
