@@ -14,6 +14,7 @@ export type LifestyleCheckin = {
 
 export type CarePriority='sleep'|'nutrition'|'hydration'|'movement'|'caffeine'|'medical'|'ready';
 export type CareAction={priority:CarePriority;severity:'info'|'attention'|'high';title:string;action:string};
+export type DailyCareTask={id:string;domain:'sleep'|'nutrition'|'hydration'|'movement'|'recovery';title:string;target:string;done:boolean};
 
 export function buildPerformanceCare(x:LifestyleCheckin):CareAction[] {
   const a:CareAction[]=[];
@@ -34,3 +35,16 @@ export const PERFORMANCE_CARE_EVIDENCE = {
   hydration:'Revisões associam desidratação a prejuízo cognitivo; a resposta à reposição hídrica depende do contexto e não justifica uma meta universal rígida.',
   safety:'ENDURANCE oferece educação e suporte comportamental. Não diagnostica, prescreve medicamentos, suplementos, dietas terapêuticas ou tratamento médico.',
 } as const;
+
+export function buildDailyCareTasks(x:LifestyleCheckin):DailyCareTask[]{
+ const tasks:DailyCareTask[]=[];
+ if(x.sleepHours<7||x.sleepQuality<6)tasks.push({id:'sleep',domain:'sleep',title:'Proteger recuperação',target:'Planejar horário de encerramento e reduzir estímulos antes do sono.',done:false});
+ if(x.hydration<6)tasks.push({id:'water',domain:'hydration',title:'Água disponível',target:'Entrar no próximo bloco com água acessível e reavaliar sede/urina/contexto.',done:false});
+ if(x.hoursSinceMeal>=4||x.mealQuality<6)tasks.push({id:'meal',domain:'nutrition',title:'Planejar combustível',target:'Evitar iniciar bloco longo sem refeição ou lanche adequado à sua tolerância.',done:false});
+ if(x.movementMinutes<30)tasks.push({id:'move',domain:'movement',title:'Mover antes do grind',target:'Somar movimento leve/moderado hoje e construir progressivamente a meta semanal.',done:false});
+ if(x.sittingHours>=3)tasks.push({id:'sedentary',domain:'movement',title:'Quebrar tempo sentado',target:'Levantar e movimentar-se no próximo intervalo disponível.',done:false});
+ if(!tasks.length)tasks.push({id:'maintain',domain:'recovery',title:'Manter a base',target:'Preservar sono, alimentação, hidratação e movimento sem adicionar carga desnecessária.',done:false});
+ return tasks;
+}
+
+export function weeklyMovementProgress(x:LifestyleCheckin){return {aerobicMinutes:x.movementMinutes,strengthDays:x.strengthDaysThisWeek,aerobicTarget:'150–300 min/semana moderada (ou equivalente)',strengthTarget:'2+ dias/semana',sedentaryReminder:'reduzir e interromper tempo sedentário'};}
