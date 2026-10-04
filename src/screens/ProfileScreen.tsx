@@ -9,7 +9,7 @@ import { s } from '../styles';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { buildDevelopmentSnapshot, buildSportPsychologySnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
-import { buildPerformanceCare, buildDailyCareTasks, weeklyMovementProgress, PERFORMANCE_CARE_EVIDENCE } from '../performanceCare';
+import { buildPerformanceCare, buildDailyCareTasks } from '../performanceCare';
 import { useI18n, type TranslationKey } from '../i18n';
 
 const temperaments:{id:Temperament;key:TranslationKey}[]=[
@@ -39,7 +39,6 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
   const careActions=buildPerformanceCare(profile.lifestyle);
   const careTasks=buildDailyCareTasks(profile.lifestyle);
-  const movement=weeklyMovementProgress(profile.lifestyle);
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.88}>
@@ -97,16 +96,16 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               {careTasks.map(task=><View key={task.id} style={s.guidedBlock}><Serif style={s.actionTitle}>{t(`care.task.${task.id}.title` as TranslationKey)}</Serif><AppText style={s.body}>{t(`care.task.${task.id}.body` as TranslationKey)}</AppText></View>)}
               <View style={s.rule}/>
               <Label>{t('care.weeklyMovement')}</Label>
-              <AppText style={s.body}>{movement.aerobicTarget} · {movement.strengthTarget} · {movement.sedentaryReminder}</AppText>
+              <AppText style={s.body}>{t('care.movementTarget')}</AppText>
               {baseline.count>=5?<><View style={s.rule}/><Label>{t('care.personalCorrelations')}</Label><AppText style={s.body}>{t('care.sleepCorrelation')}: {baseline.sleepToMentalEvCorrelation??'—'} · {t('care.nutritionCorrelation')}: {baseline.nutritionToMentalEvCorrelation??'—'} · {t('care.hydrationCorrelation')}: {baseline.hydrationToMentalEvCorrelation??'—'} · {t('care.activityCorrelation')}: {baseline.activityToMentalEvCorrelation??'—'}</AppText></>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
             </View>
             <View style={s.panel}>
               <Label>{t('care.base')}</Label>
-              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.sleep}</AppText>
-              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.movement}</AppText>
-              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.nutrition}</AppText>
-              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.hydration}</AppText>
-              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.safety}</AppText>
+              <AppText style={s.body}>{t('care.evidence.sleep')}</AppText>
+              <AppText style={s.body}>{t('care.evidence.movement')}</AppText>
+              <AppText style={s.body}>{t('care.evidence.nutrition')}</AppText>
+              <AppText style={s.body}>{t('care.evidence.hydration')}</AppText>
+              <AppText style={s.body}>{t('care.evidence.safety')}</AppText>
             </View>
           </View>
 
