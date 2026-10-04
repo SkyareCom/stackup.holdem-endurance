@@ -9,6 +9,7 @@ import { s } from '../styles';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { buildDevelopmentSnapshot, buildSportPsychologySnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
+import { buildPerformanceCare, PERFORMANCE_CARE_EVIDENCE } from '../performanceCare';
 import { useI18n, type TranslationKey } from '../i18n';
 
 const temperaments:{id:Temperament;key:TranslationKey}[]=[
@@ -36,6 +37,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const sportPsychology=buildSportPsychologySnapshot(sessions);
   const analyticsUsable=baseline.confidence!=='none';
   const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
+  const careActions=buildPerformanceCare({sleepHours:profile.extraGrind.sleep,sleepQuality:profile.extraGrind.sleep,hydration:profile.extraGrind.hydration,mealQuality:profile.extraGrind.nutrition,hoursSinceMeal:0,caffeineMg:0,caffeineHoursAgo:24,movementMinutes:profile.extraGrind.physicalActivity*6,strengthDaysThisWeek:0,sittingHours:0,painOrIllness:false});
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.88}>
@@ -64,6 +66,25 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               <View style={s.guidedBlock}><Label>{t('profile.minFocus')}</Label><View style={s.processGrid}>{[3,4,5].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({minFocus:v})} style={[s.processChip,profile.stopRules.minFocus===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.minFocus===v&&s.chipTextActive]}>{v}</AppText></TouchableOpacity>)}</View></View>
               <View style={s.guidedBlock}><Label>{t('profile.maxTension')}</Label><View style={s.processGrid}>{[6,7,8].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({maxTension:v})} style={[s.processChip,profile.stopRules.maxTension===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.maxTension===v&&s.chipTextActive]}>{v}</AppText></TouchableOpacity>)}</View></View>
               <TouchableOpacity onPress={()=>updateStopRules({noStakeIncrease:!profile.stopRules.noStakeIncrease})} style={[s.option,profile.stopRules.noStakeIncrease&&s.optionActive]}><AppText style={[s.optionText,profile.stopRules.noStakeIncrease&&s.optionTextActive]}>{t('profile.noStakeIncrease')}</AppText></TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>PERFORMANCE CARE</Label>
+            <AppText style={s.body}>Seu corpo também joga. O ENDURANCE cruza recuperação, alimentação, hidratação e movimento para proteger a qualidade das próximas decisões.</AppText>
+            <View style={s.panel}>
+              {careActions.map((item,index)=><View key={item.priority} style={index?s.guidedBlock:undefined}>
+                <View style={s.rowBetween}><Serif style={s.actionTitle}>{item.title}</Serif><AppText style={s.goldText}>{item.severity==='high'?'PRIORIDADE':item.severity==='attention'?'ATENÇÃO':'OK'}</AppText></View>
+                <AppText style={s.body}>{item.action}</AppText>
+              </View>)}
+            </View>
+            <View style={s.panel}>
+              <Label>BASE DE PERFORMANCE</Label>
+              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.sleep}</AppText>
+              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.movement}</AppText>
+              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.nutrition}</AppText>
+              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.hydration}</AppText>
+              <AppText style={s.body}>{PERFORMANCE_CARE_EVIDENCE.safety}</AppText>
             </View>
           </View>
 
