@@ -34,7 +34,9 @@ describe('premium visual consistency contract', () => {
   });
 
   it('keeps SOS physically clear of typing and improves bottom navigation icon states', () => {
-    expect(styles).toContain("composer:{position:'absolute',left:0,right:0,bottom:160");
+    expect(styles).toContain("coachComposerCard:{padding:16");
+    expect(coach).toContain('style={s.coachComposerCard}');
+    expect(styles).not.toContain("composer:{position:'absolute'");
     expect(styles).toContain("navSOS:{position:'absolute',right:14,top:-54");
     expect(styles).toContain("scroll:{padding:18,paddingBottom:140,gap:18}");
     expect(shell).toContain('activeIcon');
