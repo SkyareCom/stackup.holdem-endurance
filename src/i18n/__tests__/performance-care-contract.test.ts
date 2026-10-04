@@ -17,4 +17,5 @@ describe('performance care',()=>{
     expect(tasks.map(x=>x.domain)).toEqual(expect.arrayContaining(['sleep','hydration','nutrition','movement']));
     expect(weekly.strengthTarget).toContain('2+');expect(weekly.aerobicTarget).toContain('150');
   });
+  it('keeps health guidance non-diagnostic and non-prescriptive',()=>{const source=buildPerformanceCare({sleepHours:4,sleepQuality:2,hydration:2,mealQuality:2,hoursSinceMeal:8,caffeineMg:400,caffeineHoursAgo:1,movementMinutes:0,strengthDaysThisWeek:0,sittingHours:8,painOrIllness:true}).map(x=>x.action.toLowerCase()).join(' ');expect(source).not.toMatch(/diagnost|prescrev|dose de medicamento|suplemento obrigatório/);expect(source).toContain('avaliação profissional');});
 });
