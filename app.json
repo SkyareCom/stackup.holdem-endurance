@@ -8,7 +8,11 @@
     "userInterfaceStyle": "dark",
     "android": {
       "package": "com.stackupholdem.endurance",
-      "backgroundColor": "#090806"
+      "backgroundColor": "#090806",
+      "permissions": [
+        "android.permission.health.READ_HEART_RATE",
+        "android.permission.health.READ_BLOOD_PRESSURE"
+      ]
     },
     "ios": {
       "bundleIdentifier": "com.stackupholdem.endurance"
