@@ -13,6 +13,7 @@ import {
   classifyTiltRisk,
   deriveMentalState,
   deriveExecutionQuality,
+  compareEventsWithPhysiology,
   getRitualMinutes,
   getSessionAction,
   getRecoveryPlan,
@@ -245,10 +246,13 @@ function formatElapsed(ms:number){
 
 function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:()=>void; openAudio:()=>void; openBreak:()=>void; openCheckin:()=>void }) {
   const { t } = useI18n();
-  const { activeSession,profile,addLiveEvent }=usePerformance();
+  const { activeSession,profile,addLiveEvent,addPhysiologySample }=usePerformance();
   const [journalOpen,setJournalOpen]=useState(false);
   const [eventAmount,setEventAmount]=useState('');
   const [eventNote,setEventNote]=useState('');
+  const [heartRate,setHeartRate]=useState('');
+  const [systolic,setSystolic]=useState('');
+  const [diastolic,setDiastolic]=useState('');
   const [cue,setCue]=useState(0);
   const [now,setNow]=useState(Date.now());
 
@@ -279,6 +283,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const executionQuality=deriveExecutionQuality({focus,tension,impulse,fatigue});
   const sessionCare=buildPerformanceCare({...profile.lifestyle,sittingHours:profile.lifestyle.sittingHours+minutes/60});
   const carePriority=sessionCare.find(item=>item.priority!=='ready')??sessionCare[0];
+  const eventPhysiology=compareEventsWithPhysiology(activeSession.liveEvents,activeSession.physiology);
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={2} total={4} label={t('session.activeStage')}/>
@@ -328,6 +333,20 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
         <AppText style={s.body}>{t('liveJournal.tapHelp')}</AppText>
       </View>:null}
       {activeSession.plan.mode==='tournament'?<View style={s.rowBetween}><Label>{t('session.reentriesUsed')}</Label><AppText style={s.goldText}>{activeSession.reentriesUsed} / {activeSession.plan.maxReentries}</AppText></View>:null}
+    </View>
+
+    <View style={s.panel}>
+      <Label>{t('physiology.title')}</Label>
+      <AppText style={s.body}>{t('physiology.notConnected')}</AppText>
+      <View style={s.rowBetween}><AppText style={s.body}>{t('physiology.samples')}</AppText><AppText style={s.goldText}>{activeSession.physiology.length}</AppText></View>
+      <View style={s.processGrid}>
+        <AppTextInput value={heartRate} onChangeText={setHeartRate} keyboardType="numeric" placeholder={t('physiology.heartRate')} placeholderTextColor={C.dim} style={s.diaryInput}/>
+        <AppTextInput value={systolic} onChangeText={setSystolic} keyboardType="numeric" placeholder={t('physiology.systolic')} placeholderTextColor={C.dim} style={s.diaryInput}/>
+        <AppTextInput value={diastolic} onChangeText={setDiastolic} keyboardType="numeric" placeholder={t('physiology.diastolic')} placeholderTextColor={C.dim} style={s.diaryInput}/>
+      </View>
+      <PremiumButton label={t('physiology.record')} secondary onPress={()=>{addPhysiologySample('during',Number(heartRate)||undefined,Number(systolic)||undefined,Number(diastolic)||undefined);setHeartRate('');setSystolic('');setDiastolic('');}}/>
+      <AppText style={s.body}>{t('physiology.boundary')}</AppText>
+      {eventPhysiology.slice(-3).reverse().map(x=><View key={x.event.id} style={s.guidedBlock}><Label>{t(`liveJournal.${x.event.type}` as TranslationKey)} · {x.event.minute} {t('common.minutesShort')}</Label><AppText style={s.body}>{x.beforeHeartRate===null||x.peakAfterHeartRate===null?t('physiology.awaitingSamples'):`${t('physiology.before')} ${x.beforeHeartRate} bpm · ${t('physiology.peakAfter')} ${x.peakAfterHeartRate} bpm · Δ ${x.deltaHeartRate??0} bpm`}</AppText></View>)}
     </View>
 
     <View style={s.twoCols}>
