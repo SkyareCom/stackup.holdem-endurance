@@ -15,6 +15,9 @@ export type LifestyleCheckin = {
 export type CarePriority='sleep'|'nutrition'|'hydration'|'movement'|'caffeine'|'medical'|'ready';
 export type CareAction={priority:CarePriority;severity:'info'|'attention'|'high';title:string;action:string};
 export type DailyCareTask={id:string;domain:'sleep'|'nutrition'|'hydration'|'movement'|'recovery';title:string;target:string;done:boolean};
+export type CareFollowup={id:'meal-overdue'|'sleep-debt'|'sedentary'|'hydration-low';priority:CarePriority;urgent:boolean};
+export function buildCareFollowups(x:LifestyleCheckin):CareFollowup[]{const out:CareFollowup[]=[];if(x.hoursSinceMeal>=5)out.push({id:'meal-overdue',priority:'nutrition',urgent:x.hoursSinceMeal>=7});if(x.sleepHours<7)out.push({id:'sleep-debt',priority:'sleep',urgent:x.sleepHours<6});if(x.sittingHours>=3)out.push({id:'sedentary',priority:'movement',urgent:x.sittingHours>=5});if(x.hydration<=4)out.push({id:'hydration-low',priority:'hydration',urgent:x.hydration<=2});return out;}
+export const HEALTH_BOUNDARY='reported-indicators-only' as const;
 
 export function buildPerformanceCare(x:LifestyleCheckin):CareAction[] {
   const a:CareAction[]=[];
