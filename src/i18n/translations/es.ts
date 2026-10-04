@@ -926,4 +926,11 @@ export const es: TranslationCatalog = {
   'care.caffeineHours': "HORAS DESDE LA CAFEÍNA",
   'care.strengthDays': "DÍAS DE FUERZA ESTA SEMANA",
   'coach.talkToCoach': "HABLA CON EL COACH",
+  'care.status.pending': "PENDIENTE",
+  'care.status.done': "COMPLETADO",
+  'care.status.skipped': "POSPUESTO",
+  'care.markDone': "COMPLETAR",
+  'care.skip': "POSPONER",
+  'care.history': "HISTORIAL DE CUIDADOS",
+  'care.completed': "completados",
 };
