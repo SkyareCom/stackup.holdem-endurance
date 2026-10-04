@@ -9,7 +9,7 @@ import { s } from '../styles';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { buildDevelopmentSnapshot, buildSportPsychologySnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
-import { buildPerformanceCare, PERFORMANCE_CARE_EVIDENCE } from '../performanceCare';
+import { buildPerformanceCare, buildDailyCareTasks, weeklyMovementProgress, PERFORMANCE_CARE_EVIDENCE } from '../performanceCare';
 import { useI18n, type TranslationKey } from '../i18n';
 
 const temperaments:{id:Temperament;key:TranslationKey}[]=[
@@ -38,6 +38,8 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const analyticsUsable=baseline.confidence!=='none';
   const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
   const careActions=buildPerformanceCare(profile.lifestyle);
+  const careTasks=buildDailyCareTasks(profile.lifestyle);
+  const movement=weeklyMovementProgress(profile.lifestyle);
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.88}>
@@ -89,6 +91,13 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               <SmallScale label={t('care.sitting')} value={profile.lifestyle.sittingHours} onChange={sittingHours=>updateLifestyle({sittingHours})}/>
               <SmallScale label={t('care.caffeine')} value={Math.min(10,Math.round(profile.lifestyle.caffeineMg/50))} onChange={v=>updateLifestyle({caffeineMg:v*50,caffeineHoursAgo:v?profile.lifestyle.caffeineHoursAgo:24})}/>
               <TouchableOpacity onPress={()=>updateLifestyle({painOrIllness:!profile.lifestyle.painOrIllness})} style={[s.option,profile.lifestyle.painOrIllness&&s.optionActive]}><AppText style={[s.optionText,profile.lifestyle.painOrIllness&&s.optionTextActive]}>{t('care.symptoms')}: {t(profile.lifestyle.painOrIllness?'care.yes':'care.no')}</AppText></TouchableOpacity>
+            </View>
+            <View style={s.panel}>
+              <Label>{t('care.dailyPlan')}</Label>
+              {careTasks.map(task=><View key={task.id} style={s.guidedBlock}><Serif style={s.actionTitle}>{task.title}</Serif><AppText style={s.body}>{task.target}</AppText></View>)}
+              <View style={s.rule}/>
+              <Label>WHO / MOVIMENTO SEMANAL</Label>
+              <AppText style={s.body}>{movement.aerobicTarget} · {movement.strengthTarget} · {movement.sedentaryReminder}</AppText>
             </View>
             <View style={s.panel}>
               <Label>{t('care.base')}</Label>
