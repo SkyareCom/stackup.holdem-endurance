@@ -332,7 +332,10 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
         <AppTextInput value={eventNote} onChangeText={setEventNote} placeholder={t('liveJournal.noteOptional')} placeholderTextColor={C.dim} style={s.diaryInput}/>
         <AppText style={s.body}>{t('liveJournal.tapHelp')}</AppText>
       </View>:null}
-      {activeSession.plan.mode==='tournament'?<View style={s.rowBetween}><Label>{t('session.reentriesUsed')}</Label><AppText style={s.goldText}>{activeSession.reentriesUsed} / {activeSession.plan.maxReentries}</AppText></View>:null}
+      {activeSession.plan.mode==='tournament'?<>
+        <View style={s.rowBetween}><Label>{t('session.reentriesUsed')}</Label><AppText style={s.goldText}>{activeSession.reentriesUsed} / {activeSession.plan.maxReentries}</AppText></View>
+        <PremiumButton label={reentryLimitReached?t('debrief.reentryLimitReached'):t('session.registerReentry')} secondary disabled={reentryLimitReached} onPress={()=>addLiveEvent('rebuy',Number(eventAmount.replace(',','.'))||undefined,eventNote)}/>
+      </>:null}
     </View>
 
     <View style={s.panel}>
