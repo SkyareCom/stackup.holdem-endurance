@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { C, PHOTO } from '../theme';
-import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
+import { AppText, AppTextInput, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { buildDevelopmentSnapshot, buildSportPsychologySnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
@@ -31,7 +31,7 @@ function SmallScale({label,value,onChange}:{label:string;value:number;onChange:(
 export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const { t } = useI18n();
   const router = useRouter();
-  const { profile,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,sessions,baseline,careTaskEvents,setCareTaskStatus,clearHistory }=usePerformance();
+  const { profile,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,sessions,baseline,careTaskEvents,setCareTaskStatus,dailyWellbeing,updateDailyWellbeing,clearHistory }=usePerformance();
   const developmentSnapshot=buildDevelopmentSnapshot(sessions);
   const tiltProfile=buildTiltProfile(sessions);
   const sportPsychology=buildSportPsychologySnapshot(sessions);
@@ -41,6 +41,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const careTasks=buildDailyCareTasks(profile.lifestyle);
   const today=new Date().toISOString().slice(0,10);
   const todayCare=careTaskEvents.filter(e=>e.date===today);
+  const wellbeing=dailyWellbeing.find(x=>x.date===today);
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.88}>
@@ -81,6 +82,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
                 <AppText style={s.body}>{t(`care.action.${item.priority}.body` as TranslationKey)}</AppText>
               </View>)}
             </View>
+            <View style={s.panel}><Label>{t('care.human.title')}</Label><Serif style={s.actionTitle}>{t('care.human.feeling')}</Serif><AppTextInput value={wellbeing?.feeling??''} onChangeText={feeling=>updateDailyWellbeing({feeling})} multiline placeholder={t('care.human.feelingPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('care.human.personal')}</Serif><AppTextInput value={wellbeing?.personalImpact??''} onChangeText={personalImpact=>updateDailyWellbeing({personalImpact})} multiline placeholder={t('care.human.personalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('care.human.professional')}</Serif><AppTextInput value={wellbeing?.professionalImpact??''} onChangeText={professionalImpact=>updateDailyWellbeing({professionalImpact})} multiline placeholder={t('care.human.professionalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><AppText style={s.body}>{t('care.human.response')}</AppText></View>
             <View style={s.panel}>
               <Label>{t('care.checkin')}</Label>
               <SmallScale label={t('care.sleepHours')} value={Math.round(profile.lifestyle.sleepHours)} onChange={sleepHours=>updateLifestyle({sleepHours})}/>
