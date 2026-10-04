@@ -923,4 +923,6 @@ export const es: TranslationCatalog = {
   'care.evidence.nutrition': "La alimentación saludable prioriza adecuación, equilibrio, moderación y diversidad; el plan debe respetar necesidades y tolerancia individuales.",
   'care.evidence.hydration': "La hidratación influye en función física y cognitiva; las necesidades varían según persona, ambiente y duración de la sesión.",
   'care.evidence.safety': "ENDURANCE ofrece educación y apoyo conductual. No diagnostica ni prescribe medicamentos, suplementos, dietas terapéuticas o tratamiento médico.",
+  'care.caffeineHours': "HORAS DESDE LA CAFEÍNA",
+  'care.strengthDays': "DÍAS DE FUERZA ESTA SEMANA",
 };
