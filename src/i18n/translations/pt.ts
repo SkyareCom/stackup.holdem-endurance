@@ -922,6 +922,7 @@ export const pt = {
   'care.evidence.safety': "ENDURANCE oferece educação e suporte comportamental. Não diagnostica nem prescreve medicamentos, suplementos, dietas terapêuticas ou tratamento médico.",
   'care.caffeineHours': "HORAS DESDE A CAFEÍNA",
   'care.strengthDays': "DIAS DE FORÇA NESTA SEMANA",
+  'coach.talkToCoach': "FALE COM O COACH",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
