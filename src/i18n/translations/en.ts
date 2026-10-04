@@ -917,4 +917,10 @@ export const en: TranslationCatalog = {
   'care.task.sedentary.body': "Stand up and move at the next available break.",
   'care.task.maintain.title': "MAINTAIN THE BASE",
   'care.task.maintain.body': "Preserve sleep, nutrition, hydration and movement without unnecessary load.",
+  'care.movementTarget': "150–300 min/week of moderate activity (or equivalent) · strength on 2+ days/week · reduce and interrupt sedentary time.",
+  'care.evidence.sleep': "Sports consensus: sleep should be individualized; short or poor-quality sleep matters for recovery, cognition and performance.",
+  'care.evidence.movement': "WHO: adults should build regular aerobic activity, strength on 2+ days and reduce sedentary behavior.",
+  'care.evidence.nutrition': "Healthy eating prioritizes adequacy, balance, moderation and diversity; planning should respect individual needs and tolerance.",
+  'care.evidence.hydration': "Hydration influences physical and cognitive function; needs vary by person, environment and session duration.",
+  'care.evidence.safety': "ENDURANCE provides education and behavioral support. It does not diagnose or prescribe medication, supplements, therapeutic diets or medical treatment.",
 };
