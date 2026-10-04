@@ -945,4 +945,12 @@ export const es: TranslationCatalog = {
   'care.followup.hydration-low.tip': "Tu hidratación informada está baja. Mantén agua disponible y reevalúa cómo te sientes antes de continuar.",
   'care.followup.yes': "SÍ, HECHO",
   'care.followup.notYet': "TODAVÍA NO",
+  'care.human.title': "¿CÓMO ESTÁS HOY?",
+  'care.human.feeling': "¿QUÉ ESTÁS SINTIENDO?",
+  'care.human.feelingPlaceholder': "Cuéntalo con tus propias palabras. No necesitas organizarlo todo.",
+  'care.human.personal': "¿HUBO ALGÚN PROBLEMA PERSONAL QUE PUEDA AFECTAR TU GRIND?",
+  'care.human.personalPlaceholder': "Si quieres, registra solo lo que consideres relevante para jugar hoy.",
+  'care.human.professional': "¿Y ALGÚN PROBLEMA PROFESIONAL O FINANCIERO?",
+  'care.human.professionalPlaceholder': "Registra solo lo que creas que puede ocupar tu atención durante el grind.",
+  'care.human.response': "Gracias por registrarlo. ENDURANCE utilizará únicamente lo que relataste y tus indicadores para contextualizar el grind, sin hacer diagnósticos.",
 };
