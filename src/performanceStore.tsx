@@ -9,6 +9,8 @@ import {
   type RuntimeCheckin,
   type LiveSessionEvent,
   type LiveEventType,
+  type PhysiologySample,
+  type PhysiologyPhase,
   type SessionPlan,
   type SessionRecord,
   type StopRules,
@@ -35,6 +37,7 @@ type ActiveSession = {
   plan:SessionPlan;
   checkins:RuntimeCheckin[];
   liveEvents:LiveSessionEvent[];
+  physiology:PhysiologySample[];
   reentriesUsed:number;
 };
 
@@ -59,6 +62,7 @@ type PerformanceContextValue = PersistedState & {
   recordSOS:(trigger:TiltTrigger)=>void;
   incrementReentry:()=>void;
   addLiveEvent:(type:LiveEventType,amount?:number,note?:string)=>void;
+  addPhysiologySample:(phase:PhysiologyPhase,heartRate?:number,systolic?:number,diastolic?:number)=>void;
   finishSession:(debrief:DebriefData)=>SessionRecord|null;
   setCareTaskStatus:(taskId:string,status:'done'|'skipped')=>void;
   updateDailyWellbeing:(patch:Partial<Omit<DailyWellbeing,'date'|'updatedAt'>>)=>void;
@@ -96,7 +100,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
               lifestyle:{...defaultProfile.lifestyle,...parsed.profile?.lifestyle},
             },
             sessions:Array.isArray(parsed.sessions)?parsed.sessions:[],
-            activeSession:parsed.activeSession?{...parsed.activeSession,liveEvents:Array.isArray((parsed.activeSession as ActiveSession).liveEvents)?(parsed.activeSession as ActiveSession).liveEvents:[],reentriesUsed:parsed.activeSession.reentriesUsed??0}:null,
+            activeSession:parsed.activeSession?{...parsed.activeSession,liveEvents:Array.isArray((parsed.activeSession as ActiveSession).liveEvents)?(parsed.activeSession as ActiveSession).liveEvents:[],physiology:Array.isArray((parsed.activeSession as ActiveSession).physiology)?(parsed.activeSession as ActiveSession).physiology:[],reentriesUsed:parsed.activeSession.reentriesUsed??0}:null,
             latestCheckin:parsed.latestCheckin??null,
             careTaskEvents:Array.isArray(parsed.careTaskEvents)?parsed.careTaskEvents:[],
             dailyWellbeing:Array.isArray(parsed.dailyWellbeing)?parsed.dailyWellbeing:[],
@@ -140,6 +144,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
       plan,
       checkins:[],
       liveEvents:[],
+      physiology:[],
       reentriesUsed:0,
     }}));
   },[]);
@@ -186,6 +191,16 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
     });
   },[]);
 
+  const addPhysiologySample=useCallback((phase:PhysiologyPhase,heartRate?:number,systolic?:number,diastolic?:number)=>{
+    const now=Date.now();
+    setState(s=>{
+      if(!s.activeSession)return s;
+      const minute=Math.max(0,Math.floor((now-s.activeSession.startedAt)/60000));
+      const sample:PhysiologySample={id:'phys-'+now,createdAt:now,minute,phase,source:'manual',...(heartRate?{heartRate}:{}),...(systolic?{systolic}:{}),...(diastolic?{diastolic}: {})};
+      return {...s,activeSession:{...s.activeSession,physiology:[...s.activeSession.physiology,sample]}};
+    });
+  },[]);
+
   const incrementReentry=useCallback(()=>{
     setState(s=>{
       if(!s.activeSession||s.activeSession.plan.mode!=='tournament')return s;
@@ -208,6 +223,7 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
         plan:s.activeSession.plan,
         checkins:s.activeSession.checkins,
         liveEvents:s.activeSession.liveEvents,
+        physiology:s.activeSession.physiology,
         reentriesUsed:s.activeSession.reentriesUsed,
         debrief,
         readinessIndex,
@@ -230,8 +246,8 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
   const baseline=useMemo(()=>buildBaseline(state.sessions),[state.sessions]);
   const value=useMemo<PerformanceContextValue>(()=>({
     ...state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,
-    addRuntimeCheckin,recordSOS,incrementReentry,addLiveEvent,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory,
-  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,addLiveEvent,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory]);
+    addRuntimeCheckin,recordSOS,incrementReentry,addLiveEvent,addPhysiologySample,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory,
+  }),[state,ready,baseline,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,startSession,addRuntimeCheckin,recordSOS,incrementReentry,addLiveEvent,addPhysiologySample,finishSession,setCareTaskStatus,updateDailyWellbeing,clearHistory]);
 
   if(!ready)return null;
   return <PerformanceContext.Provider value={value}>{children}</PerformanceContext.Provider>;
