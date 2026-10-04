@@ -3,7 +3,7 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { C, PHOTO } from '../theme';
-import { AppText, Backdrop, Header, Label, Serif } from '../ui';
+import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { GuidedSection } from '../components/GuidedSection';
 import { developmentGroups } from '../content';
 import { usePerformance } from '../performanceStore';
@@ -29,6 +29,8 @@ export function TrainScreen({ openModule }: { openModule:(m:Module)=>void }) {
   const selected=needs.find(x=>x.id===need)??needs[0];
   const development=developmentGroups[selectedDevelopmentGroup];
   const reserve=baseline.confidence==='moderate'||baseline.confidence==='high'?baseline.averageReadiness:null;
+  const hasDevelopmentData=baseline.confidence!=='none';
+  const developmentModule:Module=development.id==='lifestyle'?'lifestyle':development.id==='focus'?'gym':'mindset';
 
   return (
     <Backdrop uri={PHOTO.focus} blur={12} overlay={0.84}>
@@ -53,15 +55,17 @@ export function TrainScreen({ openModule }: { openModule:(m:Module)=>void }) {
 
           <View style={s.profileSection}>
             <Label>{t('train.development')}</Label>
-            <AppText style={s.body}>{t('train.developmentBody')}</AppText>
             <View style={s.panel}>
               <View style={s.rowBetween}>
                 <TouchableOpacity style={s.close} onPress={()=>setSelectedDevelopmentGroup(i=>(i-1+developmentGroups.length)%developmentGroups.length)}><Ionicons name="chevron-back" size={22} color={C.goldLight}/></TouchableOpacity>
-                <AppText style={s.goldText}>{selectedDevelopmentGroup+1} / {developmentGroups.length}</AppText>
+                <AppText style={s.goldText}>{t('train.developmentArea')} {selectedDevelopmentGroup+1} {t('train.developmentOf')} {developmentGroups.length}</AppText>
                 <TouchableOpacity style={s.close} onPress={()=>setSelectedDevelopmentGroup(i=>(i+1)%developmentGroups.length)}><Ionicons name="chevron-forward" size={22} color={C.goldLight}/></TouchableOpacity>
               </View>
               <Serif style={s.actionTitle}>{t(development.titleKey)}</Serif>
-              <AppText style={s.body}>{t(development.bodyKey)}</AppText>
+              <View style={s.guidedBlock}><Label>{t('train.currentState')}</Label><AppText style={s.body}>{hasDevelopmentData?t('train.stateObserved'):t('train.stateCollecting')}</AppText></View>
+              <View style={s.guidedBlock}><Label>{t('train.whatWeObserve')}</Label><AppText style={s.body}>{hasDevelopmentData?t(development.bodyKey):t('train.observationInsufficient')}</AppText></View>
+              <View style={s.guidedBlock}><Label>{t('train.nextStep')}</Label><AppText style={s.body}>{t('train.nextStepBody')}</AppText></View>
+              <PremiumButton label={t('train.trainArea')} onPress={()=>openModule(developmentModule)}/>
             </View>
           </View>
 
