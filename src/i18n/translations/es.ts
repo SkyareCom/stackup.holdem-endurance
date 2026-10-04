@@ -885,4 +885,10 @@ export const es: TranslationCatalog = {
   'care.no': "NO",
   'care.base': "BASE DE RENDIMIENTO",
   'care.dailyPlan': "PLAN FÍSICO DEL DÍA",
+  'care.weeklyMovement': "OMS / MOVIMIENTO SEMANAL",
+  'care.personalCorrelations': "CORRELACIONES PERSONALES",
+  'care.sleepCorrelation': "SUEÑO × RENDIMIENTO",
+  'care.nutritionCorrelation': "ALIMENTACIÓN × RENDIMIENTO",
+  'care.hydrationCorrelation': "HIDRATACIÓN × RENDIMIENTO",
+  'care.activityCorrelation': "ACTIVIDAD × RENDIMIENTO",
 };
