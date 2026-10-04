@@ -27,6 +27,7 @@ import {
   type TiltRisk,
 } from '../performanceEngine';
 import { usePerformance } from '../performanceStore';
+import { buildPerformanceCare } from '../performanceCare';
 import { s } from '../styles';
 import { Module, Phase } from '../types';
 import { useI18n, type Locale, type TranslationKey } from '../i18n';
@@ -260,6 +261,8 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
   const readiness=calculateReadiness(activeSession.pre);
   const mentalState=deriveMentalState({readinessIndex:readiness,tiltRisk,sessionMinutes:minutes,focus,tension,impulse,fatigue});
   const executionQuality=deriveExecutionQuality({focus,tension,impulse,fatigue});
+  const sessionCare=buildPerformanceCare({...profile.lifestyle,sittingHours:profile.lifestyle.sittingHours+minutes/60});
+  const carePriority=sessionCare.find(item=>item.priority!==\'ready\')??sessionCare[0];
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={2} total={4} label={t('session.activeStage')}/>
@@ -288,6 +291,13 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
       <Label>{t('session.currentAction')}</Label>
       <Serif style={s.actionTitle}>{t(actionKey[action])}</Serif>
       <AppText style={s.body}>{t('session.protectTempoBody')}</AppText>
+    </View>
+
+    <View style={s.panel}>
+      <Label>{t('care.title')}</Label>
+      <Serif style={s.actionTitle}>{carePriority.title}</Serif>
+      <AppText style={s.body}>{carePriority.action}</AppText>
+      {minutes>=60?<PremiumButton label={t('session.break4')} secondary onPress={openBreak} icon="walk-outline"/>:null}
     </View>
 
     {activeSession.plan.mode==='tournament'?<View style={s.panel}>
