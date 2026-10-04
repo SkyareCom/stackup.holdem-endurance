@@ -118,7 +118,7 @@ export function HomeScreen({ startSession, openModule: _openModule }: { startSes
           </GuidedSection>
 
           <GuidedSection
-            subtitle="PERFORMANCE CARE"
+            subtitle={t('care.title')}
             title={carePriority.title}
             description={carePriority.action}
           />
