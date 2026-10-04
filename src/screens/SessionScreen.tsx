@@ -399,7 +399,7 @@ function Debrief({ save }: { save:()=>void }) {
         <AppTextInput value={reentriesCost} onChangeText={setReentriesCost} keyboardType="numeric" placeholder={t('debrief.reentriesCost')} placeholderTextColor={C.dim} style={s.diaryInput}/>
         <AppTextInput value={otherCosts} onChangeText={setOtherCosts} keyboardType="numeric" placeholder={t('debrief.otherCosts')} placeholderTextColor={C.dim} style={s.diaryInput}/>
         <AppTextInput value={received} onChangeText={setReceived} keyboardType="numeric" placeholder={t('debrief.received')} placeholderTextColor={C.dim} style={s.diaryInput}/>
-        <View style={s.rowBetween}><Label>{t('debrief.netResult')}</Label><AppText style={s.goldText}>R$ {netResult.toFixed(2)}</AppText></View>
+        <View style={s.rowBetween}><Label>{t('debrief.netResult')}</Label><AppText style={s.goldText}>{t('finance.currency')} {netResult.toFixed(2)}</AppText></View>
         <AppText style={s.body}>{t('debrief.resultSeparation')}</AppText>
       </View>:null}
     </View>:null}
