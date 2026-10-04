@@ -1041,6 +1041,10 @@ export const pt = {
   'home.patterns': "PADRÕES",
   'home.history': "HISTÓRICO",
   'home.patternsBody': "Eventos, gatilhos e evolução entre sessões.",
+  'emotion.confident': 'CONFIANTE',
+  'emotion.wellbeing': 'BEM-ESTAR',
+  'emotion.motivated': 'MOTIVADO',
+  'emotion.focused': 'FOCADO',
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
