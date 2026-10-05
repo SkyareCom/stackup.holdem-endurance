@@ -289,6 +289,21 @@ export const pt = {
   'trigger.euphoria': 'EUFORIA',
   'trigger.fatigue': 'FADIGA',
   'trigger.autopilot': 'AUTOPILOT',
+
+  'module.rangeMemory.title': 'MEMÓRIA DE RANGES',
+  'module.rangeMemory.subtitle': 'GINÁSIO COGNITIVO',
+  'module.attention.title': 'TROCA DE ATENÇÃO',
+  'module.attention.subtitle': 'GINÁSIO COGNITIVO',
+  'cognitive.range.prompt': 'BTN abre 25bb. Qual grupo deve permanecer mais protegido contra 3-bet do BB?',
+  'cognitive.range.a': 'Topo do range de valor',
+  'cognitive.range.b': 'Mãos marginais sem plano',
+  'cognitive.range.c': 'Qualquer mão suited',
+  'cognitive.range.feedback': 'Priorize a estrutura do range: valor forte precisa permanecer reconhecível sob pressão.',
+  'cognitive.attention.prompt': 'Você perde um pote grande e a próxima mão começa. Qual é o primeiro foco útil?',
+  'cognitive.attention.a': 'Resultado da mão anterior',
+  'cognitive.attention.b': 'Posição, stacks e ação atual',
+  'cognitive.attention.c': 'Recuperar as fichas imediatamente',
+  'cognitive.attention.feedback': 'Correto: recoloque a atenção no presente antes de construir a próxima decisão.',
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
