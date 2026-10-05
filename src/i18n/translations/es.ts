@@ -1104,4 +1104,13 @@ export const es: TranslationCatalog = {
   'lifestyle.health.yes': "DOLOR / MALESTAR",
   'lifestyle.quiz.complete': "LIFESTYLE REGISTRADO",
   'lifestyle.quiz.completeBody': "Sueño, alimentación, hidratación, movimiento y condición física ahora influyen en tu preparación.",
+  'quiz.level.low': "BAJA",
+  'quiz.level.medium': "MODERADA",
+  'quiz.level.high': "ALTA",
+  'quiz.energy.low': "BAJA",
+  'quiz.energy.medium': "NORMAL",
+  'quiz.energy.high': "ALTA",
+  'quiz.drive.low': "POCA DISPOSICIÓN",
+  'quiz.drive.medium': "DISPOSICIÓN NORMAL",
+  'quiz.drive.high': "MUCHA DISPOSICIÓN",
 };
