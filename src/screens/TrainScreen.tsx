@@ -24,7 +24,7 @@ export function TrainScreen({ openModule }: { openModule:(m:Module)=>void }) {
           {keys.map((key,i)=>{
             const m=moduleMeta[key];
             return (
-              <TouchableOpacity key={key} style={s.moduleRow} onPress={()=>openModule(key)}>
+              <TouchableOpacity activeOpacity={0.72} key={key} style={[s.moduleRow,s.interactiveRow]} onPress={()=>openModule(key)}>
                 <AppText style={s.moduleN}>0{i+1}</AppText>
                 <View style={s.moduleIcon}><Ionicons name={m.icon} size={20} color={C.goldLight}/></View>
                 <View style={s.flex}>
