@@ -10,6 +10,9 @@ if (!app.android?.package) failures.push('expo.android.package');
 if (!Number.isInteger(app.android?.versionCode) || app.android.versionCode < 1) failures.push('expo.android.versionCode');
 if (eas.build?.production?.android?.buildType !== 'app-bundle') failures.push('production android buildType=app-bundle');
 if (!Array.isArray(app.android?.permissions)) failures.push('expo.android.permissions');
+if (!app.icon || !fs.existsSync(app.icon.replace('./',''))) failures.push('expo.icon');
+if (!app.android?.adaptiveIcon?.foregroundImage || !fs.existsSync(app.android.adaptiveIcon.foregroundImage.replace('./',''))) failures.push('expo.android.adaptiveIcon.foregroundImage');
+if (!app.android?.adaptiveIcon?.backgroundColor) failures.push('expo.android.adaptiveIcon.backgroundColor');
 
 if (failures.length) {
   console.error('Android release config invalid:', failures.join(', '));
