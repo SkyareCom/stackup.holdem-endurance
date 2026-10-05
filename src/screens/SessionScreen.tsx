@@ -40,7 +40,7 @@ const scoreValues=[0,1,2,3,4,5,6,7,8,9,10];
 const scoreValuesOne=[1,2,3,4,5,6,7,8,9,10];
 const emotions:{id:Emotion;key:TranslationKey}[]=[
   {id:'calm',key:'emotion.calm'},{id:'confident',key:'emotion.confident'},{id:'wellbeing',key:'emotion.wellbeing'},
-  {id:'motivated',key:'emotion.motivated'},{id:'focused',key:'emotion.focused'},{id:'fear',key:'emotion.fear'},
+  {id:'motivated',key:'emotion.motivated'},{id:'focused',key:'emotion.focused'},{id:'serenity',key:'emotion.serenity'},{id:'fear',key:'emotion.fear'},
   {id:'anger',key:'emotion.anger'},{id:'frustration',key:'emotion.frustration'},{id:'greed',key:'emotion.greed'},
   {id:'euphoria',key:'emotion.euphoria'},{id:'anxiety',key:'emotion.anxiety'},
 ];
@@ -51,7 +51,7 @@ const reasons:{id:PlayReason;key:TranslationKey}[]=[
   {id:'fomo',key:'reason.fomo'},
 ];
 const reframeKey:Record<Emotion,TranslationKey>={
-  calm:'pregrind.reframe.calm',confident:'pregrind.reframe.calm',wellbeing:'pregrind.reframe.calm',motivated:'pregrind.reframe.calm',focused:'pregrind.reframe.calm',fear:'pregrind.reframe.fear',anger:'pregrind.reframe.anger',
+  calm:'pregrind.reframe.calm',confident:'pregrind.reframe.calm',wellbeing:'pregrind.reframe.calm',motivated:'pregrind.reframe.calm',focused:'pregrind.reframe.calm',serenity:'pregrind.reframe.calm',fear:'pregrind.reframe.fear',anger:'pregrind.reframe.anger',
   frustration:'pregrind.reframe.frustration',greed:'pregrind.reframe.greed',
   euphoria:'pregrind.reframe.euphoria',anxiety:'pregrind.reframe.anxiety',
 };
