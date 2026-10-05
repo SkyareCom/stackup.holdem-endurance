@@ -1,0 +1,21 @@
+name: Android Production AAB
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Validate release configuration
+        run: npm run check:android
+      - name: Test suite
+        run: npm test
+      - name: Android export validation
+        run: npm run export:android
+      - name: Build production AAB with EAS
+        run: npx eas-cli@latest build --platform android --profile production --non-interactive --wait
