@@ -1101,6 +1101,15 @@ export const pt = {
   'lifestyle.health.yes': "DOR / MAL-ESTAR",
   'lifestyle.quiz.complete': "LIFESTYLE REGISTRADO",
   'lifestyle.quiz.completeBody': "Sono, alimentação, hidratação, movimento e condição física agora entram na leitura do seu preparo.",
+  'quiz.level.low': "BAIXA",
+  'quiz.level.medium': "MODERADA",
+  'quiz.level.high': "ALTA",
+  'quiz.energy.low': "BAIXA",
+  'quiz.energy.medium': "NORMAL",
+  'quiz.energy.high': "ALTA",
+  'quiz.drive.low': "POUCA DISPOSIÇÃO",
+  'quiz.drive.medium': "DISPOSIÇÃO NORMAL",
+  'quiz.drive.high': "MUITA DISPOSIÇÃO",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
