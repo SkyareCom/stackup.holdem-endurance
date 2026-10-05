@@ -16,7 +16,7 @@ const vaccineAnswers = [
   { id:'answer4', key:'overlay.vaccineAnswer4' },
 ] as const satisfies readonly { id:string; key:TranslationKey }[];
 
-export function ModuleOverlay({ module, close }: { module:Module; close:()=>void }) {
+export function ModuleOverlay({ module, close, openModule }: { module:Module; close:()=>void; openModule:(module:Module)=>void }) {
   const { t } = useI18n();
   const [playlist,setPlaylist]=useState('a-game');
   const [reaction,setReaction]=useState<number|null>(null);
@@ -35,8 +35,8 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
         <View style={s.heatmap}>{Array.from({length:28}).map((_,i)=><View key={i} style={[s.heat,{opacity:.18+((i*37)%80)/100}]}/>)}</View>
         <AppText style={s.body}>{t('overlay.criticalWindow')}</AppText>
       </View>
-      <View style={s.moduleAction}><View><Label>{t('overlay.battleDiary')}</Label><Serif style={s.actionTitle}>{t('overlay.auditExecution')}</Serif></View></View>
-      <View style={s.moduleAction}><View><Label>{t('overlay.psychVaccines')}</Label><Serif style={s.actionTitle}>{t('overlay.desensitizeVariance')}</Serif></View></View>
+      <TouchableOpacity activeOpacity={0.68} accessibilityRole="button" style={[s.moduleAction,s.interactiveRow]} onPress={()=>openModule('diary')}><View><Label>{t('overlay.battleDiary')}</Label><Serif style={s.actionTitle}>{t('overlay.auditExecution')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></TouchableOpacity>
+      <TouchableOpacity activeOpacity={0.68} accessibilityRole="button" style={[s.moduleAction,s.interactiveRow]} onPress={()=>openModule('vaccines')}><View><Label>{t('overlay.psychVaccines')}</Label><Serif style={s.actionTitle}>{t('overlay.desensitizeVariance')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></TouchableOpacity>
     </View>;
   } else if(module==='behavior') {
     body=<View style={s.moduleContent}>
