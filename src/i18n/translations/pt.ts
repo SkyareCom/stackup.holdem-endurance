@@ -1132,6 +1132,17 @@ export const pt = {
   'coachEntry.lifestyle': "LIFESTYLE",
   'coachEntry.lifestyleBody': "Lifestyle acompanha o jogador durante todo o dia e influencia as próximas perguntas.",
   'coachEntry.lifestyleSnapshot': "Sono {sleep} h · última alimentação {meal} h · movimento {move} min",
+  'coachFlow.eyebrow': "COACH DE PERFORMANCE",
+  'coachFlow.introTitle': "SEU DIA TAMBÉM JOGA",
+  'coachFlow.introBody': "O ENDURANCE acompanha contexto, lifestyle e estado de performance para mostrar apenas o próximo passo necessário. Sem formulários longos: uma pergunta por vez.",
+  'coachFlow.start': "COMEÇAR",
+  'coachFlow.momentTitle': "O QUE ESTÁ ACONTECENDO AGORA?",
+  'coachFlow.momentBody': "Escolha seu momento. O coach adapta o caminho e evita perguntas que não fazem sentido agora.",
+  'coachFlow.play': "VOU JOGAR",
+  'coachFlow.playing': "ESTOU JOGANDO",
+  'coachFlow.played': "TERMINEI DE JOGAR",
+  'coachFlow.report': "QUERO RELATAR ALGO",
+  'coachFlow.recover': "QUERO ME RECUPERAR",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
