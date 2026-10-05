@@ -267,7 +267,7 @@ function Active({ endSession, openAudio, openBreak, openCheckin }: { endSession:
     return()=>clearInterval(id);
   },[]);
 
-  if(!activeSession)return <ScrollView contentContainerStyle={s.scroll}><PremiumButton label={t('home.checkinNow')} onPress={endSession}/></ScrollView>;
+  if(!activeSession)return <ScrollView contentContainerStyle={s.scroll}><View style={s.panel}><Label>{t('session.quickLog')}</Label><Serif style={s.actionTitle}>{t('session.noActiveTitle')}</Serif><AppText style={s.body}>{t('session.noActiveQuickLog')}</AppText></View></ScrollView>;
 
   const last=activeSession.checkins[activeSession.checkins.length-1];
   const focus=last?.focus??activeSession.pre.mentalDrive;
@@ -402,6 +402,8 @@ function Debrief({ save }: { save:()=>void }) {
   const [triggers,setTriggers]=useState<WarRoomTriggerId[]>([]);
   const [busted,setBusted]=useState(false);
   const [reentryDecision,setReentryDecision]=useState<'none'|'stop'|'reenter'>('none');
+
+  if(!activeSession)return <ScrollView contentContainerStyle={s.scroll}><View style={s.panel}><Label>{t('session.postSession')}</Label><Serif style={s.actionTitle}>{t('session.noActiveTitle')}</Serif><AppText style={s.body}>{t('session.noActivePost')}</AppText></View></ScrollView>;
 
   const readinessIndex=activeSession?calculateReadiness(activeSession.pre):0;
   const reentryLimitReached=activeSession?activeSession.reentriesUsed>=activeSession.plan.maxReentries:true;
