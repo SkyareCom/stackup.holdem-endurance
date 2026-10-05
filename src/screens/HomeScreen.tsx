@@ -28,7 +28,7 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
             <GoldRule /><Metric label={t('home.energy')} value={4}/><Metric label={t('home.focus')} value={4}/><Metric label={t('home.tension')} value={2}/>
           </View>
 
-          <TouchableOpacity style={s.primaryAction} onPress={startSession}>
+          <TouchableOpacity activeOpacity={0.72} style={s.primaryAction} onPress={startSession}>
             <View style={s.flex}><Label>{t('home.primaryAction')}</Label><Serif style={s.primaryTitle}>{t('home.startSession')}</Serif><AppText style={s.body}>{t('home.startSessionBody')}</AppText></View>
             <Ionicons name="arrow-forward" size={23} color={C.goldLight}/>
           </TouchableOpacity>
@@ -40,8 +40,8 @@ export function HomeScreen({ startSession, openModule }: { startSession: () => v
           </View>
 
           <View style={s.quickGrid}>
-            <TouchableOpacity style={s.quickCard} onPress={()=>openModule('audio')}><Ionicons name="headset-outline" size={24} color={C.goldLight}/><Label>{t('home.mentalAudio')}</Label><Serif style={s.quickTitle}>{t('home.lockIn')}</Serif><AppText style={s.quickCopy}>{t('home.quickFocus')}</AppText></TouchableOpacity>
-            <TouchableOpacity style={s.quickCard} onPress={()=>openModule('war')}><Ionicons name="analytics-outline" size={24} color={C.goldLight}/><Label>{t('home.warRoom')}</Label><Serif style={s.quickTitle}>{t('home.heatmap')}</Serif><AppText style={s.quickCopy}>{t('home.patternsTriggers')}</AppText></TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.72} style={s.quickCard} onPress={()=>openModule('audio')}><Ionicons name="headset-outline" size={24} color={C.goldLight}/><Label>{t('home.mentalAudio')}</Label><Serif style={s.quickTitle}>{t('home.lockIn')}</Serif><AppText style={s.quickCopy}>{t('home.quickFocus')}</AppText></TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.72} style={s.quickCard} onPress={()=>openModule('war')}><Ionicons name="analytics-outline" size={24} color={C.goldLight}/><Label>{t('home.warRoom')}</Label><Serif style={s.quickTitle}>{t('home.heatmap')}</Serif><AppText style={s.quickCopy}>{t('home.patternsTriggers')}</AppText></TouchableOpacity>
           </View>
 
           <View style={s.editorial}><Label>{t('home.decisionCue')}</Label><Serif style={s.editorialText}>“{t('home.decisionCueText')}”</Serif></View>
