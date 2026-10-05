@@ -306,4 +306,7 @@ export const es: TranslationCatalog = {
   'cognitive.attention.b': 'Posición, stacks y acción actual',
   'cognitive.attention.c': 'Recuperar las fichas inmediatamente',
   'cognitive.attention.feedback': 'Correcto: devuelve la atención al presente antes de construir la próxima decisión.',
+  'cognitive.answer.correct': 'CORRECTO',
+  'cognitive.answer.adjust': 'AJUSTE',
+  'cognitive.answer.retry': 'Redirige el foco hacia la alternativa que mejor protege la próxima decisión.',
 };
