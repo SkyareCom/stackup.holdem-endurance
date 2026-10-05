@@ -45,7 +45,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     </View>;
   } else if(module==='gym') {
     body=<View style={s.moduleContent}>
-      <TouchableOpacity activeOpacity={0.72} style={[s.reaction,reaction!==null&&s.reactionDone]} onPress={()=>setReaction(reaction===null?284:null)}>
+      <TouchableOpacity activeOpacity={0.68} accessibilityRole="button" style={[s.reaction,reaction!==null&&s.reactionDone]} onPress={()=>setReaction(reaction===null?284:null)}>
         <Label>{t('overlay.reactionTest')}</Label>
         <Serif style={s.reactionValue}>{reaction===null?t('overlay.ready'):reaction+' ms'}</Serif>
         <AppText style={s.body}>{reaction===null?t('overlay.tapToStart'):t('overlay.reactionBaseline')}</AppText>
@@ -87,7 +87,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     body=<View style={s.moduleContent}>{stoicPrinciples.map(x=><View key={x.id} style={s.stoic}><Label>{t(x.titleKey)}</Label><Serif style={s.stoicText}>{t(x.bodyKey)}</Serif></View>)}</View>;
   }
 
-  return <View style={s.overlay}><SafeAreaView style={s.flex}><View style={s.overlayHeader}><View><Label>{t(meta.subtitleKey)}</Label><Serif style={s.overlayTitle}>{t(meta.titleKey)}</Serif></View><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View><ScrollView contentContainerStyle={s.overlayScroll}>{body}</ScrollView></SafeAreaView></View>;
+  return <View style={s.overlay}><SafeAreaView style={s.flex}><View style={s.overlayHeader}><View><Label>{t(meta.subtitleKey)}</Label><Serif style={s.overlayTitle}>{t(meta.titleKey)}</Serif></View><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View><ScrollView contentContainerStyle={s.overlayScroll}>{body}</ScrollView></SafeAreaView></View>;
 }
 
 export function BreakOverlay({ close }: { close:()=>void }) {
@@ -102,7 +102,7 @@ export function BreakOverlay({ close }: { close:()=>void }) {
   const current=steps[step];
 
   return <View style={s.overlay}><SafeAreaView style={s.breakSafe}>
-    <View style={s.rowBetween}><Label>{t('break.label')}</Label><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
+    <View style={s.rowBetween}><Label>{t('break.label')}</Label><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
     <View style={s.breakCenter}>
       <View style={s.breathe}><View style={s.breatheInner}/></View>
       <AppText style={s.goldText}>{current.time}</AppText>
@@ -120,7 +120,7 @@ export function CheckinOverlay({ close }: { close:()=>void }) {
   const [trigger,setTrigger]=useState<WarRoomTriggerId|''>('');
 
   return <View style={s.overlay}><SafeAreaView style={s.checkinSafe}>
-    <View style={s.rowBetween}><View><Label>{t('checkin.label')}</Label><Serif style={s.overlayTitle}>{t('checkin.currentState')}</Serif></View><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
+    <View style={s.rowBetween}><View><Label>{t('checkin.label')}</Label><Serif style={s.overlayTitle}>{t('checkin.currentState')}</Serif></View><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
     <View style={s.panel}><Label>{t('checkin.game')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:state===x}} key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
     <View style={s.panel}><Label>{t('checkin.triggerState')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:trigger===x.id}} key={x.id} onPress={()=>setTrigger(x.id)} style={[s.chip,trigger===x.id&&s.chipActive]}><AppText style={[s.chipText,trigger===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
     <PremiumButton label={t('checkin.save')} onPress={close}/>
@@ -140,7 +140,7 @@ export function SOSOverlay({ close, goCoach }: { close:()=>void; goCoach:()=>voi
   const current=steps[step];
 
   return <View style={s.sos}><SafeAreaView style={s.sosSafe}>
-    <View style={s.rowBetween}><Label>{t('sos.label')}</Label><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
+    <View style={s.rowBetween}><Label>{t('sos.label')}</Label><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
     <View style={s.sosCenter}>
       <View style={s.breathe}><View style={s.breatheInner}/></View>
       <Serif style={s.sosTitle}>{t(current.titleKey)}</Serif>
