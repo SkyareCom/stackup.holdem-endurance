@@ -68,7 +68,7 @@ for (const file of sourceFiles) {
   }
 }
 
-const allowedFontSizes = new Set([48, 26, 22, 12, 10]);
+const allowedFontSizes = new Set([24, 20, 14, 12, 10]);
 const typographySourceFiles = [];
 for (const start of ['app', 'src']) {
   const walkTypography = (dir) => {
@@ -86,9 +86,9 @@ for (const file of typographySourceFiles) {
   for (const match of source.matchAll(/fontSize\s*:\s*(\d+(?:\.\d+)?)/g)) {
     const size = Number(match[1]);
     if (!allowedFontSizes.has(size)) {
-      fail(`${file} uses fontSize ${size}px. Allowed sizes: 48, 26, 22, 12, 10.`);
+      fail(`${file} uses fontSize ${size}px. Allowed sizes: 24, 20, 14, 12, 10.`);
     }
   }
 }
 
-console.log('Typography check passed: Titillium Web italic is global and font sizes are restricted to 48/26/22/12/10px.');
+console.log('Typography check passed: Titillium Web italic is global and font sizes are restricted to 24/20/14/12/10px.');

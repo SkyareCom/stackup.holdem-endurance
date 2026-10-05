@@ -1,50 +1,153 @@
 import React from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { PHOTO, C } from '../theme';
-import { AppText, Backdrop, GoldRule, Header, Label, Serif } from '../ui';
+import { PHOTO } from '../theme';
+import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
+import { GuidedSection } from '../components/GuidedSection';
+import {
+  calculateReadiness,
+  classifyTiltRisk,
+  deriveMentalState,
+  getSessionAction,
+  type MentalState,
+  type SessionAction,
+  type TiltRisk,
+} from '../performanceEngine';
+import { usePerformance } from '../performanceStore';
+import { buildPerformanceCare, buildCareFollowups } from '../performanceCare';
 import { s } from '../styles';
 import { Module } from '../types';
-import { useI18n } from '../i18n';
+import { useI18n, type TranslationKey } from '../i18n';
 
-function Metric({ label, value }: { label: string; value: number }) {
-  return <View style={s.metric}><View style={s.rowBetween}><Label>{label}</Label><AppText style={s.metricValue}>{value}/5</AppText></View><View style={s.track}><View style={[s.fill,{width:`${value*20}%`}]} /></View></View>;
-}
+const riskKey:Record<TiltRisk,TranslationKey>={
+  low:'risk.low',medium:'risk.medium',critical:'risk.critical',
+};
+const stateKey:Record<MentalState,TranslationKey>={
+  centered:'mentalState.centered',alert:'mentalState.alert',vulnerable:'mentalState.vulnerable',
+  dysregulated:'mentalState.dysregulated',tilt:'mentalState.tilt',
+};
+const actionKey:Record<SessionAction,TranslationKey>={
+  continue:'action.continue','check-in':'action.check-in','break-4':'action.break-4',
+  contain:'action.contain','stop-session':'action.stop-session',
+};
 
-export function HomeScreen({ startSession, openModule }: { startSession: () => void; openModule: (m: Module) => void }) {
+export function HomeScreen({ openPhase, openModule }: { openPhase: (p:'ready'|'active'|'debrief') => void; openModule: (m: Module) => void }) {
   const { t } = useI18n();
+  const { latestCheckin,activeSession,sessions,baseline,profile,careTaskEvents,setCareTaskStatus } = usePerformance();
+  const dailyCare=buildPerformanceCare(profile.lifestyle);
+  const carePriority=dailyCare.find(x=>x.priority!=='ready')??dailyCare[0];
+  const careFollowups=buildCareFollowups(profile.lifestyle);
+  const today=new Date().toISOString().slice(0,10);
+
+  if(!latestCheckin){
+    return <Backdrop uri={PHOTO.focus}>
+      <SafeAreaView style={s.flex}>
+        <Header title="ENDURANCE" subtitle={t('home.subtitle')} />
+        <ScrollView contentContainerStyle={s.scroll}>
+          <View style={s.panel}>
+            <Label>{t('home.grindJourney')}</Label>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('ready')}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('active')}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('debrief')}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('behavior')}><View style={{flex:1}}><Label>{t('home.patternsEvolution')}</Label><Serif style={s.guidedToolTitle}>{t('home.history')}</Serif><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
+          </View>
+
+          <GuidedSection
+            subtitle={t('home.stateToday')}
+            title={t('home.noCheckinTitle')}
+            description={t('home.noCheckinBody')}
+          >
+            <View style={s.guidedBlock}>
+              <Label>{t('coachJourney.notice')}</Label>
+              <AppText style={s.body}>{t('coachJourney.noticeBody')}</AppText>
+            </View>
+            <PremiumButton label={t('home.checkinNow')} onPress={()=>openPhase('ready')}/>
+          </GuidedSection>
+          <View style={s.panel}>
+            <Label>{t('home.historySummary')}</Label>
+            <Serif style={s.actionTitle}>{sessions.length}</Serif>
+            <AppText style={s.body}>{sessions.length?t('profile.developmentBody'):t('common.insufficientData')}</AppText>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </Backdrop>;
+  }
+
+  const readinessIndex=calculateReadiness(latestCheckin);
+  const tiltRisk=classifyTiltRisk(latestCheckin);
+  const minutes=activeSession?Math.max(0,Math.floor((Date.now()-activeSession.startedAt)/60000)):0;
+  const lastRuntime=activeSession?.checkins[activeSession.checkins.length-1];
+  const mentalState=deriveMentalState({readinessIndex,tiltRisk,sessionMinutes:minutes,focus:lastRuntime?.focus??latestCheckin.mentalDrive,tension:lastRuntime?.tension??latestCheckin.tension,impulse:lastRuntime?.impulse??latestCheckin.impulse,fatigue:lastRuntime?.fatigue??latestCheckin.fatigue});
+  const action=getSessionAction({
+    mode:activeSession?.plan.mode??'cash',
+    canLeave:activeSession?.plan.canLeave??true,
+    tiltRisk,
+    fatigue:lastRuntime?.fatigue??latestCheckin.fatigue,
+    focus:lastRuntime?.focus??latestCheckin.mentalDrive,
+    tension:lastRuntime?.tension??latestCheckin.tension,
+    minFocus:profile.stopRules.minFocus,
+    maxTension:profile.stopRules.maxTension,
+  });
 
   return (
     <Backdrop uri={PHOTO.focus}>
       <SafeAreaView style={s.flex}>
         <Header title="ENDURANCE" subtitle={t('home.subtitle')} />
         <ScrollView contentContainerStyle={s.scroll}>
-          <View style={s.heroPanel}>
-            <View style={s.rowBetweenTop}>
-              <View style={s.flex}><Label>{t('home.readiness')}</Label><Serif style={s.heroNumber}>82</Serif><AppText style={s.body}>{t('home.readinessBody')}</AppText></View>
-              <View style={s.ring}><Serif style={s.grade}>A-</Serif><AppText style={s.ringLabel}>{t('home.baseline')}</AppText></View>
+          <View style={s.panel}>
+            <Label>{t('home.grindJourney')}</Label>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('ready')}><View style={{flex:1}}><Label>{t('home.preGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.prepare')}</Serif><AppText style={s.guidedToolBody}>{t('home.preGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('active')}><View style={{flex:1}}><Label>{t('home.duringGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.quickLog')}</Serif><AppText style={s.guidedToolBody}>{t('home.duringGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openPhase('debrief')}><View style={{flex:1}}><Label>{t('home.postGame')}</Label><Serif style={s.guidedToolTitle}>{t('home.review')}</Serif><AppText style={s.guidedToolBody}>{t('home.postGameBody')}</AppText></View></TouchableOpacity>
+            <TouchableOpacity style={s.guidedToolRow} onPress={()=>openModule('behavior')}><View style={{flex:1}}><Label>{t('home.patternsEvolution')}</Label><Serif style={s.guidedToolTitle}>{t('home.history')}</Serif><AppText style={s.guidedToolBody}>{t('home.patternsBody')}</AppText></View></TouchableOpacity>
+          </View>
+
+          <GuidedSection
+            subtitle={t('home.latestCheckin')}
+            title={t('home.readinessTitle')}
+          >
+            <View style={s.heroPanel}>
+              <View style={s.rowBetween}>
+                <View><Label>{t('pregrind.readiness')}</Label><Serif style={s.heroNumber}>{readinessIndex}</Serif></View>
+                <View><Label>{t('home.risk')}</Label><Serif style={s.actionTitle}>{t(riskKey[tiltRisk])}</Serif></View>
+              </View>
+              <View style={s.rule}/>
+              <View style={s.rowBetween}>
+                <View><Label>{t('home.mentalState')}</Label><AppText style={s.body}>{t(stateKey[mentalState])}</AppText></View>
+                <View><Label>{t('profile.confidence')}</Label><AppText style={s.body}>{t(({
+                  none:'confidence.none',low:'confidence.low',moderate:'confidence.moderate',high:'confidence.high',
+                } as const)[baseline.confidence])}</AppText></View>
+              </View>
             </View>
-            <GoldRule /><Metric label={t('home.energy')} value={4}/><Metric label={t('home.focus')} value={4}/><Metric label={t('home.tension')} value={2}/>
-          </View>
+          </GuidedSection>
 
-          <TouchableOpacity style={s.primaryAction} onPress={startSession}>
-            <View style={s.flex}><Label>{t('home.primaryAction')}</Label><Serif style={s.primaryTitle}>{t('home.startSession')}</Serif><AppText style={s.body}>{t('home.startSessionBody')}</AppText></View>
-            <Ionicons name="arrow-forward" size={23} color={C.goldLight}/>
-          </TouchableOpacity>
+          <GuidedSection
+            subtitle={t('coachJourney.decide')}
+            title={t('coachJourney.nextDecision')}
+            description={t('coachJourney.nextDecisionBody')}
+          />
 
-          <View style={s.intelligence}>
-            <View style={s.rowBetween}><Label>{t('home.intelligence')}</Label><AppText style={s.goldText}>02:55 → 03:30</AppText></View>
-            <Serif style={s.intelligenceTitle}>{t('home.protectThirdBlock')}</Serif>
-            <AppText style={s.body}>{t('home.intelligenceBody')}</AppText>
-          </View>
+          <GuidedSection
+            subtitle={t('home.nextAction')}
+            title={activeSession?t(actionKey[action]):t('pregrind.title')}
+            description={activeSession?t('session.protectTempoBody'):t('pregrind.reframeBody')}
+          >
+            <PremiumButton label={activeSession?t('nav.session'):t('home.checkinNow')} onPress={()=>openPhase('ready')}/>
+          </GuidedSection>
 
-          <View style={s.quickGrid}>
-            <TouchableOpacity style={s.quickCard} onPress={()=>openModule('audio')}><Ionicons name="headset-outline" size={24} color={C.goldLight}/><Label>{t('home.mentalAudio')}</Label><Serif style={s.quickTitle}>{t('home.lockIn')}</Serif><AppText style={s.quickCopy}>{t('home.quickFocus')}</AppText></TouchableOpacity>
-            <TouchableOpacity style={s.quickCard} onPress={()=>openModule('war')}><Ionicons name="analytics-outline" size={24} color={C.goldLight}/><Label>{t('home.warRoom')}</Label><Serif style={s.quickTitle}>{t('home.heatmap')}</Serif><AppText style={s.quickCopy}>{t('home.patternsTriggers')}</AppText></TouchableOpacity>
-          </View>
+          {careFollowups.length?<View style={s.panel}><Label>{t('care.followup.title')}</Label><AppText style={s.body}>{t('care.followup.body')}</AppText>{careFollowups.map(item=>{const status=careTaskEvents.find(e=>e.date===today&&e.taskId===item.id)?.status;return <View key={item.id} style={s.guidedBlock}><Serif style={s.actionTitle}>{t(('care.followup.'+item.id+'.question') as TranslationKey)}</Serif><AppText style={s.body}>{t(('care.followup.'+item.id+'.tip') as TranslationKey)}</AppText><View style={s.processGrid}><TouchableOpacity onPress={()=>setCareTaskStatus(item.id,'done')} style={[s.processChip,status==='done'&&s.chipActive]}><AppText style={[s.chipText,status==='done'&&s.chipTextActive]}>{t('care.followup.yes')}</AppText></TouchableOpacity><TouchableOpacity onPress={()=>setCareTaskStatus(item.id,'skipped')} style={[s.processChip,status==='skipped'&&s.chipActive]}><AppText style={[s.chipText,status==='skipped'&&s.chipTextActive]}>{t('care.followup.notYet')}</AppText></TouchableOpacity></View></View>})}</View>:null}
 
-          <View style={s.editorial}><Label>{t('home.decisionCue')}</Label><Serif style={s.editorialText}>“{t('home.decisionCueText')}”</Serif></View>
+          <GuidedSection
+            subtitle={t('care.title')}
+            title={t(`care.action.${carePriority.priority}.title` as TranslationKey)}
+            description={t(`care.action.${carePriority.priority}.body` as TranslationKey)}
+          />
+
+          <GuidedSection
+            subtitle={t('home.decisionCue')}
+            title={t('home.decisionCueTitle')}
+            description={t('home.decisionCueText')}
+          />
         </ScrollView>
       </SafeAreaView>
     </Backdrop>

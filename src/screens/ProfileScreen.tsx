@@ -1,64 +1,220 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { C, PHOTO } from '../theme';
-import { AppText, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
+import { AppText, AppTextInput, Backdrop, Header, Label, PremiumButton, Serif } from '../ui';
 import { s } from '../styles';
 import { LanguageSelector } from '../components/LanguageSelector';
-import { useI18n } from '../i18n';
+import { analyzeDownswing, buildDevelopmentSnapshot, buildSportPsychologySnapshot, buildTiltProfile, type Temperament, type TiltTrigger } from '../performanceEngine';
+import { usePerformance } from '../performanceStore';
+import { buildPerformanceCare, buildDailyCareTasks } from '../performanceCare';
+import { useI18n, type TranslationKey } from '../i18n';
+import { connectAndReadHealthConnect, type HealthConnectState } from '../healthConnect';
+
+const temperaments:{id:Temperament;key:TranslationKey}[]=[
+  {id:'impulsive',key:'temperament.impulsive'},{id:'passive',key:'temperament.passive'},
+  {id:'perfectionist',key:'temperament.perfectionist'},{id:'analytical',key:'temperament.analytical'},
+];
+const triggerKeys:Record<TiltTrigger,TranslationKey>={
+  'bad-beat':'trigger.badBeat','own-error':'trigger.ownError',anger:'trigger.anger',rush:'trigger.rush',
+  fear:'trigger.fear',euphoria:'trigger.euphoria',fatigue:'trigger.fatigue',autopilot:'trigger.autopilot',
+  revenge:'trigger.revenge',personal:'trigger.personal',
+};
+
+function SmallScale({label,value,onChange}:{label:string;value:number;onChange:(v:number)=>void}) {
+  return <View style={s.scaleBlock}><View style={s.rowBetween}><Label>{label}</Label><AppText style={s.goldText}>{value}/10</AppText></View>
+    <View style={s.scoreGrid}>{[0,2,4,6,8,10].map(n=><TouchableOpacity key={n} onPress={()=>onChange(n)} style={[s.scoreCell,value===n&&s.chipActive]}><AppText style={[s.chipText,value===n&&s.chipTextActive]}>{n}</AppText></TouchableOpacity>)}</View>
+  </View>;
+}
 
 export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
   const { t } = useI18n();
+  const router = useRouter();
+  const { profile,updateProfile,updateExtraGrind,updateLifestyle,updateStopRules,sessions,baseline,careTaskEvents,setCareTaskStatus,dailyWellbeing,updateDailyWellbeing,clearHistory }=usePerformance();
+  const developmentSnapshot=buildDevelopmentSnapshot(sessions);
+  const tiltProfile=buildTiltProfile(sessions);
+  const sportPsychology=buildSportPsychologySnapshot(sessions);
+  const analyticsUsable=baseline.confidence!=='none';
+  const downswing=analyzeDownswing(sessions);
+  const [analyticsExpanded,setAnalyticsExpanded]=useState(false);
+  const [healthState,setHealthState]=useState<HealthConnectState>('unsupported');
+  const connectHealth=async()=>{const result=await connectAndReadHealthConnect(Date.now()-60*60*1000);setHealthState(result.state);};
+  const careActions=buildPerformanceCare(profile.lifestyle);
+  const careTasks=buildDailyCareTasks(profile.lifestyle);
+  const today=new Date().toISOString().slice(0,10);
+  const todayCare=careTaskEvents.filter(e=>e.date===today);
+  const wellbeing=dailyWellbeing.find(x=>x.date===today);
 
   return (
     <Backdrop uri={PHOTO.focus} blur={14} overlay={0.88}>
       <SafeAreaView style={s.flex}>
         <Header title={t('profile.title')} subtitle={t('profile.stackupId')}/>
         <ScrollView contentContainerStyle={s.scroll}>
-          <View style={s.lead}>
-            <Label>{t('profile.progression')}</Label>
-            <Serif style={s.profileLevel}>{t('profile.level')}</Serif>
-            <AppText style={s.body}>{t('profile.consistency')}</AppText>
-            <View style={s.track}><View style={[s.fill,{width:'68%'}]}/></View>
-          </View>
-          <View style={s.stats}>
-            <View style={s.stat}>
-              <Label>{t('profile.sessions')}</Label>
-              <Serif style={s.statValue}>125</Serif>
-              <AppText style={s.goldText}>{t('profile.thisMonth')}</AppText>
-            </View>
-            <View style={s.stat}>
-              <Label>{t('profile.discipline')}</Label>
-              <Serif style={s.statValue}>88</Serif>
-              <AppText style={s.goldText}>+6%</AppText>
+          <View style={s.profileSection}>
+            <Label>{t('profile.smartwatch')}</Label>
+            <View style={s.panel}>
+              <View style={s.rowBetween}><View style={s.flex}><Serif style={s.actionTitle}>{t('physiology.title')}</Serif><AppText style={s.body}>{t(`physiology.state.${healthState}` as TranslationKey)}</AppText></View><Ionicons name="watch-outline" size={24} color={C.goldLight}/></View>
+              <PremiumButton label={t('physiology.connect')} secondary onPress={connectHealth}/>
+              <AppText style={s.body}>{t('physiology.boundary')}</AppText>
             </View>
           </View>
-          <View style={s.panel}>
-            <Label>{t('profile.plan')}</Label>
-            <Serif style={s.plan}>{t('profile.planName')}</Serif>
-            <AppText style={s.body}>{t('profile.planBody')}</AppText>
-            <PremiumButton label={t('profile.viewFull')} secondary/>
-          </View>
-          <View style={s.panel}>
-            <AppText style={s.body}>{t('profile.languageBody')}</AppText>
-            <LanguageSelector variant="profile"/>
-          </View>
-          <TouchableOpacity style={s.settingRow} onPress={openDiary}>
-            <Ionicons name="book-outline" size={20} color={C.goldLight}/>
-            <View style={s.flex}>
-              <AppText style={s.settingTitle}>{t('profile.diary')}</AppText>
-              <AppText style={s.settingSub}>{t('profile.diaryBody')}</AppText>
+          {sessions.some(x=>x.debrief.financialResult!==null)?<View style={s.profileSection}>
+            <Label>{t('finance.analysis')}</Label>
+            <View style={s.panel}>
+              <View style={s.rowBetween}><Label>{t('finance.negativeStreak')}</Label><AppText style={s.goldText}>{downswing.negativeStreak}</AppText></View>
+              <View style={s.rowBetween}><Label>{t('finance.recentNet')}</Label><AppText style={s.goldText}>{t('finance.currency')} {downswing.recentNet.toFixed(2)}</AppText></View>
+              <View style={s.guidedBlock}><Label>{t(`finance.level.${downswing.level}` as TranslationKey)}</Label><AppText style={s.body}>{t(`finance.level.${downswing.level}.body` as TranslationKey)}</AppText></View>
+              <AppText style={s.body}>{t('finance.notPerformance')}</AppText>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={C.dim}/>
-          </TouchableOpacity>
-          <View style={s.settingRow}>
-            <Ionicons name="shield-checkmark-outline" size={20} color={C.goldLight}/>
-            <View style={s.flex}>
-              <AppText style={s.settingTitle}>{t('profile.privacy')}</AppText>
-              <AppText style={s.settingSub}>{t('profile.privacyBody')}</AppText>
+          </View>:null}
+
+          <View style={s.profileSection}>
+            <Label>{t('profile.base')}</Label>
+            <View style={s.panel}>
+              <Label>{t('profile.temperament')}</Label>
+              <View style={s.processGrid}>{temperaments.map(item=><TouchableOpacity key={item.id} onPress={()=>updateProfile({temperament:item.id})} style={[s.processChip,profile.temperament===item.id&&s.chipActive]}><AppText style={[s.chipText,profile.temperament===item.id&&s.chipTextActive]}>{t(item.key)}</AppText></TouchableOpacity>)}</View>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={C.dim}/>
+            <View style={s.panel}>
+              <Label>{t('profile.extraGrind')}</Label>
+              <SmallScale label={t('profile.sleep')} value={profile.extraGrind.sleep} onChange={sleep=>updateExtraGrind({sleep})}/>
+              <SmallScale label={t('profile.personalStress')} value={profile.extraGrind.personalStress} onChange={personalStress=>updateExtraGrind({personalStress})}/>
+              <SmallScale label={t('profile.financialStress')} value={profile.extraGrind.financialStress} onChange={financialStress=>updateExtraGrind({financialStress})}/>
+              <SmallScale label={t('pregrind.nutrition')} value={profile.extraGrind.nutrition} onChange={nutrition=>updateExtraGrind({nutrition})}/>
+              <SmallScale label={t('pregrind.hydration')} value={profile.extraGrind.hydration} onChange={hydration=>updateExtraGrind({hydration})}/>
+              <SmallScale label={t('pregrind.activity')} value={profile.extraGrind.physicalActivity} onChange={physicalActivity=>updateExtraGrind({physicalActivity})}/>
+            </View>
+            <View style={s.panel}>
+              <Label>{t('profile.sessionLimits')}</Label>
+              <AppText style={s.body}>{t('profile.sessionLimitsBody')}</AppText>
+              <View style={s.guidedBlock}><Label>{t('profile.maxDurationQuestion')}</Label><AppText style={s.body}>{t('profile.maxDurationHelp')}</AppText><View style={s.compactChoiceRow}>{[120,180,240].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({maxDurationMinutes:v})} style={[s.compactChoice,profile.stopRules.maxDurationMinutes===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.maxDurationMinutes===v&&s.chipTextActive]}>{v} {t('common.minutesShort')}</AppText></TouchableOpacity>)}</View></View>
+              <View style={s.guidedBlock}><Label>{t('profile.maxReentriesQuestion')}</Label><AppText style={s.body}>{t('profile.maxReentriesHelp')}</AppText><View style={s.compactChoiceRow}>{[0,1,2].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({maxReentries:v})} style={[s.compactChoice,profile.stopRules.maxReentries===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.maxReentries===v&&s.chipTextActive]}>{v}</AppText></TouchableOpacity>)}</View></View>
+              <View style={s.guidedBlock}><Label>{t('profile.minFocusQuestion')}</Label><AppText style={s.body}>{t('profile.minFocusHelp')}</AppText><View style={s.compactChoiceRow}>{[3,4,5].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({minFocus:v})} style={[s.compactChoice,profile.stopRules.minFocus===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.minFocus===v&&s.chipTextActive]}>{v}</AppText></TouchableOpacity>)}</View></View>
+              <View style={s.guidedBlock}><Label>{t('profile.maxTensionQuestion')}</Label><AppText style={s.body}>{t('profile.maxTensionHelp')}</AppText><View style={s.compactChoiceRow}>{[6,7,8].map(v=><TouchableOpacity key={v} onPress={()=>updateStopRules({maxTension:v})} style={[s.compactChoice,profile.stopRules.maxTension===v&&s.chipActive]}><AppText style={[s.chipText,profile.stopRules.maxTension===v&&s.chipTextActive]}>{v}</AppText></TouchableOpacity>)}</View></View>
+              <AppText style={s.body}>{t('profile.noStakeIncreaseHelp')}</AppText><TouchableOpacity onPress={()=>updateStopRules({noStakeIncrease:!profile.stopRules.noStakeIncrease})} style={[s.option,profile.stopRules.noStakeIncrease&&s.optionActive]}><AppText style={[s.optionText,profile.stopRules.noStakeIncrease&&s.optionTextActive]}>{t('profile.noStakeIncrease')}</AppText></TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>{t('care.title')}</Label>
+            <AppText style={s.body}>{t('care.body')}</AppText>
+            <View style={s.panel}>
+              {careActions.map((item,index)=><View key={item.priority} style={index?s.guidedBlock:undefined}>
+                <View style={s.rowBetween}><Serif style={s.actionTitle}>{t(`care.action.${item.priority}.title` as TranslationKey)}</Serif><AppText style={s.goldText}>{item.severity==='high'?'PRIORIDADE':item.severity==='attention'?'ATENÇÃO':'OK'}</AppText></View>
+                <AppText style={s.body}>{t(`care.action.${item.priority}.body` as TranslationKey)}</AppText>
+              </View>)}
+            </View>
+            <View style={s.panel}>
+              <Label>{t('care.checkin')}</Label>
+              <SmallScale label={t('care.sleepHours')} value={Math.round(profile.lifestyle.sleepHours)} onChange={sleepHours=>updateLifestyle({sleepHours})}/>
+              <SmallScale label={t('care.sleepQuality')} value={profile.lifestyle.sleepQuality} onChange={sleepQuality=>updateLifestyle({sleepQuality})}/>
+              <SmallScale label={t('care.hydration')} value={profile.lifestyle.hydration} onChange={hydration=>updateLifestyle({hydration})}/>
+              <SmallScale label={t('care.mealQuality')} value={profile.lifestyle.mealQuality} onChange={mealQuality=>updateLifestyle({mealQuality})}/>
+              <SmallScale label={t('care.hoursSinceMeal')} value={profile.lifestyle.hoursSinceMeal} onChange={hoursSinceMeal=>updateLifestyle({hoursSinceMeal})}/>
+              <SmallScale label={t('care.movement')} value={Math.round(profile.lifestyle.movementMinutes/6)} onChange={v=>updateLifestyle({movementMinutes:v*6})}/>
+              <SmallScale label={t('care.sitting')} value={profile.lifestyle.sittingHours} onChange={sittingHours=>updateLifestyle({sittingHours})}/>
+              <SmallScale label={t('care.caffeine')} value={Math.min(10,Math.round(profile.lifestyle.caffeineMg/50))} onChange={v=>updateLifestyle({caffeineMg:v*50,caffeineHoursAgo:v?profile.lifestyle.caffeineHoursAgo:24})}/>
+              <SmallScale label={t('care.caffeineHours')} value={Math.min(10,profile.lifestyle.caffeineHoursAgo)} onChange={caffeineHoursAgo=>updateLifestyle({caffeineHoursAgo})}/>
+              <SmallScale label={t('care.strengthDays')} value={Math.min(10,profile.lifestyle.strengthDaysThisWeek)} onChange={strengthDaysThisWeek=>updateLifestyle({strengthDaysThisWeek})}/>
+              <TouchableOpacity onPress={()=>updateLifestyle({painOrIllness:!profile.lifestyle.painOrIllness})} style={[s.option,profile.lifestyle.painOrIllness&&s.optionActive]}><AppText style={[s.optionText,profile.lifestyle.painOrIllness&&s.optionTextActive]}>{t('care.symptoms')}: {t(profile.lifestyle.painOrIllness?'care.yes':'care.no')}</AppText></TouchableOpacity>
+            </View>
+            <View style={s.panel}>
+              <Label>{t('care.dailyPlan')}</Label>
+              {careTasks.map(task=>{const status=todayCare.find(e=>e.taskId===task.id)?.status;return <View key={task.id} style={s.guidedBlock}><View style={s.rowBetween}><Serif style={s.actionTitle}>{t(`care.task.${task.id}.title` as TranslationKey)}</Serif><AppText style={s.goldText}>{status?t(`care.status.${status}` as TranslationKey):t('care.status.pending')}</AppText></View><AppText style={s.body}>{t(`care.task.${task.id}.body` as TranslationKey)}</AppText><View style={s.processGrid}><TouchableOpacity onPress={()=>setCareTaskStatus(task.id,'done')} style={[s.processChip,status==='done'&&s.chipActive]}><AppText style={[s.chipText,status==='done'&&s.chipTextActive]}>{t('care.markDone')}</AppText></TouchableOpacity><TouchableOpacity onPress={()=>setCareTaskStatus(task.id,'skipped')} style={[s.processChip,status==='skipped'&&s.chipActive]}><AppText style={[s.chipText,status==='skipped'&&s.chipTextActive]}>{t('care.skip')}</AppText></TouchableOpacity></View></View>})}
+              <View style={s.rule}/>
+              <Label>{t('care.weeklyMovement')}</Label>
+              <AppText style={s.body}>{t('care.movementTarget')}</AppText>
+              {baseline.count>=5?<><View style={s.rule}/><Label>{t('care.personalCorrelations')}</Label><AppText style={s.body}>{t('care.sleepCorrelation')}: {baseline.sleepToMentalEvCorrelation??'—'} · {t('care.nutritionCorrelation')}: {baseline.nutritionToMentalEvCorrelation??'—'} · {t('care.hydrationCorrelation')}: {baseline.hydrationToMentalEvCorrelation??'—'} · {t('care.activityCorrelation')}: {baseline.activityToMentalEvCorrelation??'—'}</AppText></>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
+            </View>
+            <View style={s.panel}>
+              <Label>{t('care.base')}</Label>
+              <AppText style={s.body}>{t('care.evidence.sleep')}</AppText>
+              <AppText style={s.body}>{t('care.evidence.movement')}</AppText>
+              <AppText style={s.body}>{t('care.evidence.nutrition')}</AppText>
+              <AppText style={s.body}>{t('care.evidence.hydration')}</AppText>
+              <AppText style={s.body}>{t('care.evidence.safety')}</AppText>
+            </View>
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>{t('profile.evolution')}</Label>
+            {sessions.length?<View style={s.panel}>
+              <View style={s.rowBetween}><View><Label>{t('profile.avgReadiness')}</Label><Serif style={s.actionTitle}>{baseline.averageReadiness}</Serif></View><View><Label>{t('profile.avgMentalEv')}</Label><Serif style={s.actionTitle}>{baseline.averageMentalEv.toFixed(1)}</Serif></View></View>
+              <View style={s.rowBetween}><View><Label>{t('profile.avgDuration')}</Label><AppText style={s.body}>{baseline.averageDurationMinutes}</AppText></View><View><Label>{t('profile.confidence')}</Label><AppText style={s.goldText}>{t(({
+                none:'confidence.none',low:'confidence.low',moderate:'confidence.moderate',high:'confidence.high',
+              } as const)[baseline.confidence])}</AppText></View></View>
+            </View>:<>
+              <AppText style={s.body}>{t('profile.evolutionInsufficient')}</AppText>
+              <AppText style={s.body}>{t('profile.evolutionCollect')}</AppText>
+            </>}
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>{t('profile.development')}</Label>
+            <AppText style={s.body}>{t('profile.developmentBody')}</AppText>
+            {sessions.length?<View style={s.panel}>
+              <View style={s.rowBetween}><Label>{t('development.discipline.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.discipline}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('development.focus.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.focus}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('development.resilience.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.resilience}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('development.logic.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.logic}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('development.lifestyle.title')}</Label><AppText style={s.goldText}>{developmentSnapshot.lifestyle}/10</AppText></View>
+            </View>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>{t('sportPsych.title')}</Label>
+            <AppText style={s.body}>{t('sportPsych.body')}</AppText>
+            {sessions.length?<View style={s.panel}>
+              <View style={s.rowBetween}><Label>{t('sportPsych.attention')}</Label><AppText style={s.goldText}>{sportPsychology.attentionStability}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.impulse')}</Label><AppText style={s.goldText}>{sportPsychology.impulseRegulation}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.pressure')}</Label><AppText style={s.goldText}>{sportPsychology.pressureRegulation}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.process')}</Label><AppText style={s.goldText}>{sportPsychology.processAdherence}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.fatigue')}</Label><AppText style={s.goldText}>{sportPsychology.mentalFatigueLoad}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('sportPsych.adversity')}</Label><AppText style={s.goldText}>{sportPsychology.adversityResponse}/10</AppText></View>
+              <View style={s.rowBetween}><Label>{t('resilience.recoveryTime')}</Label><AppText style={s.goldText}>{sportPsychology.recoveryEfficiency===null?'—':sportPsychology.recoveryEfficiency+' min'}</AppText></View>
+              <View style={s.rule}/>
+              <View style={s.rowBetween}><Label>{t('profile.confidence')}</Label><AppText style={s.goldText}>{t(({
+                none:'confidence.none',low:'confidence.low',moderate:'confidence.moderate',high:'confidence.high',
+              } as const)[sportPsychology.confidence])}</AppText></View>
+              <AppText style={s.body}>{t('sportPsych.caution')}</AppText>
+            </View>:<AppText style={s.body}>{t('common.insufficientData')}</AppText>}
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>{t('profile.patterns')}</Label>
+            {sessions.length?<View style={s.panel}>
+              <Label>{t('profile.tiltDNA')}</Label>
+              <AppText style={s.body}>{t('profile.tiltDNABody')}</AppText>
+              {tiltProfile.length?tiltProfile.slice(0,3).map(item=><View key={item.trigger} style={s.rowBetween}><AppText style={s.body}>{t(triggerKeys[item.trigger])}</AppText><AppText style={s.goldText}>{item.count}</AppText></View>):<AppText style={s.body}>{t('profile.patternsCollect')}</AppText>}
+              <TouchableOpacity style={s.coachContextToggle} onPress={()=>setAnalyticsExpanded(v=>!v)}><AppText style={s.coachContextToggleText}>{t(analyticsExpanded?'profile.hideAnalytics':'profile.showAnalytics')}</AppText><Ionicons name={analyticsExpanded?'chevron-up':'chevron-down'} size={18} color={C.goldLight}/></TouchableOpacity>
+              {analyticsExpanded?<View style={s.contextList}>
+                <AppText style={s.body}>{t('profile.correlationBody')}</AppText>
+                <View style={s.rowBetween}><Label>{t('profile.resultCorrelation')}</Label><AppText style={s.goldText}>{analyticsUsable&&baseline.resultCorrelation!==null?baseline.resultCorrelation.toFixed(2):'—'}</AppText></View>
+                <View style={s.rowBetween}><Label>{t('profile.sleepCorrelation')}</Label><AppText style={s.goldText}>{analyticsUsable&&baseline.sleepToMentalEvCorrelation!==null?baseline.sleepToMentalEvCorrelation.toFixed(2):'—'}</AppText></View>
+                <View style={s.rowBetween}><Label>{t('profile.stressCorrelation')}</Label><AppText style={s.goldText}>{analyticsUsable&&baseline.stressToMentalEvCorrelation!==null?baseline.stressToMentalEvCorrelation.toFixed(2):'—'}</AppText></View>
+                <View style={s.rowBetween}><Label>{t('profile.readinessCorrelation')}</Label><AppText style={s.goldText}>{analyticsUsable&&baseline.readinessToMentalEvCorrelation!==null?baseline.readinessToMentalEvCorrelation.toFixed(2):'—'}</AppText></View>
+                {!analyticsUsable?<AppText style={s.body}>{t('profile.analyticsInsufficient')}</AppText>:baseline.resultCorrelation===null?<AppText style={s.body}>{t('profile.correlationInsufficient')}</AppText>:null}
+              </View>:null}
+            </View>:<>
+              <AppText style={s.body}>{t('profile.patternsInsufficient')}</AppText>
+              <AppText style={s.body}>{t('profile.patternsCollect')}</AppText>
+            </>}
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>{t('profile.history')}</Label>
+            <View style={s.settingRow}><Ionicons name="timer-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.historySessions')}</AppText><AppText style={s.settingSub}>{sessions.length}</AppText></View></View>
+            <View style={s.settingRow}><Ionicons name="pulse-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.historyCheckins')}</AppText><AppText style={s.settingSub}>{sessions.reduce((n,x)=>n+x.checkins.length,0)}</AppText></View></View>
+            <View style={s.settingRow}><Ionicons name="checkmark-done-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('care.history')}</AppText><AppText style={s.settingSub}>{careTaskEvents.filter(e=>e.status==='done').length} {t('care.completed')}</AppText></View></View>
+            <TouchableOpacity style={s.settingRow} onPress={openDiary}><Ionicons name="book-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.diary')}</AppText><AppText style={s.settingSub}>{t('profile.diaryBody')}</AppText></View><Ionicons name="chevron-forward" size={18} color={C.dim}/></TouchableOpacity>
+            {sessions.length?<PremiumButton label={t('profile.clearHistory')} secondary danger onPress={clearHistory}/>:null}
+          </View>
+
+          <View style={s.profileSection}>
+            <Label>{t('profile.settings')}</Label>
+            <View style={s.panel}><Label>{t('profile.language')}</Label><AppText style={s.body}>{t('profile.languageBody')}</AppText><LanguageSelector variant="profile"/></View>
+            <TouchableOpacity style={s.settingRow} onPress={()=>router.push('/privacy')}><Ionicons name="shield-checkmark-outline" size={20} color={C.goldLight}/><View style={s.flex}><AppText style={s.settingTitle}>{t('profile.privacy')}</AppText><AppText style={s.settingSub}>{t('profile.privacyBody')}</AppText></View><Ionicons name="chevron-forward" size={18} color={C.dim}/></TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>

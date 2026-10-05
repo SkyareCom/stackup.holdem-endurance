@@ -7,13 +7,46 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "android": {
-      "package": "com.stackupholdem.endurance"
+      "package": "com.stackupholdem.endurance",
+      "backgroundColor": "#090806",
+      "permissions": [
+        "android.permission.health.READ_HEART_RATE",
+        "android.permission.health.READ_BLOOD_PRESSURE"
+      ]
     },
     "ios": {
       "bundleIdentifier": "com.stackupholdem.endurance"
     },
     "plugins": [
-      "expo-router"
-    ]
+      "expo-router",
+      "react-native-health-connect",
+      "expo-system-ui",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#090806"
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false,
+          "enableBackgroundRecording": false
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "minSdkVersion": 26
+          }
+        }
+      ]
+    ],
+    "backgroundColor": "#090806"
   }
 }

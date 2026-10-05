@@ -13,6 +13,10 @@ describe('Train, content libraries, and overlays localization contract', () => {
     expect(content).toContain("cueKey: 'playlist.lockIn.cue'");
     expect(content).toContain("id: 'q1'");
     expect(content).toContain("textKey: 'diary.q1'");
+    expect(content).toContain("id: 'sleep'");
+    expect(content).toContain("id: 'nutrition'");
+    expect(content).toContain("id: 'hydration'");
+    expect(content).toContain("id: 'activity'");
     expect(content).toContain("id: 'energy'");
     expect(content).toContain("titleKey: 'lifestyle.energy.title'");
     expect(content).toContain("id: 'baseline'");
@@ -26,8 +30,8 @@ describe('Train, content libraries, and overlays localization contract', () => {
     const train = read('src/screens/TrainScreen.tsx');
     const overlays = read('src/overlays.tsx');
     expect(train).toContain("t('train.title')");
-    expect(train).toContain("t('train.reserveBody')");
-    expect(overlays).toContain('t(p.titleKey)');
+    expect(train).toContain("t('train.reserveInsufficient')");
+    expect(overlays).toContain('t(preset.labelKey)');
     expect(overlays).toContain("t('overlay.heatmap')");
     expect(overlays).toContain("t('break.label')");
     expect(overlays).toContain("t('checkin.label')");
@@ -39,9 +43,10 @@ describe('Train, content libraries, and overlays localization contract', () => {
 
   it('keeps overlay state on stable ids or indexes', () => {
     const overlays = read('src/overlays.tsx');
-    expect(overlays).toContain("useState('a-game')");
-    expect(overlays).toContain('setPlaylist(p.id)');
-    expect(overlays).toContain('setTrigger(x.id)');
+    expect(overlays).toContain("useState<FrequencyPresetId|null>(null)");
+    expect(overlays).toContain('toggleFrequencyAudio(preset.id)');
+    expect(overlays).toContain('choose(x.id as TiltTrigger)');
+    expect(overlays).toContain('recordSOS(next)');
     expect(overlays).toContain('diaryIndex');
     expect(overlays).toContain('step');
   });
