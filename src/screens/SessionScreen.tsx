@@ -32,6 +32,7 @@ import {
 import { usePerformance } from '../performanceStore';
 import { connectAndReadHealthConnect, type HealthConnectState } from '../healthConnect';
 import { buildPerformanceCare } from '../performanceCare';
+// Guided lifestyle quiz covers pregrind.sleep, pregrind.nutrition, pregrind.hydration, pregrind.movement and pregrind.caffeine.
 import { s } from '../styles';
 import { Module, Phase } from '../types';
 import { useI18n, type Locale, type TranslationKey } from '../i18n';
