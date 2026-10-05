@@ -44,7 +44,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
             <AppText style={s.body}>{t('profile.languageBody')}</AppText>
             <LanguageSelector variant="profile"/>
           </View>
-          <TouchableOpacity style={s.settingRow} onPress={openDiary}>
+          <TouchableOpacity activeOpacity={0.72} style={[s.settingRow,s.interactiveRow]} onPress={openDiary}>
             <Ionicons name="book-outline" size={20} color={C.goldLight}/>
             <View style={s.flex}>
               <AppText style={s.settingTitle}>{t('profile.diary')}</AppText>
