@@ -35,5 +35,8 @@ jobs:
       - name: Android release configuration
         run: node scripts/check-android-release.cjs
 
+      - name: Android export validation
+        run: npx expo export --platform android
+
       - name: Web export validation
         run: npx expo export --platform web
