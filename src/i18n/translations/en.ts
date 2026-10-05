@@ -1146,4 +1146,5 @@ export const en: TranslationCatalog = {
   'coachFlow.played': "I FINISHED PLAYING",
   'coachFlow.report': "I WANT TO REPORT SOMETHING",
   'coachFlow.recover': "I WANT TO RECOVER",
+  'coachFlow.addContext': "ADD PERSONAL / PROFESSIONAL CONTEXT",
 };
