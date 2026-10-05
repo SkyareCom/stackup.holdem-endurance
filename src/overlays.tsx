@@ -56,7 +56,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
   } else if(module==='lifestyle') {
     body=<View style={s.moduleContent}>{lifestyleSections.map(x=><View key={x.id} style={s.lifestyle}><Label>{t(x.titleKey)}</Label><Serif style={s.actionTitle}>{t(x.subtitleKey)}</Serif><AppText style={s.lessonBody}>{t(x.bodyKey)}</AppText></View>)}</View>;
   } else if(module==='audio') {
-    body=<View style={s.moduleContent}>{mentalPlaylists.map(p=><TouchableOpacity activeOpacity={0.72} key={p.id} onPress={()=>setPlaylist(p.id)} style={[s.playlist,playlist===p.id&&s.playlistActive]}>
+    body=<View style={s.moduleContent}>{mentalPlaylists.map(p=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:playlist===p.id}} key={p.id} onPress={()=>setPlaylist(p.id)} style={[s.playlist,playlist===p.id&&s.playlistActive]}>
       <View style={[s.playCircle,playlist===p.id&&s.playCircleActive]}><Ionicons name={playlist===p.id?'pause':'play'} size={17} color={playlist===p.id?C.ink:C.goldLight}/></View>
       <View style={s.flex}>
         <View style={s.rowBetween}><Serif style={s.playlistTitle}>{t(p.titleKey)}</Serif><AppText style={s.goldText}>{p.duration}</AppText></View>
@@ -81,7 +81,7 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
         <AppText style={s.dangerText}>{t('overlay.vaccineRiver')}</AppText>
         <AppText style={s.body}>{t('overlay.vaccineBody')}</AppText>
       </View>
-      {vaccineAnswers.map(x=><TouchableOpacity activeOpacity={0.72} key={x.id} onPress={()=>setVaccine(x.id)} style={[s.option,vaccine===x.id&&s.optionActive]}><AppText style={[s.optionText,vaccine===x.id&&s.optionTextActive]}>{t(x.key)}</AppText></TouchableOpacity>)}
+      {vaccineAnswers.map(x=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:vaccine===x.id}} key={x.id} onPress={()=>setVaccine(x.id)} style={[s.option,vaccine===x.id&&s.optionActive]}><AppText style={[s.optionText,vaccine===x.id&&s.optionTextActive]}>{t(x.key)}</AppText></TouchableOpacity>)}
     </View>;
   } else {
     body=<View style={s.moduleContent}>{stoicPrinciples.map(x=><View key={x.id} style={s.stoic}><Label>{t(x.titleKey)}</Label><Serif style={s.stoicText}>{t(x.bodyKey)}</Serif></View>)}</View>;
@@ -121,8 +121,8 @@ export function CheckinOverlay({ close }: { close:()=>void }) {
 
   return <View style={s.overlay}><SafeAreaView style={s.checkinSafe}>
     <View style={s.rowBetween}><View><Label>{t('checkin.label')}</Label><Serif style={s.overlayTitle}>{t('checkin.currentState')}</Serif></View><TouchableOpacity onPress={close} style={s.close}><Ionicons name="close" size={25} color={C.ivory}/></TouchableOpacity></View>
-    <View style={s.panel}><Label>{t('checkin.game')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
-    <View style={s.panel}><Label>{t('checkin.triggerState')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity activeOpacity={0.72} key={x.id} onPress={()=>setTrigger(x.id)} style={[s.chip,trigger===x.id&&s.chipActive]}><AppText style={[s.chipText,trigger===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
+    <View style={s.panel}><Label>{t('checkin.game')}</Label><View style={s.stateRow}>{(['A','B','C'] as GameState[]).map(x=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:state===x}} key={x} onPress={()=>setState(x)} style={[s.stateButton,state===x&&s.stateButtonActive]}><AppText style={[s.stateText,state===x&&s.stateTextActive]}>{x}</AppText></TouchableOpacity>)}</View></View>
+    <View style={s.panel}><Label>{t('checkin.triggerState')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:trigger===x.id}} key={x.id} onPress={()=>setTrigger(x.id)} style={[s.chip,trigger===x.id&&s.chipActive]}><AppText style={[s.chipText,trigger===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>
     <PremiumButton label={t('checkin.save')} onPress={close}/>
   </SafeAreaView></View>;
 }
@@ -146,7 +146,7 @@ export function SOSOverlay({ close, goCoach }: { close:()=>void; goCoach:()=>voi
       <Serif style={s.sosTitle}>{t(current.titleKey)}</Serif>
       <AppText style={s.sosCopy}>{t(current.bodyKey)}</AppText>
       <AppText style={s.sosTimer}>01:00</AppText>
-      {step>=2?<View style={s.sosTriggerWrap}><Label>{t('sos.whatHappened')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity activeOpacity={0.72} key={x.id} onPress={()=>setTrigger(x.id)} style={[s.chip,trigger===x.id&&s.chipActive]}><AppText style={[s.chipText,trigger===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>:null}
+      {step>=2?<View style={s.sosTriggerWrap}><Label>{t('sos.whatHappened')}</Label><View style={s.chips}>{warRoomTriggers.map(x=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:trigger===x.id}} key={x.id} onPress={()=>setTrigger(x.id)} style={[s.chip,trigger===x.id&&s.chipActive]}><AppText style={[s.chipText,trigger===x.id&&s.chipTextActive]}>{t(x.labelKey)}</AppText></TouchableOpacity>)}</View></View>:null}
     </View>
     <View style={s.sosActions}>
       <PremiumButton label={step===3?t('sos.return'):t('sos.continue')} onPress={()=>step===3?close():setStep(step+1)}/>
