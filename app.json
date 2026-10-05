@@ -9,13 +9,18 @@
     "android": {
       "package": "com.stackupholdem.endurance",
       "versionCode": 1,
-      "permissions": []
+      "permissions": [],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#090806"
+      }
     },
     "ios": {
       "bundleIdentifier": "com.stackupholdem.endurance"
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "icon": "./assets/icon.png"
   }
 }
