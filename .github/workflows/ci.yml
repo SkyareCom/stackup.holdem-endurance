@@ -41,5 +41,12 @@ jobs:
       - name: Android export validation
         run: npx expo export --platform android
 
+      - name: Android native prebuild validation
+        run: npm run prebuild:android
+
+      - name: Android Gradle bundle task validation
+        working-directory: android
+        run: ./gradlew tasks --all | grep bundleRelease
+
       - name: Web export validation
         run: npx expo export --platform web
