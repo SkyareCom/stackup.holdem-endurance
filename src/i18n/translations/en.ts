@@ -1074,4 +1074,8 @@ export const en: TranslationCatalog = {
   'home.patternsEvolution': "PATTERNS & PROGRESS",
   'profile.smartwatch': "SMARTWATCH & PHYSIOLOGICAL SIGNALS",
   'emotion.serenity': "SERENITY",
+  'session.quickLog': "QUICK LOG",
+  'session.noActiveTitle': "NO ACTIVE SESSION",
+  'session.noActiveQuickLog': "Quick log is available during a session. Start with PRE-GAME so events are linked to the correct grind.",
+  'session.noActivePost': "Post-game becomes available when there is a session to close and analyze. The preparation form will not open here.",
 };
