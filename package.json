@@ -10,7 +10,10 @@
     "web": "expo start --web",
     "test": "vitest run",
     "test:i18n": "vitest run src/i18n/__tests__",
-    "check:i18n": "node scripts/check-i18n.mjs"
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "check:android": "node scripts/check-android-release.cjs",
+    "export:android": "expo export --platform android",
+    "build:android:production": "eas build --platform android --profile production"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
