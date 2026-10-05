@@ -87,6 +87,7 @@ function Ready({ onStart,openPost,openAudio,openReset }: { onStart:()=>void;open
   const { t } = useI18n();
   const { profile,startSession,updateExtraGrind,updateLifestyle,dailyWellbeing,updateDailyWellbeing }=usePerformance();
   const [wizardStep,setWizardStep]=useState(0);
+  const [journey,setJourney]=useState<'play'|'report'>('play');
   const [intentStep,setIntentStep]=useState<'intro'|'moment'|'flow'>('intro');
   const [quizStep,setQuizStep]=useState(0);
   const [tension,setTension]=useState(3);
@@ -129,7 +130,7 @@ function Ready({ onStart,openPost,openAudio,openReset }: { onStart:()=>void;open
   const canLeave=mode==='cash';
   const durationOptions=[60,90,120,180].filter(value=>value<=profile.stopRules.maxDurationMinutes);
 
-  const next=()=>{if(wizardStep===0)updateDailyWellbeing({feeling:feelingContext,personalImpact:personalContext,professionalImpact:professionalContext});setWizardStep(v=>Math.min(7,v+1));};
+  const next=()=>{if(wizardStep===0){updateDailyWellbeing({feeling:feelingContext,personalImpact:personalContext,professionalImpact:professionalContext});if(journey==='report'){setIntentStep('moment');return;}}setWizardStep(v=>Math.min(7,v+1));};
   const back=()=>setWizardStep(v=>Math.max(0,v-1));
   const begin=()=>{
     updateDailyWellbeing({feeling:feelingContext,personalImpact:personalContext,professionalImpact:professionalContext});
@@ -154,14 +155,14 @@ function Ready({ onStart,openPost,openAudio,openReset }: { onStart:()=>void;open
     {intentStep==='intro'?<PremiumButton label={t('coachFlow.start')} onPress={()=>setIntentStep('moment')}/>:
     <View style={s.panel}><ChoiceGrid items={[
       {id:'play',label:t('coachFlow.play')},{id:'playing',label:t('coachFlow.playing')},{id:'played',label:t('coachFlow.played')},{id:'report',label:t('coachFlow.report')},{id:'recover',label:t('coachFlow.recover')}
-    ]} value={''} onChange={v=>{if(v==='play'){setWizardStep(0);setIntentStep('flow');}else if(v==='report'){setWizardStep(0);setIntentStep('flow');}else if(v==='recover'){openReset();}else if(v==='playing'){onStart();}else if(v==='played'){openPost();}}}/></View>}
+    ]} value={''} onChange={v=>{if(v==='play'){setJourney('play');setWizardStep(0);setIntentStep('flow');}else if(v==='report'){setJourney('report');setWizardStep(0);setIntentStep('flow');}else if(v==='recover'){openReset();}else if(v==='playing'){onStart();}else if(v==='played'){openPost();}}}/></View>}
   </ScrollView>;
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={wizardStep+1} total={8} label={t('pregrind.title')}/>
     <View style={s.lead}><Label>{t('pregrind.title')}</Label><Serif style={s.leadTitle}>{t(titles[wizardStep]).toUpperCase()}</Serif><AppText style={s.body}>{t(bodies[wizardStep])}</AppText></View>
 
-    {wizardStep===0?<View style={s.panel}><Serif style={s.actionTitle}>{t('care.human.feeling')}</Serif><AppTextInput value={feelingContext} onChangeText={setFeelingContext} multiline placeholder={t('care.human.feelingPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('care.human.personal')}</Serif><AppTextInput value={personalContext} onChangeText={setPersonalContext} multiline placeholder={t('care.human.personalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('care.human.professional')}</Serif><AppTextInput value={professionalContext} onChangeText={setProfessionalContext} multiline placeholder={t('care.human.professionalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><AppText style={s.body}>{t('care.human.response')}</AppText></View>:null}
+    {wizardStep===0?<View style={s.panel}><Serif style={s.actionTitle}>{t('care.human.feeling')}</Serif><ChoiceGrid items={emotions.map(x=>({id:x.id,label:t(x.key)}))} value={emotion} onChange={v=>{setEmotion(v);setFeelingContext(t(emotions.find(x=>x.id===v)?.key??'emotion.calm'));}}/><AppTextInput value={feelingContext} onChangeText={setFeelingContext} multiline placeholder={t('care.human.feelingPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><TouchableOpacity style={s.coachContextToggle} onPress={()=>setPlanExpanded(v=>!v)}><AppText style={s.coachContextToggleText}>{t('coachFlow.addContext')}</AppText><Ionicons name={planExpanded?'chevron-up':'add'} size={18} color={C.goldLight}/></TouchableOpacity>{planExpanded?<><Serif style={s.actionTitle}>{t('care.human.personal')}</Serif><AppTextInput value={personalContext} onChangeText={setPersonalContext} multiline placeholder={t('care.human.personalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('care.human.professional')}</Serif><AppTextInput value={professionalContext} onChangeText={setProfessionalContext} multiline placeholder={t('care.human.professionalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/></>:null}<AppText style={s.body}>{t('care.human.response')}</AppText></View>:null}
 
     {wizardStep===1?<View style={s.panel}>
       <FlowProgress current={bodyStep+1} total={2} label={t('pregrind.sensations')}/>
@@ -171,16 +172,16 @@ function Ready({ onStart,openPost,openAudio,openReset }: { onStart:()=>void;open
     </View>:null}
 
     {wizardStep===2?<View style={s.panel}>
-      <FlowProgress current={quizStep+1} total={8} label={t('lifestyle.quiz.title')}/>
+      <FlowProgress current={quizStep+1} total={7} label={t('lifestyle.quiz.title')}/>
       {quizStep===0?<ChoiceGrid items={[{id:'5',label:t('lifestyle.sleep.lt6')},{id:'6.5',label:t('lifestyle.sleep.6to7')},{id:'7.5',label:t('lifestyle.sleep.7to8')},{id:'9',label:t('lifestyle.sleep.gt8')}]} value={String(sleepHours)} onChange={v=>{setSleepHours(Number(v));setQuizStep(1)}}/>:null}
       {quizStep===1?<ChoiceGrid items={[{id:'3',label:t('lifestyle.quality.low')},{id:'6',label:t('lifestyle.quality.medium')},{id:'9',label:t('lifestyle.quality.high')}]} value={String(sleep)} onChange={v=>{setSleep(Number(v));setQuizStep(2)}}/>:null}
       {quizStep===2?<ChoiceGrid items={[{id:'3',label:t('lifestyle.meal.low')},{id:'6',label:t('lifestyle.meal.ok')},{id:'9',label:t('lifestyle.meal.good')}]} value={String(nutrition)} onChange={v=>{setNutrition(Number(v));setQuizStep(3)}}/>:null}
       {quizStep===3?<ChoiceGrid items={[{id:'1',label:t('lifestyle.meal.recent')},{id:'3',label:t('lifestyle.meal.2to4')},{id:'5',label:t('lifestyle.meal.4to6')},{id:'7',label:t('lifestyle.meal.gt6')}]} value={String(hoursSinceMeal)} onChange={v=>{setHoursSinceMeal(Number(v));setQuizStep(4)}}/>:null}
       {quizStep===4?<ChoiceGrid items={[{id:'3',label:t('lifestyle.hydration.low')},{id:'6',label:t('lifestyle.hydration.ok')},{id:'9',label:t('lifestyle.hydration.good')}]} value={String(hydration)} onChange={v=>{setHydration(Number(v));setQuizStep(5)}}/>:null}
       {quizStep===5?<ChoiceGrid items={[{id:'0',label:t('lifestyle.movement.none')},{id:'15',label:t('lifestyle.movement.light')},{id:'30',label:t('lifestyle.movement.active')},{id:'60',label:t('lifestyle.movement.strong')}]} value={String(movementMinutes)} onChange={v=>{setMovementMinutes(Number(v));setPhysicalActivity(Math.min(10,Math.round(Number(v)/6)));setQuizStep(6)}}/>:null}
-      {quizStep===6?<ChoiceGrid items={[{id:'no',label:t('lifestyle.health.no')},{id:'yes',label:t('lifestyle.health.yes')}]} value={painOrIllness?'yes':'no'} onChange={v=>{setPainOrIllness(v==='yes');setQuizStep(7)}}/>:null}
-      {quizStep===7?<View style={s.guidedBlock}><Label>{t('lifestyle.quiz.complete')}</Label><AppText style={s.body}>{t('lifestyle.quiz.completeBody')}</AppText><PremiumButton label={t('pregrind.next')} onPress={()=>{updateLifestyle({sleepHours,sleepQuality:sleep,hydration,mealQuality:nutrition,hoursSinceMeal,movementMinutes,painOrIllness});setWizardStep(3)}}/></View>:null}
-      {quizStep>0&&quizStep<7?<PremiumButton label={t('pregrind.back')} secondary onPress={()=>setQuizStep(v=>Math.max(0,v-1))}/>:null}
+      {quizStep===6?<ChoiceGrid items={[{id:'no',label:t('lifestyle.health.no')},{id:'yes',label:t('lifestyle.health.yes')}]} value={painOrIllness?'yes':'no'} onChange={v=>{setPainOrIllness(v==='yes');updateLifestyle({sleepHours,sleepQuality:sleep,hydration,mealQuality:nutrition,hoursSinceMeal,movementMinutes,painOrIllness:v==='yes'});setWizardStep(3)}}/>:null}
+      {quizStep===7?null:null}
+      {quizStep>0&&quizStep<6?<PremiumButton label={t('pregrind.back')} secondary onPress={()=>setQuizStep(v=>Math.max(0,v-1))}/>:null}
     </View>:null}
     {wizardStep===3?<View style={s.panel}>
       <FlowProgress current={stateStep+1} total={2} label={t('pregrind.feeling')}/>
