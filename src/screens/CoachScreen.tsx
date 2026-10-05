@@ -45,7 +45,7 @@ export function CoachScreen() {
           </View>
           <View style={s.chips}>
             {quickPromptKeys.map((key)=>
-              <TouchableOpacity activeOpacity={0.68} key={key} style={s.chip} onPress={()=>setInput(t(key))}>
+              <TouchableOpacity activeOpacity={0.68} accessibilityRole="button" key={key} style={s.chip} onPress={()=>setInput(t(key))}>
                 <AppText style={s.chipText}>{t(key).toUpperCase()}</AppText>
               </TouchableOpacity>
             )}
@@ -63,7 +63,7 @@ export function CoachScreen() {
           </View>
           <View style={s.inputRow}>
             <AppTextInput value={input} onChangeText={setInput} placeholder={t('coach.placeholder')} placeholderTextColor={C.dim} style={s.input}/>
-            <TouchableOpacity activeOpacity={0.68} style={s.send} onPress={send}><Ionicons name="arrow-up" size={19} color={C.ink}/></TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.68} accessibilityRole="button" style={s.send} onPress={send}><Ionicons name="arrow-up" size={19} color={C.ink}/></TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>
