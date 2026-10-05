@@ -38,7 +38,7 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
             <Label>{t('profile.plan')}</Label>
             <Serif style={s.plan}>{t('profile.planName')}</Serif>
             <AppText style={s.body}>{t('profile.planBody')}</AppText>
-            <PremiumButton label={t('profile.viewFull')} secondary/>
+            <View style={s.infoBadge}><AppText style={s.goldText}>{t('profile.viewFull')}</AppText></View>
           </View>
           <View style={s.panel}>
             <AppText style={s.body}>{t('profile.languageBody')}</AppText>
@@ -58,7 +58,6 @@ export function ProfileScreen({ openDiary }: { openDiary:()=>void }) {
               <AppText style={s.settingTitle}>{t('profile.privacy')}</AppText>
               <AppText style={s.settingSub}>{t('profile.privacyBody')}</AppText>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={C.dim}/>
           </View>
         </ScrollView>
       </SafeAreaView>
