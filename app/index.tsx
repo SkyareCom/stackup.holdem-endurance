@@ -8,6 +8,7 @@ import { AppText, Backdrop, PremiumButton, Serif } from '../src/ui';
 import { s } from '../src/styles';
 import { Module, Phase, Tab } from '../src/types';
 import { HomeScreen } from '../src/screens/HomeScreen';
+import { CoachEntryScreen, type CoachMoment } from '../src/screens/CoachEntryScreen';
 import { SessionScreen } from '../src/screens/SessionScreen';
 import { TrainScreen } from '../src/screens/TrainScreen';
 import { CoachScreen } from '../src/screens/CoachScreen';
@@ -65,7 +66,7 @@ function BottomNav({ tab,setTab,openSOS }: { tab:Tab; setTab:(t:Tab)=>void; open
 
 export default function Index() {
   const { activeSession, sessions } = usePerformance();
-  const [entered,setEntered]=useState(false); const [tab,setTab]=useState<Tab>('home'); const [phase,setPhase]=useState<Phase>('ready'); const [module,setModule]=useState<Module|null>(null); const [sos,setSos]=useState(false); const [breakOpen,setBreakOpen]=useState(false); const [checkin,setCheckin]=useState(false);
+  const [entered,setEntered]=useState(false); const [coachEntry,setCoachEntry]=useState(true); const [tab,setTab]=useState<Tab>('home'); const [phase,setPhase]=useState<Phase>('ready'); const [module,setModule]=useState<Module|null>(null); const [sos,setSos]=useState(false); const [breakOpen,setBreakOpen]=useState(false); const [checkin,setCheckin]=useState(false);
 
   useFocusEffect(useCallback(()=>{
     const subscription=BackHandler.addEventListener('hardwareBackPress',()=>{
@@ -81,5 +82,7 @@ export default function Index() {
   },[entered,sos,checkin,breakOpen,module,tab]));
 
   if(!entered) return <Landing enter={()=>setEntered(true)}/>;
+  const chooseMoment=(moment:CoachMoment)=>{setCoachEntry(false);if(moment==='prepare'){setTab('session');setPhase('ready');return;}if(moment==='playing'){setTab('session');setPhase('active');return;}if(moment==='finished'){setTab('session');setPhase('debrief');return;}if(moment==='report'){setTab('coach');return;}setTab('train');};
+  if(coachEntry)return <CoachEntryScreen select={chooseMoment}/>;
   return <View style={s.root}>{tab==='home'?<HomeScreen openPhase={(target)=>{setTab('session');setPhase(target)}} openModule={setModule}/>:null}{tab==='session'?<SessionScreen phase={phase} setPhase={setPhase} openModule={setModule} openBreak={()=>setBreakOpen(true)} openCheckin={()=>setCheckin(true)}/>:null}{tab==='train'?<TrainScreen openModule={setModule}/>:null}{tab==='coach'?<CoachScreen phase={phase}/>:null}{tab==='profile'?<ProfileScreen openDiary={()=>setModule('diary')}/>:null}<BottomNav tab={tab} setTab={setTab} openSOS={()=>setSos(true)}/>{module?<ModuleOverlay module={module} close={()=>setModule(null)}/>:null}{breakOpen?<BreakOverlay close={()=>setBreakOpen(false)}/>:null}{checkin?<CheckinOverlay close={()=>setCheckin(false)}/>:null}{sos?<SOSOverlay close={()=>setSos(false)} goCoach={()=>{setSos(false);setTab('coach')}}/>:null}</View>;
 }
