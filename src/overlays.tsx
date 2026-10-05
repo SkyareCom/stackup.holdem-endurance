@@ -35,8 +35,8 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
         <View style={s.heatmap}>{Array.from({length:28}).map((_,i)=><View key={i} style={[s.heat,{opacity:.18+((i*37)%80)/100}]}/>)}</View>
         <AppText style={s.body}>{t('overlay.criticalWindow')}</AppText>
       </View>
-      <View style={s.moduleAction}><View><Label>{t('overlay.battleDiary')}</Label><Serif style={s.actionTitle}>{t('overlay.auditExecution')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
-      <View style={s.moduleAction}><View><Label>{t('overlay.psychVaccines')}</Label><Serif style={s.actionTitle}>{t('overlay.desensitizeVariance')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
+      <View style={s.moduleAction}><View><Label>{t('overlay.battleDiary')}</Label><Serif style={s.actionTitle}>{t('overlay.auditExecution')}</Serif></View></View>
+      <View style={s.moduleAction}><View><Label>{t('overlay.psychVaccines')}</Label><Serif style={s.actionTitle}>{t('overlay.desensitizeVariance')}</Serif></View></View>
     </View>;
   } else if(module==='behavior') {
     body=<View style={s.moduleContent}>
@@ -45,13 +45,13 @@ export function ModuleOverlay({ module, close }: { module:Module; close:()=>void
     </View>;
   } else if(module==='gym') {
     body=<View style={s.moduleContent}>
-      <TouchableOpacity style={[s.reaction,reaction!==null&&s.reactionDone]} onPress={()=>setReaction(reaction===null?284:null)}>
+      <TouchableOpacity activeOpacity={0.72} style={[s.reaction,reaction!==null&&s.reactionDone]} onPress={()=>setReaction(reaction===null?284:null)}>
         <Label>{t('overlay.reactionTest')}</Label>
         <Serif style={s.reactionValue}>{reaction===null?t('overlay.ready'):reaction+' ms'}</Serif>
         <AppText style={s.body}>{reaction===null?t('overlay.tapToStart'):t('overlay.reactionBaseline')}</AppText>
       </TouchableOpacity>
-      <View style={s.moduleAction}><View><Label>{t('overlay.rangeMemory')}</Label><Serif style={s.actionTitle}>{t('overlay.rangeMemoryBody')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
-      <View style={s.moduleAction}><View><Label>{t('overlay.attentionShift')}</Label><Serif style={s.actionTitle}>{t('overlay.attentionShiftBody')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></View>
+      <View style={s.moduleAction}><View><Label>{t('overlay.rangeMemory')}</Label><Serif style={s.actionTitle}>{t('overlay.rangeMemoryBody')}</Serif></View></View>
+      <View style={s.moduleAction}><View><Label>{t('overlay.attentionShift')}</Label><Serif style={s.actionTitle}>{t('overlay.attentionShiftBody')}</Serif></View></View>
     </View>;
   } else if(module==='lifestyle') {
     body=<View style={s.moduleContent}>{lifestyleSections.map(x=><View key={x.id} style={s.lifestyle}><Label>{t(x.titleKey)}</Label><Serif style={s.actionTitle}>{t(x.subtitleKey)}</Serif><AppText style={s.lessonBody}>{t(x.bodyKey)}</AppText></View>)}</View>;
