@@ -23,6 +23,7 @@ export function ModuleOverlay({ module, close, openModule }: { module:Module; cl
   const [diaryIndex,setDiaryIndex]=useState(0);
   const [diaryText,setDiaryText]=useState('');
   const [vaccine,setVaccine]=useState('');
+  const [cognitiveAnswer,setCognitiveAnswer]=useState('');
   const meta=moduleMeta[module];
 
   let body:React.ReactNode;
@@ -50,8 +51,21 @@ export function ModuleOverlay({ module, close, openModule }: { module:Module; cl
         <Serif style={s.reactionValue}>{reaction===null?t('overlay.ready'):reaction+' ms'}</Serif>
         <AppText style={s.body}>{reaction===null?t('overlay.tapToStart'):t('overlay.reactionBaseline')}</AppText>
       </TouchableOpacity>
-      <View style={s.moduleAction}><View><Label>{t('overlay.rangeMemory')}</Label><Serif style={s.actionTitle}>{t('overlay.rangeMemoryBody')}</Serif></View></View>
-      <View style={s.moduleAction}><View><Label>{t('overlay.attentionShift')}</Label><Serif style={s.actionTitle}>{t('overlay.attentionShiftBody')}</Serif></View></View>
+      <TouchableOpacity activeOpacity={0.68} accessibilityRole="button" style={[s.moduleAction,s.interactiveRow]} onPress={()=>openModule('rangeMemory')}><View><Label>{t('overlay.rangeMemory')}</Label><Serif style={s.actionTitle}>{t('overlay.rangeMemoryBody')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></TouchableOpacity>
+      <TouchableOpacity activeOpacity={0.68} accessibilityRole="button" style={[s.moduleAction,s.interactiveRow]} onPress={()=>openModule('attention')}><View><Label>{t('overlay.attentionShift')}</Label><Serif style={s.actionTitle}>{t('overlay.attentionShiftBody')}</Serif></View><Ionicons name="chevron-forward" size={18} color={C.goldLight}/></TouchableOpacity>
+    </View>;
+  } else if(module==='rangeMemory' || module==='attention') {
+    const isRange=module==='rangeMemory';
+    const prompt=isRange?'cognitive.range.prompt':'cognitive.attention.prompt';
+    const answers=isRange
+      ? [{id:'a',key:'cognitive.range.a'},{id:'b',key:'cognitive.range.b'},{id:'c',key:'cognitive.range.c'}] as const
+      : [{id:'a',key:'cognitive.attention.a'},{id:'b',key:'cognitive.attention.b'},{id:'c',key:'cognitive.attention.c'}] as const;
+    const correct=isRange?'a':'b';
+    const feedback=isRange?'cognitive.range.feedback':'cognitive.attention.feedback';
+    body=<View style={s.moduleContent}>
+      <View style={s.panel}><Label>{t(isRange?'module.rangeMemory.subtitle':'module.attention.subtitle')}</Label><Serif style={s.overlayHeadline}>{t(prompt)}</Serif></View>
+      {answers.map(x=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:cognitiveAnswer===x.id}} key={x.id} onPress={()=>setCognitiveAnswer(x.id)} style={[s.option,cognitiveAnswer===x.id&&s.optionActive]}><AppText style={[s.optionText,cognitiveAnswer===x.id&&s.optionTextActive]}>{t(x.key)}</AppText></TouchableOpacity>)}
+      {cognitiveAnswer?<View style={s.panel}><Label>{cognitiveAnswer===correct?'✓':'→'}</Label><AppText style={s.body}>{t(feedback)}</AppText></View>:null}
     </View>;
   } else if(module==='lifestyle') {
     body=<View style={s.moduleContent}>{lifestyleSections.map(x=><View key={x.id} style={s.lifestyle}><Label>{t(x.titleKey)}</Label><Serif style={s.actionTitle}>{t(x.subtitleKey)}</Serif><AppText style={s.lessonBody}>{t(x.bodyKey)}</AppText></View>)}</View>;
