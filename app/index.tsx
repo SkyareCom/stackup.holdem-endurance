@@ -58,7 +58,7 @@ function BottomNav({ tab,setTab,openSOS }: { tab:Tab; setTab:(t:Tab)=>void; open
     {key:'coach',icon:'chatbubble-ellipses-outline',labelKey:'nav.coach'},
     {key:'profile',icon:'person-outline',labelKey:'nav.profile'},
   ];
-  return <View style={s.nav}>{items.map(i=><TouchableOpacity activeOpacity={0.68} key={i.key} style={s.navItem} onPress={()=>setTab(i.key)}><Ionicons name={i.icon} size={20} color={tab===i.key?C.goldLight:C.dim}/><AppText style={[s.navText,tab===i.key&&s.navTextActive]}>{t(i.labelKey)}</AppText></TouchableOpacity>)}<TouchableOpacity activeOpacity={0.68} style={s.navSOS} onPress={openSOS}><AppText style={s.sosSmall}>SOS</AppText></TouchableOpacity></View>;
+  return <View style={s.nav}>{items.map(i=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:tab===i.key}} key={i.key} style={s.navItem} onPress={()=>setTab(i.key)}><Ionicons name={i.icon} size={20} color={tab===i.key?C.goldLight:C.dim}/><AppText style={[s.navText,tab===i.key&&s.navTextActive]}>{t(i.labelKey)}</AppText></TouchableOpacity>)}<TouchableOpacity activeOpacity={0.68} accessibilityRole="button" style={s.navSOS} onPress={openSOS}><AppText style={s.sosSmall}>SOS</AppText></TouchableOpacity></View>;
 }
 
 export default function Index() {
