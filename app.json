@@ -13,7 +13,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#090806"
-      }
+      },
+      "targetSdkVersion": 36
     },
     "ios": {
       "bundleIdentifier": "com.stackupholdem.endurance"
