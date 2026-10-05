@@ -87,6 +87,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const { t } = useI18n();
   const { profile,startSession,updateExtraGrind,updateLifestyle,dailyWellbeing,updateDailyWellbeing }=usePerformance();
   const [wizardStep,setWizardStep]=useState(0);
+  const [intentStep,setIntentStep]=useState<'intro'|'moment'|'flow'>('intro');
   const [quizStep,setQuizStep]=useState(0);
   const [tension,setTension]=useState(3);
   const [bodyStep,setBodyStep]=useState(0);
@@ -147,6 +148,14 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const bodies:TranslationKey[]=[
     'care.human.response','pregrind.sensationsBody','pregrind.lifestyleBody','pregrind.feelingBody','pregrind.emotionBody','pregrind.reasonBody','pregrind.reframeBody','pregrind.activationBody',
   ];
+
+  if(intentStep!=='flow')return <ScrollView contentContainerStyle={s.scroll}>
+    <View style={s.lead}><Label>{t('coachFlow.eyebrow')}</Label><Serif style={s.leadTitle}>{t(intentStep==='intro'?'coachFlow.introTitle':'coachFlow.momentTitle')}</Serif><AppText style={s.body}>{t(intentStep==='intro'?'coachFlow.introBody':'coachFlow.momentBody')}</AppText></View>
+    {intentStep==='intro'?<PremiumButton label={t('coachFlow.start')} onPress={()=>setIntentStep('moment')}/>:
+    <View style={s.panel}><ChoiceGrid items={[
+      {id:'play',label:t('coachFlow.play')},{id:'playing',label:t('coachFlow.playing')},{id:'played',label:t('coachFlow.played')},{id:'report',label:t('coachFlow.report')},{id:'recover',label:t('coachFlow.recover')}
+    ]} value={''} onChange={v=>{if(v==='play'){setWizardStep(0);setIntentStep('flow');}else if(v==='report'){setWizardStep(0);setIntentStep('flow');}else if(v==='recover'){openReset();}else if(v==='playing'){onStart();}else if(v==='played'){onStart();}}}/></View>}
+  </ScrollView>;
 
   return <ScrollView contentContainerStyle={s.scroll}>
     <FlowProgress current={wizardStep+1} total={8} label={t('pregrind.title')}/>
