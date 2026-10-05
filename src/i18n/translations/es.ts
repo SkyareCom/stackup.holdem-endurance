@@ -1074,4 +1074,8 @@ export const es: TranslationCatalog = {
   'home.patternsEvolution': "PATRONES & EVOLUCIÓN",
   'profile.smartwatch': "SMARTWATCH & SEÑALES FISIOLÓGICAS",
   'emotion.serenity': "SERENIDAD",
+  'session.quickLog': "REGISTRO RÁPIDO",
+  'session.noActiveTitle': "NO HAY SESIÓN ACTIVA",
+  'session.noActiveQuickLog': "El registro rápido está disponible durante una sesión. Empieza por PRE-JUEGO para vincular los eventos al grind correcto.",
+  'session.noActivePost': "El post-juego se habilita cuando existe una sesión para cerrar y analizar. Aquí no se abrirá el formulario de preparación.",
 };
