@@ -1104,4 +1104,13 @@ export const en: TranslationCatalog = {
   'lifestyle.health.yes': "PAIN / ILLNESS",
   'lifestyle.quiz.complete': "LIFESTYLE RECORDED",
   'lifestyle.quiz.completeBody': "Sleep, nutrition, hydration, movement and physical condition now inform your readiness.",
+  'quiz.level.low': "LOW",
+  'quiz.level.medium': "MODERATE",
+  'quiz.level.high': "HIGH",
+  'quiz.energy.low': "LOW",
+  'quiz.energy.medium': "NORMAL",
+  'quiz.energy.high': "HIGH",
+  'quiz.drive.low': "LOW DRIVE",
+  'quiz.drive.medium': "NORMAL DRIVE",
+  'quiz.drive.high': "HIGH DRIVE",
 };
