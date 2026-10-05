@@ -304,6 +304,9 @@ export const pt = {
   'cognitive.attention.b': 'Posição, stacks e ação atual',
   'cognitive.attention.c': 'Recuperar as fichas imediatamente',
   'cognitive.attention.feedback': 'Correto: recoloque a atenção no presente antes de construir a próxima decisão.',
+  'cognitive.answer.correct': 'CORRETO',
+  'cognitive.answer.adjust': 'AJUSTE',
+  'cognitive.answer.retry': 'Reoriente o foco para a alternativa que protege melhor a próxima decisão.',
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
