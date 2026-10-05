@@ -592,7 +592,7 @@ export const pt = {
   'pregrind.mentalDrive': "DISPOSIÇÃO MENTAL",
   'pregrind.emotion': "EMOÇÃO DOMINANTE",
   'pregrind.emotionBody': "Identifique a emoção mais presente sem tentar corrigi-la ainda.",
-  'emotion.calm': "CALMO",
+  'emotion.calm': "CALMA",
   'emotion.fear': "MEDO",
   'emotion.anger': "RAIVA",
   'emotion.frustration': "FRUSTRAÇÃO",
@@ -1041,10 +1041,10 @@ export const pt = {
   'home.patterns': "PADRÕES",
   'home.history': "HISTÓRICO",
   'home.patternsBody': "Eventos, gatilhos e evolução entre sessões.",
-  'emotion.confident': 'CONFIANTE',
-  'emotion.wellbeing': 'BEM-ESTAR',
-  'emotion.motivated': 'MOTIVADO',
-  'emotion.focused': 'FOCADO',
+  'emotion.confident': "CONFIANÇA",
+  'emotion.wellbeing': "BEM-ESTAR",
+  'emotion.motivated': "MOTIVAÇÃO",
+  'emotion.focused': "FOCO",
   'reason.importantTournament': "TORNEIO IMPORTANTE",
   'reason.friends': "JOGO COM AMIGOS",
   'reason.importantGame': "JOGO IMPORTANTE",
@@ -1070,6 +1070,7 @@ export const pt = {
   'physiology.eventMarkers': "MARCADORES DA SESSÃO",
   'home.patternsEvolution': "PADRÕES & EVOLUÇÃO",
   'profile.smartwatch': "SMARTWATCH & SINAIS FISIOLÓGICOS",
+  'emotion.serenity': "SERENIDADE",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
