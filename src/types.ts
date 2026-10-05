@@ -4,7 +4,7 @@ import type { TranslationKey } from './i18n';
 export type Tab = 'home' | 'session' | 'train' | 'coach' | 'profile';
 export type Phase = 'ready' | 'active' | 'debrief';
 export type GameState = 'A' | 'B' | 'C';
-export type Module = 'war' | 'behavior' | 'gym' | 'lifestyle' | 'audio' | 'diary' | 'vaccines' | 'mindset';
+export type Module = 'war' | 'behavior' | 'gym' | 'lifestyle' | 'audio' | 'diary' | 'vaccines' | 'mindset' | 'rangeMemory' | 'attention';
 
 export const moduleMeta: Record<Module, { titleKey: TranslationKey; subtitleKey: TranslationKey; icon: keyof typeof Ionicons.glyphMap }> = {
   war: { titleKey: 'module.war.title', subtitleKey: 'module.war.subtitle', icon: 'shield-half-outline' },
@@ -15,4 +15,6 @@ export const moduleMeta: Record<Module, { titleKey: TranslationKey; subtitleKey:
   diary: { titleKey: 'module.diary.title', subtitleKey: 'module.diary.subtitle', icon: 'book-outline' },
   vaccines: { titleKey: 'module.vaccines.title', subtitleKey: 'module.vaccines.subtitle', icon: 'medical-outline' },
   mindset: { titleKey: 'module.mindset.title', subtitleKey: 'module.mindset.subtitle', icon: 'compass-outline' },
+  rangeMemory: { titleKey: 'module.rangeMemory.title', subtitleKey: 'module.rangeMemory.subtitle', icon: 'grid-outline' },
+  attention: { titleKey: 'module.attention.title', subtitleKey: 'module.attention.subtitle', icon: 'scan-outline' },
 };
