@@ -306,4 +306,7 @@ export const en: TranslationCatalog = {
   'cognitive.attention.b': 'Position, stacks, and current action',
   'cognitive.attention.c': 'Win the chips back immediately',
   'cognitive.attention.feedback': 'Correct: return attention to the present before building the next decision.',
+  'cognitive.answer.correct': 'CORRECT',
+  'cognitive.answer.adjust': 'ADJUST',
+  'cognitive.answer.retry': 'Redirect your focus to the option that best protects the next decision.',
 };
