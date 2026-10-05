@@ -55,7 +55,7 @@ export function PremiumButton({ label, onPress, secondary = false, danger = fals
   icon?: keyof typeof Ionicons.glyphMap;
 }) {
   return (
-    <TouchableOpacity activeOpacity={0.72} onPress={onPress} style={({ pressed }: any) => [s.button, secondary ? s.buttonSecondary : s.buttonGold, danger && s.buttonDanger, pressed && s.pressablePressed]}>
+    <TouchableOpacity activeOpacity={0.72} accessibilityRole="button" disabled={!onPress} onPress={onPress} style={[s.button, secondary ? s.buttonSecondary : s.buttonGold, danger && s.buttonDanger, !onPress && s.buttonDisabled]}>
       {icon ? <Ionicons name={icon} size={16} color={danger ? C.ivory : secondary ? C.goldLight : C.ink} /> : null}
       <AppText style={[s.buttonText, secondary && s.buttonTextSecondary, danger && s.buttonTextDanger]}>{label}</AppText>
       {!icon ? <Ionicons name="chevron-forward" size={16} color={danger ? C.ivory : secondary ? C.goldLight : C.ink} /> : null}
