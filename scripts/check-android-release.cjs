@@ -1,0 +1,18 @@
+const fs = require('fs');
+
+const app = JSON.parse(fs.readFileSync('app.json', 'utf8')).expo;
+const eas = JSON.parse(fs.readFileSync('eas.json', 'utf8'));
+
+const failures = [];
+if (!app.name) failures.push('expo.name');
+if (!app.version) failures.push('expo.version');
+if (!app.android?.package) failures.push('expo.android.package');
+if (!Number.isInteger(app.android?.versionCode) || app.android.versionCode < 1) failures.push('expo.android.versionCode');
+if (eas.build?.production?.android?.buildType !== 'app-bundle') failures.push('production android buildType=app-bundle');
+if (!Array.isArray(app.android?.permissions)) failures.push('expo.android.permissions');
+
+if (failures.length) {
+  console.error('Android release config invalid:', failures.join(', '));
+  process.exit(1);
+}
+console.log(`Android release config OK: ${app.android.package} v${app.version} (${app.android.versionCode})`);
