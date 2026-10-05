@@ -83,7 +83,7 @@ function ChoiceGrid<T extends string>({items,value,onChange}:{items:{id:T;label:
   </TouchableOpacity>)}</View>;
 }
 
-function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=>void;openReset:()=>void }) {
+function Ready({ onStart,openPost,openAudio,openReset }: { onStart:()=>void;openPost:()=>void;openAudio:()=>void;openReset:()=>void }) {
   const { t } = useI18n();
   const { profile,startSession,updateExtraGrind,updateLifestyle,dailyWellbeing,updateDailyWellbeing }=usePerformance();
   const [wizardStep,setWizardStep]=useState(0);
@@ -154,7 +154,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
     {intentStep==='intro'?<PremiumButton label={t('coachFlow.start')} onPress={()=>setIntentStep('moment')}/>:
     <View style={s.panel}><ChoiceGrid items={[
       {id:'play',label:t('coachFlow.play')},{id:'playing',label:t('coachFlow.playing')},{id:'played',label:t('coachFlow.played')},{id:'report',label:t('coachFlow.report')},{id:'recover',label:t('coachFlow.recover')}
-    ]} value={''} onChange={v=>{if(v==='play'){setWizardStep(0);setIntentStep('flow');}else if(v==='report'){setWizardStep(0);setIntentStep('flow');}else if(v==='recover'){openReset();}else if(v==='playing'){onStart();}else if(v==='played'){onStart();}}}/></View>}
+    ]} value={''} onChange={v=>{if(v==='play'){setWizardStep(0);setIntentStep('flow');}else if(v==='report'){setWizardStep(0);setIntentStep('flow');}else if(v==='recover'){openReset();}else if(v==='playing'){onStart();}else if(v==='played'){openPost();}}}/></View>}
   </ScrollView>;
 
   return <ScrollView contentContainerStyle={s.scroll}>
@@ -613,7 +613,7 @@ export function SessionScreen({ phase,setPhase,openModule,openBreak,openCheckin 
   const subtitle=phase==='ready'?t('session.preparation'):phase==='active'?t('session.livePerformance'):phase==='debrief'?t('session.postSession'):t('recovery.subtitle');
   return <Backdrop uri={PHOTO.session} blur={7} overlay={0.8}><SafeAreaView style={s.flex}>
     <Header title={t('session.title')} subtitle={subtitle}/>
-    {phase==='ready'?<Ready onStart={()=>setPhase('active')} openAudio={()=>openModule('audio')} openReset={openBreak}/>:
+    {phase==='ready'?<Ready onStart={()=>setPhase('active')} openPost={()=>setPhase('debrief')} openAudio={()=>openModule('audio')} openReset={openBreak}/>:
       phase==='active'?<Active endSession={()=>setPhase('debrief')} openAudio={()=>openModule('audio')} openBreak={openBreak} openCheckin={openCheckin}/>:
       phase==='debrief'?<Debrief save={()=>setPhase('recovery')}/>:
       <Recovery finish={()=>setPhase('ready')} openAudio={()=>openModule('audio')}/>}
