@@ -87,12 +87,17 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const { t } = useI18n();
   const { profile,startSession,updateExtraGrind,updateLifestyle,dailyWellbeing,updateDailyWellbeing }=usePerformance();
   const [wizardStep,setWizardStep]=useState(0);
+  const [quizStep,setQuizStep]=useState(0);
   const [tension,setTension]=useState(3);
   const [fatigue,setFatigue]=useState(3);
   const [sleep,setSleep]=useState(profile.extraGrind.sleep);
   const [nutrition,setNutrition]=useState(profile.extraGrind.nutrition);
   const [hydration,setHydration]=useState(profile.extraGrind.hydration);
   const [physicalActivity,setPhysicalActivity]=useState(profile.extraGrind.physicalActivity);
+  const [sleepHours,setSleepHours]=useState(profile.lifestyle.sleepHours);
+  const [hoursSinceMeal,setHoursSinceMeal]=useState(profile.lifestyle.hoursSinceMeal);
+  const [movementMinutes,setMovementMinutes]=useState(profile.lifestyle.movementMinutes);
+  const [painOrIllness,setPainOrIllness]=useState(profile.lifestyle.painOrIllness);
   const [energy,setEnergy]=useState(6);
   const [mentalDrive,setMentalDrive]=useState(6);
   const [emotion,setEmotion]=useState<Emotion>('calm');
@@ -126,7 +131,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const begin=()=>{
     updateDailyWellbeing({feeling:feelingContext,personalImpact:personalContext,professionalImpact:professionalContext});
     updateExtraGrind({sleep,nutrition,hydration,physicalActivity});
-    updateLifestyle({sleepQuality:sleep,hydration,mealQuality:nutrition,movementMinutes:Math.max(profile.lifestyle.movementMinutes,physicalActivity*6)});
+    updateLifestyle({sleepHours,sleepQuality:sleep,hydration,mealQuality:nutrition,hoursSinceMeal,movementMinutes,painOrIllness});
     startSession(pre,{
       mode,canLeave,expectedMinutes,
       maxReentries:profile.stopRules.maxReentries,processGoal:goal,stakesLabel:stakesLabel.trim()||undefined,
@@ -153,14 +158,17 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
     </View>:null}
 
     {wizardStep===2?<View style={s.panel}>
-      <Score10 label={t('pregrind.sleep')} value={sleep} setValue={setSleep}/>
-      <Score10 label={t('pregrind.nutrition')} value={nutrition} setValue={setNutrition}/>
-      <Score10 label={t('pregrind.hydration')} value={hydration} setValue={setHydration}/>
-      <Score10 label={t('pregrind.activity')} value={physicalActivity} setValue={setPhysicalActivity}/>
-      <View style={s.guidedBlock}><Label>{t('care.title')}</Label><AppText style={s.body}>{t('care.body')}</AppText></View>
-      <View style={s.guidedBlock}><Label>{t('evidence.title')}</Label><AppText style={s.body}>{t('evidence.body')}</AppText></View>
+      <FlowProgress current={quizStep+1} total={8} label={t('lifestyle.quiz.title')}/>
+      {quizStep===0?<ChoiceGrid items={[{id:'5',label:t('lifestyle.sleep.lt6')},{id:'6.5',label:t('lifestyle.sleep.6to7')},{id:'7.5',label:t('lifestyle.sleep.7to8')},{id:'9',label:t('lifestyle.sleep.gt8')}]} value={String(sleepHours)} onChange={v=>{setSleepHours(Number(v));setQuizStep(1)}}/>:null}
+      {quizStep===1?<ChoiceGrid items={[{id:'3',label:t('lifestyle.quality.low')},{id:'6',label:t('lifestyle.quality.medium')},{id:'9',label:t('lifestyle.quality.high')}]} value={String(sleep)} onChange={v=>{setSleep(Number(v));setQuizStep(2)}}/>:null}
+      {quizStep===2?<ChoiceGrid items={[{id:'3',label:t('lifestyle.meal.low')},{id:'6',label:t('lifestyle.meal.ok')},{id:'9',label:t('lifestyle.meal.good')}]} value={String(nutrition)} onChange={v=>{setNutrition(Number(v));setQuizStep(3)}}/>:null}
+      {quizStep===3?<ChoiceGrid items={[{id:'1',label:t('lifestyle.meal.recent')},{id:'3',label:t('lifestyle.meal.2to4')},{id:'5',label:t('lifestyle.meal.4to6')},{id:'7',label:t('lifestyle.meal.gt6')}]} value={String(hoursSinceMeal)} onChange={v=>{setHoursSinceMeal(Number(v));setQuizStep(4)}}/>:null}
+      {quizStep===4?<ChoiceGrid items={[{id:'3',label:t('lifestyle.hydration.low')},{id:'6',label:t('lifestyle.hydration.ok')},{id:'9',label:t('lifestyle.hydration.good')}]} value={String(hydration)} onChange={v=>{setHydration(Number(v));setQuizStep(5)}}/>:null}
+      {quizStep===5?<ChoiceGrid items={[{id:'0',label:t('lifestyle.movement.none')},{id:'15',label:t('lifestyle.movement.light')},{id:'30',label:t('lifestyle.movement.active')},{id:'60',label:t('lifestyle.movement.strong')}]} value={String(movementMinutes)} onChange={v=>{setMovementMinutes(Number(v));setPhysicalActivity(Math.min(10,Math.round(Number(v)/6)));setQuizStep(6)}}/>:null}
+      {quizStep===6?<ChoiceGrid items={[{id:'no',label:t('lifestyle.health.no')},{id:'yes',label:t('lifestyle.health.yes')}]} value={painOrIllness?'yes':'no'} onChange={v=>{setPainOrIllness(v==='yes');setQuizStep(7)}}/>:null}
+      {quizStep===7?<View style={s.guidedBlock}><Label>{t('lifestyle.quiz.complete')}</Label><AppText style={s.body}>{t('lifestyle.quiz.completeBody')}</AppText><PremiumButton label={t('pregrind.next')} onPress={()=>{updateLifestyle({sleepHours,sleepQuality:sleep,hydration,mealQuality:nutrition,hoursSinceMeal,movementMinutes,painOrIllness});setWizardStep(3)}}/></View>:null}
+      {quizStep>0&&quizStep<7?<PremiumButton label={t('pregrind.back')} secondary onPress={()=>setQuizStep(v=>Math.max(0,v-1))}/>:null}
     </View>:null}
-
     {wizardStep===3?<View style={s.panel}>
       <Score10 label={t('pregrind.energy')} value={energy} setValue={setEnergy}/>
       <Score10 label={t('pregrind.mentalDrive')} value={mentalDrive} setValue={setMentalDrive}/>
