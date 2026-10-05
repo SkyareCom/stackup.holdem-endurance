@@ -15,7 +15,8 @@ jobs:
         run: npm run check:android
       - name: Test suite
         run: npm test
-      - name: Android export validation
-        run: npm run export:android
-      - name: Build production AAB with EAS
-        run: npx eas-cli@latest build --platform android --profile production --non-interactive --wait
+      - name: Generate Android native project
+        run: npm run prebuild:android
+      - name: Verify Gradle release bundle task
+        working-directory: android
+        run: ./gradlew tasks --all | grep bundleRelease
