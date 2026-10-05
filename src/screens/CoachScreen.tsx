@@ -45,7 +45,7 @@ export function CoachScreen() {
           </View>
           <View style={s.chips}>
             {quickPromptKeys.map((key)=>
-              <TouchableOpacity key={key} style={s.chip} onPress={()=>setInput(t(key))}>
+              <TouchableOpacity activeOpacity={0.68} key={key} style={s.chip} onPress={()=>setInput(t(key))}>
                 <AppText style={s.chipText}>{t(key).toUpperCase()}</AppText>
               </TouchableOpacity>
             )}
@@ -57,13 +57,13 @@ export function CoachScreen() {
           )}
         </ScrollView>
         <View style={s.composer}>
-          <TouchableOpacity style={s.voice}>
+          <View style={s.voiceDisabled}>
             <Ionicons name="mic" size={18} color={C.goldLight}/>
             <AppText style={s.voiceText}>{t('coach.holdToTalk')}</AppText>
-          </TouchableOpacity>
+          </View>
           <View style={s.inputRow}>
             <AppTextInput value={input} onChangeText={setInput} placeholder={t('coach.placeholder')} placeholderTextColor={C.dim} style={s.input}/>
-            <TouchableOpacity style={s.send} onPress={send}><Ionicons name="arrow-up" size={19} color={C.ink}/></TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.68} style={s.send} onPress={send}><Ionicons name="arrow-up" size={19} color={C.ink}/></TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>
