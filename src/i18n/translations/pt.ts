@@ -1143,6 +1143,7 @@ export const pt = {
   'coachFlow.played': "TERMINEI DE JOGAR",
   'coachFlow.report': "QUERO RELATAR ALGO",
   'coachFlow.recover': "QUERO ME RECUPERAR",
+  'coachFlow.addContext': "ADICIONAR CONTEXTO PESSOAL / PROFISSIONAL",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
