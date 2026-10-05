@@ -22,6 +22,7 @@ export function LanguageSelector({ variant }: { variant: 'landing' | 'profile' }
           const active = option === locale;
           return (
             <TouchableOpacity
+              activeOpacity={0.68}
               key={option}
               onPress={() => setLocale(option)}
               style={[s.languageOption, active && s.languageOptionActive]}
