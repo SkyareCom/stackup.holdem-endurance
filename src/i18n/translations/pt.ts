@@ -1071,6 +1071,10 @@ export const pt = {
   'home.patternsEvolution': "PADRÕES & EVOLUÇÃO",
   'profile.smartwatch': "SMARTWATCH & SINAIS FISIOLÓGICOS",
   'emotion.serenity': "SERENIDADE",
+  'session.quickLog': "REGISTRO RÁPIDO",
+  'session.noActiveTitle': "NENHUMA SESSÃO ATIVA",
+  'session.noActiveQuickLog': "O registro rápido fica disponível durante uma sessão. Inicie pelo PREPARO para vincular os acontecimentos ao grind correto.",
+  'session.noActivePost': "O pós-game é liberado quando existe uma sessão para encerrar e analisar. Nenhum formulário de preparo será aberto aqui.",
 } as const;
 
 export type TranslationCatalog = { [K in keyof typeof pt]: string };
