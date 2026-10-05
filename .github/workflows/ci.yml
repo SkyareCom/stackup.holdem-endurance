@@ -32,5 +32,8 @@ jobs:
       - name: TypeScript validation
         run: npx tsc --noEmit
 
+      - name: Android release configuration
+        run: node scripts/check-android-release.cjs
+
       - name: Web export validation
         run: npx expo export --platform web
