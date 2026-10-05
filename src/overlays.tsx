@@ -65,7 +65,7 @@ export function ModuleOverlay({ module, close, openModule }: { module:Module; cl
     body=<View style={s.moduleContent}>
       <View style={s.panel}><Label>{t(isRange?'module.rangeMemory.subtitle':'module.attention.subtitle')}</Label><Serif style={s.overlayHeadline}>{t(prompt)}</Serif></View>
       {answers.map(x=><TouchableOpacity activeOpacity={0.68} accessibilityRole="button" accessibilityState={{selected:cognitiveAnswer===x.id}} key={x.id} onPress={()=>setCognitiveAnswer(x.id)} style={[s.option,cognitiveAnswer===x.id&&s.optionActive]}><AppText style={[s.optionText,cognitiveAnswer===x.id&&s.optionTextActive]}>{t(x.key)}</AppText></TouchableOpacity>)}
-      {cognitiveAnswer?<View style={s.panel}><Label>{cognitiveAnswer===correct?'✓':'→'}</Label><AppText style={s.body}>{t(feedback)}</AppText></View>:null}
+      {cognitiveAnswer?<View style={s.panel}><Label>{t(cognitiveAnswer===correct?'cognitive.answer.correct':'cognitive.answer.adjust')}</Label><AppText style={s.body}>{t(cognitiveAnswer===correct?feedback:'cognitive.answer.retry')}</AppText></View>:null}
     </View>;
   } else if(module==='lifestyle') {
     body=<View style={s.moduleContent}>{lifestyleSections.map(x=><View key={x.id} style={s.lifestyle}><Label>{t(x.titleKey)}</Label><Serif style={s.actionTitle}>{t(x.subtitleKey)}</Serif><AppText style={s.lessonBody}>{t(x.bodyKey)}</AppText></View>)}</View>;
