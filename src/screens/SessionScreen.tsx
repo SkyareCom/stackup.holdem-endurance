@@ -89,6 +89,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const [wizardStep,setWizardStep]=useState(0);
   const [quizStep,setQuizStep]=useState(0);
   const [tension,setTension]=useState(3);
+  const [bodyStep,setBodyStep]=useState(0);
   const [fatigue,setFatigue]=useState(3);
   const [sleep,setSleep]=useState(profile.extraGrind.sleep);
   const [nutrition,setNutrition]=useState(profile.extraGrind.nutrition);
@@ -99,6 +100,7 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
   const [movementMinutes,setMovementMinutes]=useState(profile.lifestyle.movementMinutes);
   const [painOrIllness,setPainOrIllness]=useState(profile.lifestyle.painOrIllness);
   const [energy,setEnergy]=useState(6);
+  const [stateStep,setStateStep]=useState(0);
   const [mentalDrive,setMentalDrive]=useState(6);
   const [emotion,setEmotion]=useState<Emotion>('calm');
   const [reason,setReason]=useState<PlayReason>('planned');
@@ -153,8 +155,10 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
     {wizardStep===0?<View style={s.panel}><Serif style={s.actionTitle}>{t('care.human.feeling')}</Serif><AppTextInput value={feelingContext} onChangeText={setFeelingContext} multiline placeholder={t('care.human.feelingPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('care.human.personal')}</Serif><AppTextInput value={personalContext} onChangeText={setPersonalContext} multiline placeholder={t('care.human.personalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><Serif style={s.actionTitle}>{t('care.human.professional')}</Serif><AppTextInput value={professionalContext} onChangeText={setProfessionalContext} multiline placeholder={t('care.human.professionalPlaceholder')} placeholderTextColor={C.dim} style={s.diaryInput}/><AppText style={s.body}>{t('care.human.response')}</AppText></View>:null}
 
     {wizardStep===1?<View style={s.panel}>
-      <Score10 label={t('pregrind.tension')} value={tension} setValue={setTension}/>
-      <Score10 label={t('pregrind.fatigue')} value={fatigue} setValue={setFatigue}/>
+      <FlowProgress current={bodyStep+1} total={2} label={t('pregrind.sensations')}/>
+      {bodyStep===0?<><Label>{t('pregrind.tension')}</Label><ChoiceGrid items={[{id:'2',label:t('quiz.level.low')},{id:'5',label:t('quiz.level.medium')},{id:'8',label:t('quiz.level.high')}]} value={String(tension)} onChange={v=>{setTension(Number(v));setBodyStep(1)}}/></>:null}
+      {bodyStep===1?<><Label>{t('pregrind.fatigue')}</Label><ChoiceGrid items={[{id:'2',label:t('quiz.level.low')},{id:'5',label:t('quiz.level.medium')},{id:'8',label:t('quiz.level.high')}]} value={String(fatigue)} onChange={v=>setFatigue(Number(v))}/></>:null}
+      {bodyStep>0?<PremiumButton label={t('pregrind.back')} secondary onPress={()=>setBodyStep(v=>Math.max(0,v-1))}/>:null}
     </View>:null}
 
     {wizardStep===2?<View style={s.panel}>
@@ -170,8 +174,10 @@ function Ready({ onStart,openAudio,openReset }: { onStart:()=>void;openAudio:()=
       {quizStep>0&&quizStep<7?<PremiumButton label={t('pregrind.back')} secondary onPress={()=>setQuizStep(v=>Math.max(0,v-1))}/>:null}
     </View>:null}
     {wizardStep===3?<View style={s.panel}>
-      <Score10 label={t('pregrind.energy')} value={energy} setValue={setEnergy}/>
-      <Score10 label={t('pregrind.mentalDrive')} value={mentalDrive} setValue={setMentalDrive}/>
+      <FlowProgress current={stateStep+1} total={2} label={t('pregrind.feeling')}/>
+      {stateStep===0?<><Label>{t('pregrind.energy')}</Label><ChoiceGrid items={[{id:'3',label:t('quiz.energy.low')},{id:'6',label:t('quiz.energy.medium')},{id:'9',label:t('quiz.energy.high')}]} value={String(energy)} onChange={v=>{setEnergy(Number(v));setStateStep(1)}}/></>:null}
+      {stateStep===1?<><Label>{t('pregrind.mentalDrive')}</Label><ChoiceGrid items={[{id:'3',label:t('quiz.drive.low')},{id:'6',label:t('quiz.drive.medium')},{id:'9',label:t('quiz.drive.high')}]} value={String(mentalDrive)} onChange={v=>setMentalDrive(Number(v))}/></>:null}
+      {stateStep>0?<PremiumButton label={t('pregrind.back')} secondary onPress={()=>setStateStep(v=>Math.max(0,v-1))}/>:null}
     </View>:null}
 
     {wizardStep===4?<View style={s.panel}>
