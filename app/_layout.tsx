@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Platform, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,7 +12,7 @@ import {
   TitilliumWeb_700Bold_Italic,
 } from '@expo-google-fonts/titillium-web';
 
-void SplashScreen.preventAutoHideAsync();
+if (Platform.OS !== 'web') void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -21,10 +22,12 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (fontsLoaded || fontError) void SplashScreen.hideAsync();
+    if (Platform.OS !== 'web' && (fontsLoaded || fontError)) void SplashScreen.hideAsync();
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) return null;
+  if (!fontsLoaded && !fontError) {
+    return <View style={{ flex: 1, backgroundColor: '#090806' }} />;
+  }
 
   return (
     <PerformanceProvider>
