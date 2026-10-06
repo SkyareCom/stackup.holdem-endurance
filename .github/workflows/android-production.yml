@@ -1,0 +1,22 @@
+name: Android Production AAB
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Validate release configuration
+        run: npm run check:android
+      - name: Test suite
+        run: npm test
+      - name: Generate Android native project
+        run: npm run prebuild:android
+      - name: Verify Gradle release bundle task
+        working-directory: android
+        run: ./gradlew tasks --all | grep bundleRelease
