@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Platform } from 'react-native';
 import {
   buildBaseline,
   calculateMentalEv,
@@ -83,7 +84,7 @@ const PerformanceContext=createContext<PerformanceContextValue|null>(null);
 
 export function PerformanceProvider({children}:{children:React.ReactNode}) {
   const [state,setState]=useState<PersistedState>(defaultState);
-  const [ready,setReady]=useState(false);
+  const [ready,setReady]=useState(Platform.OS === 'web');
 
   useEffect(()=>{
     let active=true;
@@ -111,13 +112,15 @@ export function PerformanceProvider({children}:{children:React.ReactNode}) {
         }
       }
       setReady(true);
+    }).catch(()=>{
+      if(active)setReady(true);
     });
     return()=>{active=false;};
   },[]);
 
   useEffect(()=>{
     if(!ready)return;
-    void AsyncStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    void AsyncStorage.setItem(STORAGE_KEY,JSON.stringify(state)).catch(()=>{});
   },[ready,state]);
 
   const updateProfile=useCallback((patch:Partial<PerformanceProfile>)=>{
