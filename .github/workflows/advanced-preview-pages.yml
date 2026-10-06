@@ -19,6 +19,6 @@ jobs:
       - run: npm install
       - run: npx expo export --platform web
       - name: Publish static preview
-        run: npx gh-pages -d dist -b gh-pages -u "github-actions-bot <support+actions@github.com>"
+        run: npx gh-pages -d dist -b gh-pages -u "github-actions-bot <support+actions@github.com>" -r "https://x-access-token:${GH_TOKEN}@github.com/SkyareCom/stackup.holdem-endurance.git"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
