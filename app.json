@@ -50,6 +50,9 @@
     "backgroundColor": "#090806",
     "experiments": {
       "baseUrl": "/stackup.holdem-endurance"
+    },
+    "web": {
+      "output": "single"
     }
   }
 }
