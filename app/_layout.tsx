@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Platform, View } from 'react-native';
+import { Platform } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -24,10 +24,6 @@ export default function RootLayout() {
   useEffect(() => {
     if (Platform.OS !== 'web' && (fontsLoaded || fontError)) void SplashScreen.hideAsync();
   }, [fontsLoaded, fontError]);
-
-  if (!fontsLoaded && !fontError) {
-    return <View style={{ flex: 1, backgroundColor: '#090806' }} />;
-  }
 
   return (
     <PerformanceProvider>
