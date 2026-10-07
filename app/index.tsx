@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { BackHandler, TouchableOpacity, View } from 'react-native';
+import { BackHandler, Platform, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
@@ -69,6 +69,7 @@ export default function Index() {
   const [entered,setEntered]=useState(false); const [coachEntry,setCoachEntry]=useState(true); const [tab,setTab]=useState<Tab>('home'); const [phase,setPhase]=useState<Phase>('ready'); const [module,setModule]=useState<Module|null>(null); const [sos,setSos]=useState(false); const [breakOpen,setBreakOpen]=useState(false); const [checkin,setCheckin]=useState(false);
 
   useFocusEffect(useCallback(()=>{
+    if (Platform.OS === 'web') return undefined;
     const subscription=BackHandler.addEventListener('hardwareBackPress',()=>{
       if(!entered) return false;
       if(sos){setSos(false);return true;}
