@@ -25,13 +25,12 @@ export default function RootLayout() {
     if (Platform.OS !== 'web' && (fontsLoaded || fontError)) void SplashScreen.hideAsync();
   }, [fontsLoaded, fontError]);
 
-  const app = (
-    <I18nProvider>
-      <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false }} />
-    </I18nProvider>
+  return (
+    <PerformanceProvider>
+      <I18nProvider>
+        <StatusBar style="light" />
+        <Stack screenOptions={{ headerShown: false }} />
+      </I18nProvider>
+    </PerformanceProvider>
   );
-
-  if (Platform.OS === 'web') return app;
-  return <PerformanceProvider>{app}</PerformanceProvider>;
 }
